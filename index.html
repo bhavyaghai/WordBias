@@ -2,8 +2,8 @@
 <html>
 <head>
 	<script src="http://d3js.org/d3.v3.min.js"></script>
-	<script src="./d3.parcoords.js"></script>
-	<link rel="stylesheet" type="text/css" href="./d3.parcoords.css">
+	<script src="./js/d3.parcoords.js"></script>
+	<link rel="stylesheet" type="text/css" href="./css/d3.parcoords.css">
 </head>
 
 <body>
@@ -11,18 +11,18 @@
 
 	<script>
 	// load csv file and create the chart
-	d3.csv('./nutrients.csv', function(data) {
+	d3.csv('./data/mutliple_biases.csv', function(data) {
   		var colorgen = d3.scale.ordinal()
     		.range(["#a6cee3","#1f78b4","#b2df8a","#33a02c",
             		"#fb9a99","#e31a1c","#fdbf6f","#ff7f00",
             		"#cab2d6","#6a3d9a","#ffff99","#b15928"]);
 
-    	var color = function(d) { return colorgen(d.group); };
+    	//var color = function(d) { return colorgen(d.group); };
 
   		var parcoords = d3.parcoords()("#example-progressive")
     					.data(data)
     					.hideAxis(["name"])
-    					.color(color)
+    					//.color(color)
     					.alpha(0.25)
     					.composite("darken")
     					.margin({ top: 24, left: 150, bottom: 12, right: 0 })
