@@ -3,11 +3,44 @@
     <meta charset="utf-8">
     <title>Multi-WEBViz</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/parallel-coordinates.css') }}">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
   </head>
 
-  <body>
+<body style="background-color: aliceblue;">  <!-- overflow:hidden;" -->
+    <div class="container-fluid" style="padding-left: 0px; padding-right: 0px; height: 100%; width: 50%;">
+		
+  		<nav class="navbar navbar-inverse bg-primary" style="background-color: cadetblue; border-radius:0px; color: black; margin-bottom: 0px" id="navbar"> <!-- #3B5998 -->
+          <div class="container-fluid" ng-controller = "navController">
+            <div>
+                <a class="navbar-brand" href="#/" style="color:white;"><b>WEBviz2: Visualizing Mutiple biases encoded in Word Embedding</b></a>
+            </div>
+        	</div>
+      </nav>
+    	
+      <div class="row" style="height: 70%;">
+        <!-- <div class="col-md-2" style="padding:20px;"></div> -->
+        
+        <div class="col-md-12" style="padding:20px;">
+          <div id="parallel_coord" style="background-color: white;"></div>
+        </div>
+        <!-- <div class="col-md-2" style="padding:20px;"></div> -->
+      </div>
+      <br>
+      <div class="row" style="height: 30%;" id="options">
+        <!-- <div class="col-md-2" style="padding:20px;"></div> -->
+        
+        <div class="col-md-12" style="padding:20px;">
+        <textarea id="target" rows="5" style="width: 100%">Enter words here ...</textarea>
+        <button type="submit" class="btn btn-primary center-block btn-sm" id="showBias" style="margin-top: 10px;">Show Bias</button>
+        </div>
+        <!-- <div class="col-md-2" style="padding:20px;"></div> -->
+      </div>
+
+    </div>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
 		<script src="https://d3js.org/d3.v3.js"></script>
     <script src="{{ url_for('static', filename='/js/parallel_coordinates.js') }}"></script>
+    <script src="{{ url_for('static', filename='/js/controller.js') }}"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   </body>
 </html>

@@ -1,6 +1,9 @@
-var margin = {top: 30, right: 10, bottom: 10, left: 10},
-    width = 1260 - margin.left - margin.right,
-    height = 700 - margin.top - margin.bottom;
+var margin = {top: 20, right: 10, bottom: 5, left: 10},
+    outerWidth = $("#parallel_coord").width(),
+    outerHeight = $(document).height()-$("#navbar").height()-$("#options").height()-100,
+    width = outerWidth - margin.left - margin.right,
+    height = outerHeight - margin.top - margin.bottom;
+var aspect = width/height;
 
 var x = d3.scale.ordinal().rangePoints([0, width], 1),
     y = {},
@@ -11,21 +14,21 @@ var line = d3.svg.line(),
     background,
     foreground;
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#parallel_coord").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-  .append("g")
+    .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var temp;
-d3.csv("./data/bias.csv", function(error, data) {
+d3.json("/get_csv/", function(data) {
    temp = data;
   // Extract the list of dimensions and create a scale for each.
   x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
     if(d=="word") {
         return (y[d] = d3.scale.ordinal()
-        //.domain(d3.extent(data, function(p) { return +p[d]; }))
-        .rangePoints([height, 0]));    
+        .domain(d3.extent(data, function(p) { return p[d]; }))
+        .rangePoints([0, height]));    
     }
     return (y[d] = d3.scale.linear()
         .domain(d3.extent(data, function(p) { return +p[d]; }))
@@ -38,7 +41,9 @@ d3.csv("./data/bias.csv", function(error, data) {
       .selectAll("path")
       .data(data)
       .enter().append("path")
-      .attr("d", path);
+      .attr("d", function(d) {
+          return path(d);
+      });
 
   // Add blue foreground lines for focus.
   foreground = svg.append("g")
@@ -46,16 +51,28 @@ d3.csv("./data/bias.csv", function(error, data) {
       .selectAll("path")
       .data(data)
       .enter().append("path")
-      .attr("d", function(d) { return path(d); })
-      .on("mouseover",function(d) {
+      .attr("d", path);
+
+    var paths = svg.selectAll(".background path, .foreground path") 
+      .on("mouseover", mouseover)
+      .on("mouseout", mouseout);
+
+    function mouseover(d) {
+        foreground.classed("inactive", function(p) { return p !== d; });
+        foreground.filter(function(p) { return p === d; }).each(moveToFront).style("stroke-width","3px");
+    }
+
+    function mouseout(d) {
+        foreground.classed("inactive",false);
+        foreground.filter(function(p) { return p === d; }).style("stroke-width","1px");
+    }
+
+    function moveToFront() {
         // To make sure path is highlighted
         // I append it again to parent so that its order is on the top
+        console.log("moveToFront");
         this.parentNode.appendChild(this);
-        d3.select(this).style({"stroke":"red","stroke-width":"4px"});
-      })
-      .on("mouseout",function(d) {
-        d3.select(this).style({"stroke":"steelblue","stroke-width":"1px"});
-    });
+    }
 
   // Add a group element for each dimension.
   var g = svg.selectAll(".dimension")
@@ -82,7 +99,7 @@ d3.csv("./data/bias.csv", function(error, data) {
           transition(foreground).attr("d", path);
           background
               .attr("d", path)
-            .transition()
+              .transition()
               .delay(500)
               .duration(0)
               .attr("visibility", null);
@@ -95,7 +112,8 @@ d3.csv("./data/bias.csv", function(error, data) {
     .append("text")
       .style("text-anchor", "middle")
       .attr("y", -9)
-      .text(function(d) { return d; });
+      .text(function(d) { return d; })
+      .attr("class","title");
 
   // Add and store a brush for each axis.
   g.append("g")
@@ -106,6 +124,15 @@ d3.csv("./data/bias.csv", function(error, data) {
     .selectAll("rect")
       .attr("x", -8)
       .attr("width", 16);
+
+    // To make svg responsive to different screen sizes 
+    d3.select(window)
+    .on("resize", function() {
+        var chart = d3.select('#parallel_coord');
+        var targetWidth = chart.node().getBoundingClientRect().width;
+        d3.select('#parallel_coord svg').attr("width", targetWidth);
+        d3.select('#parallel_coord svg').attr("height", targetWidth / aspect);
+    });  
 });
 
 function position(d) {
@@ -119,7 +146,9 @@ function transition(g) {
 
 // Returns the path for a given data point.
 function path(d) {
-  return line(dimensions.map(function(p) { return [position(p), y[p](d[p])]; }));
+  return line(dimensions.map(function(p) { 
+        return [position(p), y[p](d[p])]; 
+    }));
 }
 
 function brushstart() {

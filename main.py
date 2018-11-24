@@ -15,17 +15,98 @@ from scipy.spatial.distance import cosine
 import json
 from datetime import datetime
 import os
-
 from flask import make_response
 from functools import wraps, update_wrapper
 
 
 app = Flask(__name__, static_url_path='', static_folder='', template_folder='')
 
+df, model = None, None
+gender_bias = [("he","him","boy"),("she","her","girl")]
+eco_bias = [("rich","wealthy"),("poor","impoverished")]
+race_bias = [("african","black"),("european","white")]
+bias_words = [gender_bias, eco_bias, race_bias]
+bias_direc = []
+
+@app.route('/setModel/<name>')
+def setModel(name="Word2Vec"):
+    global model, df
+    model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embedding/word2vec_50k.bin', binary=True)
+    df = pd.read_csv("./data/bias.csv",header=0, keep_default_na=False)
+    #df = pd.read_csv("./data/cars.csv",header=0, keep_default_na=False)
+    return "success"
 
 @app.route('/')
 def index():
+    setModel()
     return render_template('index.html')
+
+@app.route('/get_csv/')
+def get_csv():
+    global df
+    out = df.to_json(orient='records')
+    return out
+
+# calculate bias direction when we have group of words not pairs
+def groupBiasDirection(gp1, gp2):
+    print(gp1,gp2)
+    dim = len(model["he"])
+    g1,g2 = np.zeros((dim,), dtype=float), np.zeros((dim,), dtype=float)
+    for p in gp1:
+        p = p.strip()
+        if p not in model:
+            continue
+        p_vec = model[p]/norm(model[p])
+        g1 = np.add(g1,p_vec)
+
+    for q in gp2:
+        q = q.strip()
+        if q not in model:
+            continue
+        q_vec = model[q]/norm(model[q])
+        g2 = np.add(g2,q_vec) 
+
+    g1, g2 = g1/norm(g1), g2/norm(g2)
+    return (g1,g2)
+
+
+# calculate Group bias for 'Group' bias identification type (National Academy of Sciences)
+@app.route('/groupDirectBias/')
+def groupDirectBias():
+    temp = request.args.get("target")
+    print("*******************")
+    print(temp)
+    target = None
+    #if not temp:
+    #    target = df["word"].tolist()
+    #else:
+    target = json.loads(temp)
+    print("Target ",colored(target, 'green'))
+    print("Group direct bias function !!!!")
+
+    for p,q  in bias_words:
+        bias_direc.append(groupBiasDirection(p,q)) 
+    #g1, g2 = groupBiasDirection(gender_bias[0],gender_bias[1])
+    #g3, g4 = groupBiasDirection(eco_bias[0],eco_bias[1])
+    #g5, g6 = groupBiasDirection(race_bias[0],race_bias[1])
+    #if g1 is None or g2 is None:
+    #    print("Returning is None !!!", "green")
+    #    return jsonify([])
+    tar_bias = {}
+    for t in target:
+        if not t or len(t)<=1:
+            continue
+        if t not in model:
+            tar_bias[t] = "NA"
+        else:
+            b = []  # list for storing individual biases
+            for (g1,g2) in bias_direc:
+                b.append(round(cosine(g1,model[t])-cosine(g2,model[t]),3))
+            #b1 = round(cosine(g1,model[t])-cosine(g2,model[t]),3)
+            #b2 = round(cosine(g2,model[t])-cosine(g3,model[t]),3)
+            #b3 = round(cosine(g4,model[t])-cosine(g5,model[t]),3)
+            tar_bias[t]= b
+    return jsonify(tar_bias)
 
 
 if __name__ == '__main__':
