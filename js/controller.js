@@ -1,3 +1,8 @@
+// called when the application is first loaded 
+$(window).load(function(){
+    createParallelCoord("/get_csv/");
+});
+
 // on clicking ShowBias button
 $('#showBias').on('click', function(event) {
     var tar = document.getElementById("target").value;
@@ -7,8 +12,8 @@ $('#showBias').on('click', function(event) {
       //type: bias_identify_type
     },res => {
       console.log("Direct bias success fn called !!!");
-      console.log(res);
-      //populateBiasResults(res);
+      $("#parallel_coord").empty();
+      createParallelCoord('/get_tar_csv/');
     });
     //highlight(tar);
   });

@@ -21,7 +21,7 @@ from functools import wraps, update_wrapper
 
 app = Flask(__name__, static_url_path='', static_folder='', template_folder='')
 
-df, model = None, None
+df, df_tar, model = None, None, None
 gender_bias = [("he","him","boy"),("she","her","girl")]
 eco_bias = [("rich","wealthy"),("poor","impoverished")]
 race_bias = [("african","black"),("european","white")]
@@ -45,6 +45,12 @@ def index():
 def get_csv():
     global df
     out = df.to_json(orient='records')
+    return out
+
+@app.route('/get_tar_csv/')
+def get_tar_csv():
+    global df_tar
+    out = df_tar.to_json(orient='records')
     return out
 
 # calculate bias direction when we have group of words not pairs
@@ -73,40 +79,32 @@ def groupBiasDirection(gp1, gp2):
 # calculate Group bias for 'Group' bias identification type (National Academy of Sciences)
 @app.route('/groupDirectBias/')
 def groupDirectBias():
+    global df_tar
     temp = request.args.get("target")
     print("*******************")
     print(temp)
     target = None
-    #if not temp:
-    #    target = df["word"].tolist()
-    #else:
     target = json.loads(temp)
     print("Target ",colored(target, 'green'))
     print("Group direct bias function !!!!")
 
     for p,q  in bias_words:
         bias_direc.append(groupBiasDirection(p,q)) 
-    #g1, g2 = groupBiasDirection(gender_bias[0],gender_bias[1])
-    #g3, g4 = groupBiasDirection(eco_bias[0],eco_bias[1])
-    #g5, g6 = groupBiasDirection(race_bias[0],race_bias[1])
-    #if g1 is None or g2 is None:
-    #    print("Returning is None !!!", "green")
-    #    return jsonify([])
+    
+    df_tar = df[0:0].copy()
     tar_bias = {}
     for t in target:
         if not t or len(t)<=1:
             continue
         if t not in model:
-            tar_bias[t] = "NA"
+            continue
         else:
             b = []  # list for storing individual biases
             for (g1,g2) in bias_direc:
                 b.append(round(cosine(g1,model[t])-cosine(g2,model[t]),3))
-            #b1 = round(cosine(g1,model[t])-cosine(g2,model[t]),3)
-            #b2 = round(cosine(g2,model[t])-cosine(g3,model[t]),3)
-            #b3 = round(cosine(g4,model[t])-cosine(g5,model[t]),3)
             tar_bias[t]= b
-    return jsonify(tar_bias)
+        df_tar.loc[len(df_tar)] = [t]+tar_bias[t]
+    return "success"
 
 
 if __name__ == '__main__':

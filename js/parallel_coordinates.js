@@ -14,126 +14,146 @@ var line = d3.svg.line(),
     background,
     foreground;
 
-var svg = d3.select("#parallel_coord").append("svg")
+function createParallelCoord(url) {
+
+    var svg = d3.select("#parallel_coord").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var temp;
-d3.json("/get_csv/", function(data) {
-   temp = data;
-  // Extract the list of dimensions and create a scale for each.
-  x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
-    if(d=="word") {
-        return (y[d] = d3.scale.ordinal()
-        .domain(d3.extent(data, function(p) { return p[d]; }))
-        .rangePoints([0, height]));    
-    }
-    return (y[d] = d3.scale.linear()
-        .domain(d3.extent(data, function(p) { return +p[d]; }))
-        .range([height, 0]));
-  }));
-
-  // Add grey background lines for context.
-  background = svg.append("g")
-      .attr("class", "background")
-      .selectAll("path")
-      .data(data)
-      .enter().append("path")
-      .attr("d", function(d) {
-          return path(d);
-      });
-
-  // Add blue foreground lines for focus.
-  foreground = svg.append("g")
-      .attr("class", "foreground")
-      .selectAll("path")
-      .data(data)
-      .enter().append("path")
-      .attr("d", path);
-
-    var paths = svg.selectAll(".background path, .foreground path") 
-      .on("mouseover", mouseover)
-      .on("mouseout", mouseout);
-
-    function mouseover(d) {
-        foreground.classed("inactive", function(p) { return p !== d; });
-        foreground.filter(function(p) { return p === d; }).each(moveToFront).style("stroke-width","3px");
-    }
-
-    function mouseout(d) {
-        foreground.classed("inactive",false);
-        foreground.filter(function(p) { return p === d; }).style("stroke-width","1px");
-    }
-
-    function moveToFront() {
-        // To make sure path is highlighted
-        // I append it again to parent so that its order is on the top
-        console.log("moveToFront");
-        this.parentNode.appendChild(this);
-    }
-
-  // Add a group element for each dimension.
-  var g = svg.selectAll(".dimension")
-      .data(dimensions)
-      .enter().append("g")
-      .attr("class", "dimension")
-      .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
-      .call(d3.behavior.drag()
-        .origin(function(d) { return {x: x(d)}; })
-        .on("dragstart", function(d) {
-          dragging[d] = x(d);
-          background.attr("visibility", "hidden");
-        })
-        .on("drag", function(d) {
-          dragging[d] = Math.min(width, Math.max(0, d3.event.x));
-          foreground.attr("d", path);
-          dimensions.sort(function(a, b) { return position(a) - position(b); });
-          x.domain(dimensions);
-          g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
-        })
-        .on("dragend", function(d) {
-          delete dragging[d];
-          transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
-          transition(foreground).attr("d", path);
-          background
-              .attr("d", path)
-              .transition()
-              .delay(500)
-              .duration(0)
-              .attr("visibility", null);
+    // delete existing parallel coordinates if exists
+    d3.json(url, function(data) {
+        // Extract the list of dimensions and create a scale for each.
+        x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
+          if(d=="word") {
+              return (y[d] = d3.scale.ordinal()
+              .domain(data.map(function(d) { return d["word"]; }).sort())
+              .rangePoints([0, height]));    
+          }
+          return (y[d] = d3.scale.linear()
+              .domain(d3.extent(data, function(p) { return +p[d]; }))
+              .range([height, 0]));
         }));
-
-  // Add an axis and title.
-  g.append("g")
-      .attr("class", "axis")
-      .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
-    .append("text")
-      .style("text-anchor", "middle")
-      .attr("y", -9)
-      .text(function(d) { return d; })
-      .attr("class","title");
-
-  // Add and store a brush for each axis.
-  g.append("g")
-      .attr("class", "brush")
-      .each(function(d) {
-        d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush));
-      })
-    .selectAll("rect")
-      .attr("x", -8)
-      .attr("width", 16);
-
-    // To make svg responsive to different screen sizes 
-    d3.select(window)
-    .on("resize", function() {
-        var chart = d3.select('#parallel_coord');
-        var targetWidth = chart.node().getBoundingClientRect().width;
-        d3.select('#parallel_coord svg').attr("width", targetWidth);
-        d3.select('#parallel_coord svg').attr("height", targetWidth / aspect);
-    });  
-});
+      
+        // Add grey background lines for context.
+        background = svg.append("g")
+            .attr("class", "background")
+            .selectAll("path")
+            .data(data)
+            .enter().append("path")
+            .attr("d", function(d) {
+                return path(d);
+            });
+      
+        // Add blue foreground lines for focus.
+        foreground = svg.append("g")
+            .attr("class", "foreground")
+            .selectAll("path")
+            .data(data)
+            .enter().append("path")
+            .attr("d", path);
+      
+          var paths = svg.selectAll(".background path, .foreground path") 
+            .on("mouseover", mouseover)
+            .on("mouseout", mouseout);
+      
+          function mouseover(d) {
+              if($.type(d) === "string") {
+                  console.log("String");
+                  foreground.classed("inactive", function(p) { return p["word"] !== d; });
+                  foreground.filter(function(p) { return p["word"] === d; }).each(moveToFront).style("stroke-width","3px");    
+              }
+              else {
+                  foreground.classed("inactive", function(p) { return p !== d; });
+                  foreground.filter(function(p) { return p === d; }).each(moveToFront).style("stroke-width","3px");
+              }
+              //labels.classed("inactive", function(p) { return p !== d; });
+              //labels.filter(function(p) { return p === d; }).each(moveToFront);
+          }
+      
+          function mouseout(d) {
+              if($.type(d) === "string") {
+                  foreground.filter(function(p) { return p["word"] === d; }).style("stroke-width","1px");
+              }
+              else {
+                  foreground.filter(function(p) { return p === d; }).style("stroke-width","1px");
+              }
+              foreground.classed("inactive",false);
+              //labels.classed("inactive", false);
+          }
+      
+          function moveToFront() {
+              // To make sure path is highlighted
+              // I append it again to parent so that its order is on the top
+              this.parentNode.appendChild(this);
+          }
+      
+        // Add a group element for each dimension.
+        var g = svg.selectAll(".dimension")
+            .data(dimensions)
+            .enter().append("g")
+            .attr("class", "dimension")
+            .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+            .call(d3.behavior.drag()
+              .origin(function(d) { return {x: x(d)}; })
+              .on("dragstart", function(d) {
+                dragging[d] = x(d);
+                background.attr("visibility", "hidden");
+              })
+              .on("drag", function(d) {
+                dragging[d] = Math.min(width, Math.max(0, d3.event.x));
+                foreground.attr("d", path);
+                dimensions.sort(function(a, b) { return position(a) - position(b); });
+                x.domain(dimensions);
+                g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
+              })
+              .on("dragend", function(d) {
+                delete dragging[d];
+                transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
+                transition(foreground).attr("d", path);
+                background
+                    .attr("d", path)
+                    .transition()
+                    .delay(500)
+                    .duration(0)
+                    .attr("visibility", null);
+              }));
+      
+        // Add an axis and title.
+        g.append("g")
+            .attr("class", "axis")
+            .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
+          .append("text")
+            .style("text-anchor", "middle")
+            .attr("y", -9)
+            .text(function(d) { return d; })
+            .attr("class","title");
+          
+         var labels = svg.selectAll(".axis text")
+            .on("mouseover", mouseover)
+            .on("mouseout", mouseout);
+      
+        // Add and store a brush for each axis.
+        g.append("g")
+            .attr("class", "brush")
+            .each(function(d) {
+              d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush));
+            })
+          .selectAll("rect")
+            .attr("x", -8)
+            .attr("width", 16);
+      
+          // To make svg responsive to different screen sizes 
+          d3.select(window)
+          .on("resize", function() {
+              var chart = d3.select('#parallel_coord');
+              var targetWidth = chart.node().getBoundingClientRect().width;
+              d3.select('#parallel_coord svg').attr("width", targetWidth);
+              d3.select('#parallel_coord svg').attr("height", targetWidth / aspect);
+          });  
+      });
+}
 
 function position(d) {
   var v = dragging[d];
