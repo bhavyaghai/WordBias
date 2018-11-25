@@ -26,7 +26,6 @@ gender_bias = [("he","him","boy"),("she","her","girl")]
 eco_bias = [("rich","wealthy"),("poor","impoverished")]
 race_bias = [("african","black"),("european","white")]
 bias_words = [gender_bias, eco_bias, race_bias]
-bias_direc = []
 
 @app.route('/setModel/<name>')
 def setModel(name="Word2Vec"):
@@ -82,15 +81,16 @@ def groupDirectBias():
     global df_tar
     temp = request.args.get("target")
     print("*******************")
-    print(temp)
     target = None
     target = json.loads(temp)
-    print("Target ",colored(target, 'green'))
+    print("Target ",target)
     print("Group direct bias function !!!!")
 
+    bias_direc = []
     for p,q  in bias_words:
         bias_direc.append(groupBiasDirection(p,q)) 
     
+    df_tar = None
     df_tar = df[0:0].copy()
     tar_bias = {}
     for t in target:
@@ -101,8 +101,9 @@ def groupDirectBias():
         else:
             b = []  # list for storing individual biases
             for (g1,g2) in bias_direc:
-                b.append(round(cosine(g1,model[t])-cosine(g2,model[t]),3))
+                b.append(round(cosine(g1,model[t])-cosine(g2,model[t]),5))
             tar_bias[t]= b
+        print("ROW ",[t],tar_bias[t])
         df_tar.loc[len(df_tar)] = [t]+tar_bias[t]
     return "success"
 

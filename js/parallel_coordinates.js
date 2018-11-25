@@ -14,9 +14,11 @@ var line = d3.svg.line(),
     background,
     foreground;
 
+var svg;
+
 function createParallelCoord(url) {
 
-    var svg = d3.select("#parallel_coord").append("svg")
+    svg = d3.select("#parallel_coord").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -24,6 +26,7 @@ function createParallelCoord(url) {
 
     // delete existing parallel coordinates if exists
     d3.json(url, function(data) {
+        temp = data;
         // Extract the list of dimensions and create a scale for each.
         x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
           if(d=="word") {
@@ -57,31 +60,6 @@ function createParallelCoord(url) {
           var paths = svg.selectAll(".background path, .foreground path") 
             .on("mouseover", mouseover)
             .on("mouseout", mouseout);
-      
-          function mouseover(d) {
-              if($.type(d) === "string") {
-                  console.log("String");
-                  foreground.classed("inactive", function(p) { return p["word"] !== d; });
-                  foreground.filter(function(p) { return p["word"] === d; }).each(moveToFront).style("stroke-width","3px");    
-              }
-              else {
-                  foreground.classed("inactive", function(p) { return p !== d; });
-                  foreground.filter(function(p) { return p === d; }).each(moveToFront).style("stroke-width","3px");
-              }
-              //labels.classed("inactive", function(p) { return p !== d; });
-              //labels.filter(function(p) { return p === d; }).each(moveToFront);
-          }
-      
-          function mouseout(d) {
-              if($.type(d) === "string") {
-                  foreground.filter(function(p) { return p["word"] === d; }).style("stroke-width","1px");
-              }
-              else {
-                  foreground.filter(function(p) { return p === d; }).style("stroke-width","1px");
-              }
-              foreground.classed("inactive",false);
-              //labels.classed("inactive", false);
-          }
       
           function moveToFront() {
               // To make sure path is highlighted
@@ -133,6 +111,32 @@ function createParallelCoord(url) {
          var labels = svg.selectAll(".axis text")
             .on("mouseover", mouseover)
             .on("mouseout", mouseout);
+
+        function mouseover(d) {
+                // string when hover over word
+                if($.type(d) === "string") {
+                    foreground.classed("inactive", function(p) { return p["word"] !== d; });
+                    foreground.filter(function(p) { return p["word"] === d; }).each(moveToFront).style("stroke-width","3px");    
+                    labels.filter(function(p) { return p == d; }).style("font-weight", "bold");
+                } // else when hover over path
+                else {
+                    foreground.classed("inactive", function(p) { return p !== d; });
+                    foreground.filter(function(p) { return p === d; }).each(moveToFront).style("stroke-width","3px");
+                    labels.filter(function(p) { return p == d["word"]; }).style("font-weight", "bold");
+                }
+            }
+        
+        function mouseout(d) {
+                if($.type(d) === "string") {
+                    foreground.filter(function(p) { return p["word"] === d; }).style("stroke-width","1px");
+                    labels.filter(function(p) { return p === d; }).style("font-weight", "initial");
+                }
+                else {
+                    foreground.filter(function(p) { return p === d; }).style("stroke-width","1px");
+                    labels.filter(function(p) { return p == d["word"]; }).style("font-weight", "initial");
+                }
+                foreground.classed("inactive",false);
+            }
       
         // Add and store a brush for each axis.
         g.append("g")

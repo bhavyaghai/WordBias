@@ -46,3 +46,8 @@ svg {
   font-weight: bold;
   text-transform: uppercase;
 }
+
+.axis text .active {
+  font-weight: bold;
+  font-size: 11px;
+}
