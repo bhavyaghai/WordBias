@@ -1,4 +1,4 @@
-var margin = {top: 20, right: 10, bottom: 5, left: 10},
+var margin = {top: 25, right: 10, bottom: 5, left: 10},
     outerWidth = $("#parallel_coord").width(),
     outerHeight = $(document).height()-$("#navbar").height()-$("#options").height()-100,
     width = outerWidth - margin.left - margin.right,
@@ -10,11 +10,9 @@ var x = d3.scale.ordinal().rangePoints([0, width], 1),
     dragging = {};
 
 var line = d3.svg.line(),
-    axis = d3.svg.axis().orient("left"),
-    background,
-    foreground;
+    axis = d3.svg.axis().orient("left");
 
-var svg;
+var svg,background,foreground;
 
 function createParallelCoord(url) {
 
@@ -189,3 +187,38 @@ function brush() {
     }) ? null : "none";
   });
 }
+
+
+// change pc as per thresold values
+function change_threshold() {
+    foreground.style("display",function(d) {
+        if(Math.abs(d["gender"])<thresh || Math.abs(d["eco"])<thresh || Math.abs(d["race"])<thresh) {
+            return "none";
+        }
+        else {
+            return "initial";
+        }
+    });
+}
+
+// color parallel coordinate with repsect to attribute like gender, etc.
+$('#dropdown_color').on('change', function() {
+    var selText = this.value; 
+    console.log(selText);
+    if(selText=="Default") {
+        foreground.style("stroke","steelblue");
+        return;
+    }
+    var mapping = {"Gender":"gender","Race":"race","Economic status":"eco"};
+    var column = mapping[selText];
+
+    foreground.style("stroke",function(d) {
+        if(d[column]>0.01) {
+            return "orangered";
+        }
+        else if(d[column]<-0.01) {
+            return "green";
+        }
+    });
+
+});

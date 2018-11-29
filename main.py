@@ -107,6 +107,10 @@ def groupDirectBias():
         df_tar.loc[len(df_tar)] = [t]+tar_bias[t]
     return "success"
 
+@app.route('/get_tar_words/')
+def get_default_target_words():
+    w = df["word"].tolist()
+    return jsonify(w)
 
 if __name__ == '__main__':
    app.run(port=6999, debug=True)

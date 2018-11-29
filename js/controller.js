@@ -1,5 +1,11 @@
+var thresh;
+
 // called when the application is first loaded 
 $(window).load(function(){
+    // load default target words
+    load_default_words()
+
+    // create parallel plot
     createParallelCoord("/get_csv/");
 });
 
@@ -17,3 +23,16 @@ $('#showBias').on('click', function(event) {
     });
     //highlight(tar);
   });
+
+function coeff_val_change(newVal){
+    thresh = newVal;
+    $('#coeff_slider_val').text(newVal);
+    change_threshold();
+}
+
+function load_default_words() {
+    $.get("/get_tar_words/", res => {
+        console.log(res);
+        $('#target').val(res.join());
+      });
+}
