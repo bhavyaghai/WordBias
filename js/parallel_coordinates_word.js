@@ -7,7 +7,7 @@ var dimensions = [
     name: "word",
     scale: d3.scale.ordinal().rangePoints([0, height]),
     type: "string"
-  },
+  }, 
   {
     name: "eco",
     scale: d3.scale.linear().range([0, height]),

@@ -1,4 +1,4 @@
-var margin = {top: 25, right: 10, bottom: 5, left: 10},
+var margin = {top: 25, right: 10, bottom: 25, left: 10},
     outerWidth = $("#parallel_coord").width(),
     outerHeight = $(document).height()-$("#navbar").height()-$("#options").height()-100,
     width = outerWidth - margin.left - margin.right,
@@ -33,7 +33,8 @@ function createParallelCoord(url) {
               .rangePoints([0, height]));    
           }
           return (y[d] = d3.scale.linear()
-              .domain(d3.extent(data, function(p) { return +p[d]; }))
+                .domain([-1,1])
+              //.domain(d3.extent(data, function(p) { return +p[d]; }))
               .range([height, 0]));
         }));
       
@@ -99,10 +100,21 @@ function createParallelCoord(url) {
         // Add an axis and title.
         g.append("g")
             .attr("class", "axis")
-            .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
-          .append("text")
+            .each(function(d) { d3.select(this).call(axis.scale(y[d])); });
+          
+        g.append("text")
+            .attr("class", "axis")
             .style("text-anchor", "middle")
             .attr("y", -9)
+            .text(function(d) { return d; })
+            .attr("class","title");
+
+        g.append("g")
+          .attr("class", "axis")
+            //.each(function(d) { d3.select(this).call(axis.scale(y[d])); })
+          .append("text")
+            .style("text-anchor", "middle")
+            .attr("y", height+15)
             .text(function(d) { return d; })
             .attr("class","title");
           
@@ -111,6 +123,8 @@ function createParallelCoord(url) {
             .on("mouseout", mouseout);
 
         function mouseover(d) {
+                // show selected word on top of parallel coordinates
+                $("#word").text(d["word"]);
                 // string when hover over word
                 if($.type(d) === "string") {
                     foreground.classed("inactive", function(p) { return p["word"] !== d; });
@@ -125,6 +139,8 @@ function createParallelCoord(url) {
             }
         
         function mouseout(d) {
+            // remove word from top of parallel coord
+            $("#word").text('');
                 if($.type(d) === "string") {
                     foreground.filter(function(p) { return p["word"] === d; }).style("stroke-width","1px");
                     labels.filter(function(p) { return p === d; }).style("font-weight", "initial");

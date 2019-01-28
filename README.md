@@ -9,3 +9,5 @@ TODO:
 -> plot pc for listed words
 -> show bias for a single word
 -> research about parallel coordinates
+
+[Documentation](https://docs.google.com/document/d/1uw5OCxsddj8QeOqrZqgJJVBUV7rdTE9AEX9ymNzDQO0/edit?usp=sharing)

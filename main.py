@@ -31,8 +31,8 @@ bias_words = [gender_bias, eco_bias, race_bias]
 def setModel(name="Word2Vec"):
     global model, df
     model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embedding/word2vec_50k.bin', binary=True)
-    df = pd.read_csv("./data/bias.csv",header=0, keep_default_na=False)
-    #df = pd.read_csv("./data/cars.csv",header=0, keep_default_na=False)
+    #df = pd.read_csv("./data/bias.csv",header=0, keep_default_na=False)
+    df = pd.read_csv("./data/mutliple_biases_norm.csv",header=0, keep_default_na=False)
     return "success"
 
 @app.route('/')
@@ -104,7 +104,7 @@ def groupDirectBias():
                 b.append(round(cosine(g1,model[t])-cosine(g2,model[t]),5))
             tar_bias[t]= b
         print("ROW ",[t],tar_bias[t])
-        df_tar.loc[len(df_tar)] = [t]+tar_bias[t]
+        df_tar.loc[len(df_tar)] = [t]+tar_bias[t]     # inserting row in df_tar
     return "success"
 
 @app.route('/get_tar_words/')
