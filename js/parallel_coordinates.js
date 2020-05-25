@@ -1,6 +1,7 @@
 var margin = {top: 25, right: 10, bottom: 25, left: 10},
     outerWidth = $("#parallel_coord").width(),
-    outerHeight = $(document).height()-$("#navbar").height()-$("#options").height()-100,
+    //outerHeight = $(document).height()-$("#navbar").height()-$("#options").height()-100,
+    outerHeight = $("#parallel_coord").height(),
     width = outerWidth - margin.left - margin.right,
     height = outerHeight - margin.top - margin.bottom;
 var aspect = width/height;

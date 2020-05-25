@@ -33,6 +33,7 @@ def setModel(name="Word2Vec"):
     model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embedding/word2vec_50k.bin', binary=True)
     #df = pd.read_csv("./data/bias.csv",header=0, keep_default_na=False)
     df = pd.read_csv("./data/mutliple_biases_norm.csv",header=0, keep_default_na=False)
+    df = df.head(n=100)
     return "success"
 
 @app.route('/')
@@ -110,6 +111,7 @@ def groupDirectBias():
 @app.route('/get_tar_words/')
 def get_default_target_words():
     w = df["word"].tolist()
+    w = w[:100]
     return jsonify(w)
 
 if __name__ == '__main__':

@@ -1,69 +1,187 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Multi-WEBViz</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='/css/parallel-coordinates.css') }}">
+    <title>WEBViz: Visualizing social biases encoded in Word Embedding</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='/css/parallel-coordinates.css') }}">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
   </head>
-
-<body style="background-color: aliceblue; overflow:hidden;">  <!-- " -->
-    <div class="container-fluid" style="padding-left: 0px; padding-right: 0px; height: 100%; width: 50%;">
+  <body style="background-color: white;">   <!-- overflow:hidden; -->
+  	<div class="container-fluid" style="padding-left: 10px; padding-right: 10px;">
 		
-  		<nav class="navbar navbar-inverse bg-primary" style="background-color: cadetblue; border-radius:0px; color: black; margin-bottom: 0px" id="navbar"> <!-- #3B5998 -->
-          <div class="container-fluid" ng-controller = "navController">
-            <div>
-                <a class="navbar-brand" href="#/" style="color:white;"><b>WEBviz2: Visualizing Mutiple biases encoded in Word Embedding</b></a>
-            </div>
-        	</div>
-      </nav>
-    
-      <div class="row" style="height: 3%; margin-bottom: 0px; padding-top: 3px;">
-        <div class="col-md-6">
-            <label class="checkbox-inline" style="padding-right: 10px;"><b>Word:</b><div id="word" style="display:inline-block; width:25px;"></div></label>
-        </div>
-        <div class="col-md-6" style="height:3%;">
-          <div class="form-group" style="float:left; width: 50%;">
-            <span style="float:left; font-size:small;"><b>Threshold:</b></span>
-            <input type="range" min="0.0" max="0.50" step="0.01" value="0" style="float:left; width:45%;" id="threshold" onchange="coeff_val_change(this.value)">
-            <span id="coeff_slider_val" style="float:left; font-size:small; padding-left: 3px;">0.0</span>
-            <p style="clear:left;"></p>
-          </div>
+  		<nav class="navbar navbar-inverse bg-primary" style="background-color: dimgrey; color: black; border-radius: 15px;border: 2px solid dimgray; margin-bottom: 5px" id="navbar"> <!-- #3B5998 -->
+	
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">
+						<!-- <span><img src="{{ url_for('static', filename='/data/logo.png') }}" alt="Logo WEBVis" style="width:25px;height:25px;"/></span> -->
+						<span style="color:white; font-size: x-large;"><b>Visualizing Intersectional Social biases encoded in Word Embedding</b></span>
+					</a>
+				</div>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a title="List of labeled words" data-toggle="modal" data-target="#myModal" 
+					style="padding-top: 10px; padding-bottom: 10px;"><span class="glyphicon glyphicon-th-list"></span></a></li>
+					<li><a onclick="startNewSession()" title="New Session" style="padding-top: 10px; 
+						padding-bottom: 10px;"><span class="glyphicon glyphicon-refresh" ></span></a></li>
+					<li><a target="_blank" href="/download" title="Download" style="padding-top: 10px;
+						padding-bottom: 10px;"><span class="glyphicon glyphicon-download-alt"></span></a></li>
+				</ul>
+			</div>
+        </nav>
+    	
+  		<div class="row" style="height: 100%; background-color:white; padding-bottom: 10px; padding-top: 5px;">
+				
+				<div class="col-md-2" style="padding-right: 0px;">  <!-- style=" margin-right: 10px;" -->
+					<div style="padding:20px; border-radius: 15px;border: 2px solid dimgray;">
+					<div style="margin-bottom: 10px;">
+						<span style="float:left;"><strong>Embedding:</strong></span>
+						<select id="dropdown_embedding" style="float:right;">
+							<option>Word2Vec</option>
+							<option>Word2Vec debiased</option>
+							<option selected>Glove (wiki 300d)</option>
+							<option>Hindi fastText</option>
+							<option>French fastText</option>
+							<option>Temp</option>
+							<option disabled>German fastText</option>
+							<option disabled>Chinese fastText</option>
+							<option disabled>Spanish fastText</option>
+						</select>
+						<p style="clear:left;"></p>
+					</div>
+					
 
-          <div class="form-group" style="width: 50%; padding-left: 5px; padding-right: 5px; float:right;">
-              <span><b>Color:</b></span>
-              <select id="dropdown_color">
-                <option selected>Default</option>
-                <option>Gender</option>
-                <option>Race</option>
-                <option>Economic status</option>
-                <option disabled>Age</option>
-              </select>
-          </div>
-          <p style="clear:left;"></p>
-        </div>
-      </div>
+					<div class="form-group">
+								<label id="gp1_label" for="gp1" style="background-color: orangered; color:white;">Group 1:</label>
+								<select id="gp1_dropdown" style="float:right;" onchange="changeBiastype(this.id)"></select>
+								<p style="clear:left;"></p>
+								<textarea class="form-control" rows="2" id="gp1"></textarea>
+								
+								<br>
+								<label id="gp2_label" for="gp2" style="background-color: green; color:white;">Group 2:</label>
+								<select id="gp2_dropdown" style="float:right;" onchange="changeBiastype(this.id)"></select>
+								<p style="clear:left;"></p>
+								<textarea class="form-control" rows="2" id="gp2"></textarea>
+								<p style="clear:left;"></p>
+					</div>
 
-      <div class="row" style="height: 67%;">
-        
-        <div class="col-md-12" style="padding-left:20px;padding-right:20px;padding-top:0px;padding-bottom:0px;">
-          <div id="parallel_coord" style="background-color: white;"></div>
-        </div>
-        <!-- <div class="col-md-2" style="padding:20px;"></div> -->
-      </div>
-      
-      <div class="row" style="height: 30%;" id="options">
-        <div class="col-md-12" style="padding-left:20px;padding-right:20px;padding-top:0px;padding-bottom:0px;">
-        <textarea id="target" rows="5" style="width: 100%">poor, gangster, her</textarea>
-        <button type="submit" class="btn btn-primary center-block btn-sm" id="showBias" style="margin-top: 10px;">Show Bias</button>
-        </div>
-        <!-- <div class="col-md-2" style="padding:20px;"></div> -->
-      </div>
+					<span><strong>Bias Distribution</strong></span>
+					<div id="histogram" style="height: 20%;"></div>
+					<div id="slider"></div>
+					<br><br>
+					<!--
+					<div class="slider-wrapper">
+						<span style="float:left; font-size:small;"># Words:</span>
+						<input type="range" min="0" max="10000" step="50" value="50" style="width:50%; float:left;" id="word_cnt" onchange="on_word_cnt_change(this.value)">
+						<span id="word_cnt_val" style="float:right; font-size:small;">50</span>
+						<p style="clear:left;"></p>
+					</div>
+					-->
 
-    </div>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
+					<button type="submit" class="btn btn-primary center-block btn-sm" id="submitButton" style="width:100%;">Plot!</button>
+					<br>
+					<div class="slider_wrapper">
+						<span><strong>Noise Threshold</strong></span><br>						
+						<div id="threshold" style="width:80%; float:left; margin-top:6px;"></div>
+						<div id="coeff_slider_val" style="float:right; border-bottom: 1px solid black;">0.0</div>
+						<p style="clear:left;"></p>
+					</div>
+
+					<div style="margin-top: 5px;">
+						<label for="target">Target:</label>
+						<select style="float:right;" id="dropdown_target" onchange="changeTarget(this.value)"></select>
+						<p style="clear:left;"></p>
+						<textarea class="form-control" rows="7" id="target"></textarea>
+					</div>
+					<button type="submit" class="btn btn-primary center-block btn-sm" id="showBias" style="margin-top: 10px; width: 100%">Highlight</button>
+				</div>
+				</div>
+				
+			  <div class="col-md-8">
+				<div style="border-radius: 15px;border: 2px solid dimgray; height: 94%; padding: 5px;"> 
+				<div id="scatter_options" style="height:5%; float:left; width:92%; padding-top:5px; padding-left:10px;">
+					<label class="checkbox-inline" style="padding-right: 10px;"><b>word:</b><div id="word" style="display:inline-block; width:60px;"></div></label>
+					
+					<label class="checkbox-inline" style="padding-right: 10px;"><button type="button" class="btn btn-sm" onclick="changeZoom()"><b>Reset Zoom</b></button></label>
+					
+					<label class="checkbox-inline">
+					<div class="form-group" style="width: 100px;">
+            			<!-- <span style="font-size:small;"><b>Threshold:</b></span>  -->
+            			<input type="range" min="0.0" max="0.50" step="0.01" value="0" style="float:left; width:45%;" id="threshold" onchange="coeff_val_change(this.value)">
+            			<span id="coeff_slider_val" style="float:left; font-size:small; padding-left: 3px;">0.0</span>
+            			<p style="clear:left;"></p>
+          			</div>
+          			</label>
+
+          			<label class="checkbox-inline">
+		          	<div class="form-group" style="padding-left: 5px; padding-right: 5px;">
+		              <span><b>Color:</b></span>
+		              <select id="dropdown_color">
+		                <option selected>Default</option>
+		                <option>Gender</option>
+		                <option>Race</option>
+		                <option>Economic status</option>
+		                <option disabled>Age</option>
+		              </select>
+		          	</div>
+		          	</label>
+
+		          	<!--
+					<div id="search" style="float: right; padding-right: 0px;">    
+						<datalist id="json-datalist"></datalist>
+						<input class="form-control" type="search" id="searchBar" placeholder="Search"> 
+					</div>  -->
+					<p style="clear:left;"></p>
+				</div>
+				<div id="parallel_coord" style="background-color: white; height: 800px;"></div>
+				</div>
+    		</div>
+			<div class="col-md-2">
+				<div class="row" style="border-radius: 15px;border: 2px solid dimgray; height: 94%; padding: 5px; width:99%;">
+			</div>
+    	</div>
+  	
+	  </div>
+	  
+	  <!-- Modal -->
+	  <div id="myModal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-lg">
+	  
+		  <!-- Modal content-->
+		  <div class="modal-content">
+			<div class="modal-header" style="padding-bottom:5px; background-color: dimgrey;">
+			  <button type="button" class="close" data-dismiss="modal">&times;</button>
+			  <h4 class="modal-title" style="color: white;"><b>Labeled Words</b></h4>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid" style="padding: 0px;">
+					<div class="col-md-6" style="padding:0px; padding-right:10px;">
+						<div style="padding-left:5px; padding-bottom:5px;"><b>Biased Words</b></div>
+						<div style="border-radius:15px; border: 1px solid dimgray;">
+							<div id="biased_words_div" style="padding:10px; height: 500px; overflow: auto;">
+							
+							</div>		
+						</div>
+					</div>
+					<div class="col-md-6" style="padding:0px; padding-left:10px;">
+						<div style="padding-left:5px; padding-bottom:5px;"><b>Neutral Words</b></div>
+						<div style="border-radius:15px; border: 1px solid dimgray;">
+							<div id="neutral_words_div" style="padding:10px; height: 500px; overflow: auto;">
+									
+							</div>	
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="modal-footer">
+			  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div> -->
+		  </div>
+		</div>
+	   </div>
+		<!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script> -->
+		<script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
 		<script src="https://d3js.org/d3.v3.js"></script>
-    <script src="{{ url_for('static', filename='/js/parallel_coordinates.js') }}"></script>
-    <script src="{{ url_for('static', filename='/js/controller.js') }}"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    	<script src="{{ url_for('static', filename='/js/parallel_coordinates.js') }}"></script>
+    	<script src="{{ url_for('static', filename='/js/controller.js') }}"></script>
+    	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   </body>
 </html>
