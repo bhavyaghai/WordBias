@@ -1,0 +1,15 @@
+.noUi-horizontal .noUi-tooltip  {bottom: -130%;}
+
+.noUi-horizontal {
+  height: 8px;
+}
+
+.noUi-horizontal .noUi-handle {
+  width: 25px; 
+  height: 24px; 
+  top: -8px;
+}
+
+.noUi-tooltip {
+  padding: 2px;
+}

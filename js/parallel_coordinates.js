@@ -1,3 +1,5 @@
+// Inspired from 
+// https://bl.ocks.org/jasondavies/1341281
 var margin = {top: 25, right: 10, bottom: 25, left: 10},
     outerWidth = $("#parallel_coord").width(),
     //outerHeight = $(document).height()-$("#navbar").height()-$("#options").height()-100,
