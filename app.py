@@ -21,16 +21,17 @@ from functools import wraps, update_wrapper
 
 app = Flask(__name__, template_folder='templates')
 
+language = "en"
 df, df_tar, model = None, None, None
 gender_bias = [("he","him","boy"),("she","her","girl")]
 eco_bias = [("rich","wealthy"),("poor","impoverished")]
 race_bias = [("african","black"),("european","white")]
 bias_words = [gender_bias, eco_bias, race_bias]
 
-@app.route('/setModel/<name>')
-def setModel(name="Word2Vec"):
+@app.route('/setModelBackup/<name>')
+def setModelBackup(name="Word2Vec"):
     global model, df
-    model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embedding/word2vec_50k.bin', binary=True)
+    model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True)
     #df = pd.read_csv("./data/bias.csv",header=0, keep_default_na=False)
     df = pd.read_csv("./data/mutliple_biases_norm.csv",header=0, keep_default_na=False)
     print(len(df))
@@ -39,13 +40,49 @@ def setModel(name="Word2Vec"):
 
 @app.route('/')
 def index():
-    setModel()
     return render_template('index.html')
 
 @app.route('/biasViz')
 def biasViz():
-    setModel()
+    setModelBackup()
     return render_template('biasViz.html')
+
+@app.route('/setModel')
+def setModel():
+    global model, df, language
+    name = request.args.get("embedding")
+    print("Embedding name: ", name)
+    if name=="Word2Vec":
+        # print("word2vec model being loaded !!!")
+        language = 'en'
+        #model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/GoogleNews-vectors-negative300.bin', binary=True, limit=50000) 
+        model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True, limit=50000) 
+    elif name=="Glove (wiki 300d)":
+        # print("Glove word embedding backend")
+        language = 'en'
+        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/glove.wikipedia.bin', binary=True, limit=50000) #   
+    elif name=="Word2Vec debiased":
+        # print('./data/word_embeddings/GoogleNews-vectors-negative300-hard-debiased.bin')
+        language = 'en'
+        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/GoogleNews-vectors-negative300-hard-debiased.bin', binary=True, limit=50000) 
+    elif name=="French fastText":
+        # print("French fastText embedding backend")
+        language = 'fr'
+        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/french.fastText.bin', binary=True, limit=50000)
+    elif name=="Hindi fastText":
+        # print("Hindi fastText embedding backend")
+        language = 'hi'
+        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/hindi.fastText.bin', binary=True, limit=50000)
+    elif name=="Temp":
+        language = 'en'
+        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/glove.debiased.gender.race.bin', binary=True, limit=50000)
+    #g,g1,g2 = None,None,None
+    #deb_high = {}
+    df = pd.read_csv("./data/mutliple_biases_norm.csv",header=0, keep_default_na=False)
+    df = df.head(n=100)
+    print(df.head(5))
+    return "success"
+
 
 @app.route('/get_csv/')
 def get_csv():
@@ -58,6 +95,21 @@ def get_tar_csv():
     global df_tar
     out = df_tar.to_json(orient='records')
     return out
+
+
+@app.route('/get_tar_words/<selVal>')
+def get_target_words(selVal):
+    #selVal = request.args.get("selVal")
+    path = './data/wordList/target/{0}/'.format(language) + selVal
+    print("path:  ", path)
+    words = []
+    f = open(path, "r", encoding="utf8")
+    for x in f:
+        if len(x)>0:
+            x = x.strip().lower()
+            words.append(x)
+    return jsonify(words)
+
 
 # calculate bias direction when we have group of words not pairs
 def groupBiasDirection(gp1, gp2):
@@ -83,8 +135,8 @@ def groupBiasDirection(gp1, gp2):
 
 
 # calculate Group bias for 'Group' bias identification type (National Academy of Sciences)
-@app.route('/groupDirectBias/')
-def groupDirectBias():
+@app.route('/groupBias/')
+def groupBias():
     global df_tar
     temp = request.args.get("target")
     print("*******************")
@@ -114,11 +166,6 @@ def groupDirectBias():
         df_tar.loc[len(df_tar)] = [t]+tar_bias[t]     # inserting row in df_tar
     return "success"
 
-@app.route('/get_tar_words/')
-def get_default_target_words():
-    w = df["word"].tolist()
-    w = w[:100]
-    return jsonify(w)
 
 if __name__ == '__main__':
    app.run(port=6999, debug=True)

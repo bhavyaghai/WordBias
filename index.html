@@ -4,19 +4,21 @@
     <title>WEBViz: Visualizing social biases encoded in Word Embedding</title>
 	<link rel="stylesheet" href="{{ url_for('static', filename='/css/parallel-coordinates.css') }}">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/13.1.1/nouislider.min.css" rel="stylesheet">
   </head>
   <body style="background-color: white;">   <!-- overflow:hidden; -->
   	<div class="container-fluid" style="padding-left: 10px; padding-right: 10px;">
 		
-  		<nav class="navbar navbar-inverse bg-primary" style="background-color: dimgrey; color: black; border-radius: 15px;border: 2px solid dimgray; margin-bottom: 5px" id="navbar"> <!-- #3B5998 -->
+  		<nav class="navbar navbar-inverse bg-primary" style="background-color: dimgrey; color: black; border-radius: 15px;border: 2px solid dimgray; margin-bottom: 5px; display: none;" id="navbar"> <!-- #3B5998 -->
 	
 			<div class="container-fluid">
 				<div class="navbar-header">
 					<a class="navbar-brand" href="#">
 						<!-- <span><img src="{{ url_for('static', filename='/data/logo.png') }}" alt="Logo WEBVis" style="width:25px;height:25px;"/></span> -->
-						<span style="color:white; font-size: x-large;"><b>Visualizing Intersectional Social biases encoded in Word Embedding</b></span>
+						<span style="color:white; font-size: x-large;"><b>WEBViz: Visualizing Intersectional Social biases encoded in Word Embedding</b></span>
 					</a>
 				</div>
+				<!--
 				<ul class="nav navbar-nav navbar-right">
 					<li><a title="List of labeled words" data-toggle="modal" data-target="#myModal" 
 					style="padding-top: 10px; padding-bottom: 10px;"><span class="glyphicon glyphicon-th-list"></span></a></li>
@@ -25,19 +27,20 @@
 					<li><a target="_blank" href="/download" title="Download" style="padding-top: 10px;
 						padding-bottom: 10px;"><span class="glyphicon glyphicon-download-alt"></span></a></li>
 				</ul>
+				-->
 			</div>
         </nav>
     	
   		<div class="row" style="height: 100%; background-color:white; padding-bottom: 10px; padding-top: 5px;">
 				
 				<div class="col-md-2" style="padding-right: 0px;">  <!-- style=" margin-right: 10px;" -->
-					<div style="padding:20px; border-radius: 15px;border: 2px solid dimgray;">
+					<div style="padding:20px; border-radius: 15px;border: 2px solid dimgray; height:94%;">
 					<div style="margin-bottom: 10px;">
-						<span style="float:left;"><strong>Embedding:</strong></span>
-						<select id="dropdown_embedding" style="float:right;">
-							<option>Word2Vec</option>
+						<label>Word Embedding</label>
+						<select id="dropdown_embedding" style="float:right; width: 100%;">
+							<option selected>Word2Vec</option>
 							<option>Word2Vec debiased</option>
-							<option selected>Glove (wiki 300d)</option>
+							<option>Glove (wiki 300d)</option>
 							<option>Hindi fastText</option>
 							<option>French fastText</option>
 							<option>Temp</option>
@@ -45,9 +48,19 @@
 							<option disabled>Chinese fastText</option>
 							<option disabled>Spanish fastText</option>
 						</select>
-						<p style="clear:left;"></p>
 					</div>
-					
+
+					<br>
+
+					<div style="margin-bottom: 10px;">
+						<label>Bias Quantification Algorithm</label>
+						<select id="dropdown_embedding" style="float:right; width: 100%;">
+							<option>Paired PCA Projection</option>
+							<option>Group Difference</option>
+						</select>
+					</div>
+
+					<br>
 
 					<div class="form-group">
 								<label id="gp1_label" for="gp1" style="background-color: orangered; color:white;">Group 1:</label>
@@ -63,10 +76,18 @@
 								<p style="clear:left;"></p>
 					</div>
 
-					<span><strong>Bias Distribution</strong></span>
+					<button type="submit" class="btn btn-primary center-block btn-sm" id="plot" style="width:100%;">Plot!</button>
+					<br><br>
+					<label>Bias Distribution</label>
+					<select id="dropdown_embedding" style="float:right; width: 40%">
+							<option selected="">ALL</option>
+							<option>Gender</option>
+							<option>Race</option>
+							<option>Economic</option>
+					</select>
 					<div id="histogram" style="height: 20%;"></div>
 					<div id="slider"></div>
-					<br><br>
+					<br>
 					<!--
 					<div class="slider-wrapper">
 						<span style="float:left; font-size:small;"># Words:</span>
@@ -75,19 +96,16 @@
 						<p style="clear:left;"></p>
 					</div>
 					-->
-
-					<button type="submit" class="btn btn-primary center-block btn-sm" id="submitButton" style="width:100%;">Plot!</button>
-					<br>
-					<div class="slider_wrapper">
-						<span><strong>Noise Threshold</strong></span><br>						
-						<div id="threshold" style="width:80%; float:left; margin-top:6px;"></div>
-						<div id="coeff_slider_val" style="float:right; border-bottom: 1px solid black;">0.0</div>
-						<p style="clear:left;"></p>
-					</div>
-
+					
 					<div style="margin-top: 5px;">
-						<label for="target">Target:</label>
-						<select style="float:right;" id="dropdown_target" onchange="changeTarget(this.value)"></select>
+						<label for="target">Highlight Words</label>
+						<select style="float:right;" id="dropdown_target" onchange="load_target_words(this.value)">
+							<option selected>Profession</option>
+							<option>Sentiments</option>
+							<option>Personality Traits</option>
+							<option>Extremism</option>
+							<option>Custom</option>
+						</select>
 						<p style="clear:left;"></p>
 						<textarea class="form-control" rows="7" id="target"></textarea>
 					</div>
@@ -134,12 +152,18 @@
 				<div id="parallel_coord" style="background-color: white; height: 800px;"></div>
 				</div>
     		</div>
+
 			<div class="col-md-2">
-				<div class="row" style="border-radius: 15px;border: 2px solid dimgray; height: 94%; padding: 5px; width:99%;">
-			</div>
-    	</div>
+				<div class="row" style="border-radius: 15px;border: 2px solid dimgray; height: 94%; padding: 20px; width:99%;">
+					<div id="search" style="width: 100%;">    
+						<datalist id="json-datalist"></datalist>
+						<input class="form-control" type="search" id="searchBar" placeholder="Search"> 
+					</div>
+					<div id="wordList" style="overflow: auto; height: 86%;"></div>
+				</div>
+    		</div>
   	
-	  </div>
+	  	</div>
 	  
 	  <!-- Modal -->
 	  <div id="myModal" class="modal fade" role="dialog">
@@ -181,7 +205,8 @@
 		<script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
 		<script src="https://d3js.org/d3.v3.js"></script>
     	<script src="{{ url_for('static', filename='/js/parallel_coordinates.js') }}"></script>
-    	<script src="{{ url_for('static', filename='/js/controller.js') }}"></script>
+    	<script src="{{ url_for('static', filename='/js/main.js') }}"></script>
     	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/13.1.1/nouislider.min.js"></script>
   </body>
 </html>
