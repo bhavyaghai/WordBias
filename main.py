@@ -19,7 +19,7 @@ from flask import make_response
 from functools import wraps, update_wrapper
 
 
-app = Flask(__name__, static_url_path='', static_folder='', template_folder='')
+app = Flask(__name__, template_folder='templates')
 
 df, df_tar, model = None, None, None
 gender_bias = [("he","him","boy"),("she","her","girl")]
@@ -33,13 +33,19 @@ def setModel(name="Word2Vec"):
     model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embedding/word2vec_50k.bin', binary=True)
     #df = pd.read_csv("./data/bias.csv",header=0, keep_default_na=False)
     df = pd.read_csv("./data/mutliple_biases_norm.csv",header=0, keep_default_na=False)
-    df = df.head(n=100)
+    print(len(df))
+    df = df
     return "success"
 
 @app.route('/')
 def index():
     setModel()
     return render_template('index.html')
+
+@app.route('/biasViz')
+def biasViz():
+    setModel()
+    return render_template('biasViz.html')
 
 @app.route('/get_csv/')
 def get_csv():

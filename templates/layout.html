@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/semantic/semantic.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/d3.parcoords.css') }}">
+
+    {% if title %}
+        <title>biasViz - {{ title }}</title>
+    {% else %}
+        <title>biasViz</title>
+    {% endif %}
+</head>
+<body>
+
+	<!-- Nav bar start -->
+	<nav class="navbar navbar-expand-lg navbar-dark site-color">
+		<a class="navbar-brand" href="#" >biasViz</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+	  	</button>
+	  	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+		    <div class="navbar-nav">
+		      <a class="nav-item nav-link active" href="#" >Home <span class="sr-only">(current)</span></a>
+		      <a class="nav-item nav-link" href="#">About</a>  
+                
+		    </div>
+            
+	  	</div>
+	</nav>
+	<!-- Nav bar end -->
+	
+	<!-- main container start -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    <!-- main container ends -->
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
+    <!-- <script type = "text/javascript" src="{{ url_for('static', filename='vendor/popper.min.js') }}"></script> -->
+    <!-- <script type = "text/javascript" src="{{ url_for('static', filename='vendor/bootstrap.min.js') }}"></script> -->
+    <script src="{{ url_for('static', filename='vendor/semantic/semantic.min.js') }}"></script>
+    
+    <script src="https://d3js.org/d3.v3.js"></script>
+
+    <!-- user js files -->
+    <script src="{{ url_for('static', filename='js/d3.parcoords.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/parallel_coord.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/controller.js') }}"></script>
+    
+
+</body>
+</html>
+
