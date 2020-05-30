@@ -30,7 +30,8 @@ $("body").on("mouseover",".result",function(){
 })
 $("body").on("mouseout",".result",function(){
   console.log("mouseout")
-  pc.unhighlight
+  // pc.clear("highlight")
+  pc.unhighlight()
 })
 
 // on clicking ShowBias button
