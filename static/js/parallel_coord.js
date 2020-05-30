@@ -1,7 +1,7 @@
-function createParallelCoord(url){
+function createParallelCoord(data){
 	// linear color scale
 	var blue_to_brown = d3.scale.linear()
-	  .domain([9, 50])
+	  .domain([-1, 1])
 	  .range(["steelblue", "brown"])
 	  .interpolate(d3.interpolateLab);
 
@@ -9,7 +9,8 @@ function createParallelCoord(url){
 	var pc1;
 
 	// load csv file and create the chart
-	d3.json(url, function(data) {
+	
+	  console.log(data.length)
 	  pc1 = d3.parcoords()("#parallel_coord")
 	    .data(data.map(function(d){return {gender:d.gender,race:d.race,economic_status:d.eco}}))
 	    .hideAxis(["name"])
@@ -57,5 +58,4 @@ function createParallelCoord(url){
 	    };
 	  };
 
-	});
 }

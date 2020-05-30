@@ -1,12 +1,21 @@
 var thresh;
+var content;
 
 // called when the application is first loaded 
 $( document ).ready(function() {
     // load default target words
-    load_default_words()
+    // load_default_words()
 
     // create parallel plot
-    createParallelCoord("/get_csv/");
+    d3.json("/get_csv/", function(data) {
+      content = data.map(function(d){return {title:d.word}})
+      $('.ui.search')
+        .search({
+          source: content
+        });
+      console.log(content)
+      createParallelCoord(data);
+    });
 });
 
 // on clicking ShowBias button

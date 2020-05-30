@@ -33,7 +33,7 @@ def setModelBackup(name="Word2Vec"):
     global model, df
     model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True)
     #df = pd.read_csv("./data/bias.csv",header=0, keep_default_na=False)
-    df = pd.read_csv("./data/mutliple_biases_norm.csv",header=0, keep_default_na=False)
+    df = pd.read_csv("./data/all_biases_10k.csv",header=0, keep_default_na=False)
     print(len(df))
     df = df
     return "success"
