@@ -1,5 +1,7 @@
 var thresh;
 var content;
+var data;
+var pc
 
 // called when the application is first loaded 
 $( document ).ready(function() {
@@ -8,15 +10,28 @@ $( document ).ready(function() {
 
     // create parallel plot
     d3.json("/get_csv/", function(data) {
+      this.data = data
       content = data.map(function(d){return {title:d.word}})
       $('.ui.search')
         .search({
           source: content
         });
-      console.log(content)
-      createParallelCoord(data);
+      console.log(data)
+      this.pc = createParallelCoord(data);
     });
 });
+$("body").on("mouseover",".result",function(){
+  
+  word = $(this).find(".title").html()
+  // console.log(data[0])
+  data_row = data.filter(function(d){return d.word == word})
+  console.log(word,data_row)
+  pc.highlight(data_row.map(function(d){return {gender:d.gender,race:d.race,economic_status:d.eco}}))
+})
+$("body").on("mouseout",".result",function(){
+  console.log("mouseout")
+  pc.unhighlight
+})
 
 // on clicking ShowBias button
 $('#showBias').on('click', function(event) {

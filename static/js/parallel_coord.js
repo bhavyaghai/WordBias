@@ -54,8 +54,8 @@ function createParallelCoord(data){
 	          .filter(function(d) {
 	            return d == dimension;
 	          })
-	      );
-	    };
-	  };
-
+	      )
+	    }
+	  }
+	  return pc1
 }
