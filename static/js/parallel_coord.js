@@ -18,7 +18,7 @@ function createParallelCoord(data){
 	    .color(function(d) { return blue_to_brown(d['gender']); })  // quantitative color scale
 	    .alpha(0.35)
 	    .render()
-	    .brushMode("1D-axes")  // enable brushing
+	    .brushMode("1D-axes-multi")  // enable brushing
 	    .interactive()  // command line mode
 	    .reorderable()
 
