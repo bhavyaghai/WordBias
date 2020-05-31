@@ -39,6 +39,22 @@ $("#alpha_input").on("change",function(){
   pc.alpha(alpha).render()
   $("#alpha_text").html(alpha)
 })
+$("#smoothness_input").on("change",function(){
+  smooth =+ $(this).val()
+  pc.smoothness(smooth).render()
+  $("#smoothness_text").html(smooth)
+})
+$("#bundle_input").on("change",function(){
+  bundle =+ $(this).val()
+  pc.bundlingStrength(bundle).render()
+  $("#bundle_text").html(bundle)
+})
+$("#bundle_dimension").dropdown({
+  onChange: function(value){
+    console.log(value)
+    pc.bundleDimension(value)}
+    // $("#bundle_text").html(bundle)
+})
 $("#reset_brush").on("click",function(){
   pc.brushReset()
 })

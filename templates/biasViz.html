@@ -54,6 +54,26 @@
                     <input id="alpha_input" type="range" name="alpha" min="0" max="1" step="0.01" value="0.35">
                     <span id="alpha_text">0.35</span>  
                 </div>
+                <div class="control">
+                    <label>Smoothness</label>
+                    <input id="smoothness_input" type="range" name="smooth" min="0" max="1" step="0.01" value="0.35">
+                    <span id="smoothness_text">0.35</span>  
+                </div>
+                <div class="control">
+                    <label>Bundle Strength</label>
+                    <input id="bundle_input" type="range" name="smooth" min="0" max="1" step="0.01" value="0.35">
+                    <span id="bundle_text">0.35</span>  
+                </div>
+                <div class="control">
+                    <label>Bundle using clusters determined by:</label>
+                    <select id="bundle_dimension" class="ui dropdown">
+                      <!-- <option value="">-----</option> -->
+                      <option value="gender">gender</option>
+                      <option value="race">race</option>
+                      <option value="economic_status">economic status</option>
+                    </select>  
+                </div>
+                
             </div>
             
             <div id="parallel_coord" class="parcoords" style="height: 300px"></div>         
