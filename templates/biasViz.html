@@ -36,26 +36,15 @@
             <div id="scatter_plot" class="ui segment" style="height:400px;"></div> 
         </div>  --> 
         <div class="col-lg-2">
-            <div class="ui search">
-              <div class="ui icon input">
-                <input class="prompt" type="text" placeholder="Search words...">
-                <i class="search icon"></i>
-              </div>
-              <div class="results"></div>
-            </div>
-        </div>
-        <div class="col-lg-6"> 
             <div id="controls" >
+                
                 <div class="control">
-                    <button id="reset_brush" class="ui button">Reset Brush</button>
-                </div>
-                <div class="control">
-                    <label>Alpha</label>
+                    <label>Alpha/opacity</label>
                     <input id="alpha_input" type="range" name="alpha" min="0" max="1" step="0.01" value="0.35">
                     <span id="alpha_text">0.35</span>  
                 </div>
                 <div class="control">
-                    <label>Smoothness</label>
+                    <label>Curve Smoothness</label>
                     <input id="smoothness_input" type="range" name="smooth" min="0" max="1" step="0.01" value="0.35">
                     <span id="smoothness_text">0.35</span>  
                 </div>
@@ -65,7 +54,7 @@
                     <span id="bundle_text">0.35</span>  
                 </div>
                 <div class="control">
-                    <label>Bundle using clusters determined by:</label>
+                    <label>Bundle curves by:</label>
                     <select id="bundle_dimension" class="ui dropdown">
                       <!-- <option value="">-----</option> -->
                       <option value="gender">gender</option>
@@ -73,12 +62,27 @@
                       <option value="economic_status">economic status</option>
                     </select>  
                 </div>
+                <div class="control">
+                    <button id="reset_brush" class="ui button">Reset Brush</button>
+                </div>
                 
             </div>
             
-            <div id="parallel_coord" class="parcoords" style="height: 300px"></div>         
         </div>
-        <div class="col-lg-2"></div>
+        <div class="col-lg-8"> 
+            
+            
+            <div id="parallel_coord" class="parcoords" style="height: 600px"></div>         
+        </div>
+        <div class="col-lg-2">
+            <div class="ui search">
+              <div class="ui icon input">
+                <input class="prompt" type="text" placeholder="Search words...">
+                <i class="search icon"></i>
+              </div>
+              <div class="results"></div>
+            </div>
+        </div>
         
     </div>
 </div>
