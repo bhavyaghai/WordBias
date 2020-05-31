@@ -8,6 +8,11 @@
     max-height: 200px;
     overflow-x: hidden;
 }
+.control{
+  display: inline-block;
+  padding: 20px;
+
+}
 
 /*used to set padding to leftmost object*/
 .set-padding{

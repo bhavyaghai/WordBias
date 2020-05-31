@@ -34,6 +34,15 @@ $("body").on("mouseout",".result",function(){
   pc.unhighlight()
 })
 
+$("#alpha_input").on("change",function(){
+  alpha =+ $(this).val()
+  pc.alpha(alpha).render()
+  $("#alpha_text").html(alpha)
+})
+$("#reset_brush").on("click",function(){
+  pc.brushReset()
+})
+
 // on clicking ShowBias button
 $('#showBias').on('click', function(event) {
     var tar = document.getElementById("target").value;

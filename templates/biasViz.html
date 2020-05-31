@@ -44,8 +44,19 @@
               <div class="results"></div>
             </div>
         </div>
-        <div class="col-lg-8"> 
-            <div id="parallel_coord" class=" parcoords" style="height: 300px"></div>         
+        <div class="col-lg-6"> 
+            <div id="controls" >
+                <div class="control">
+                    <button id="reset_brush" class="ui button">Reset Brush</button>
+                </div>
+                <div class="control">
+                    <label>Alpha</label>
+                    <input id="alpha_input" type="range" name="alpha" min="0" max="1" step="0.01" value="0.35">
+                    <span id="alpha_text">0.35</span>  
+                </div>
+            </div>
+            
+            <div id="parallel_coord" class="parcoords" style="height: 300px"></div>         
         </div>
         <div class="col-lg-2"></div>
         
