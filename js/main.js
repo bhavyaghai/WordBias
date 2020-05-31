@@ -25,10 +25,61 @@ $('#plot').on('click', function(event) {
       embedding: embedding
       //type: bias_identify_type
     }, res=>{
-        // create parallel plot
-        createParallelCoord("/get_csv/");
+        plot_histogram();
     });
 });
+
+
+function plot_histogram() {
+  hist_type = $("#histogram_type").val();
+  $.get("/get_histogram/"+hist_type, {
+      //type: bias_identify_type
+    }, res=>{
+        min_val = res["min"]
+        max_val = res["max"]
+        console.log("Min and max val: ", min_val, "    ", max_val)
+        values = res["values"]
+        // clear existing histogram
+        $("#histogram").empty();
+        createHistogram(values)
+        // If slider for histogram exist
+        if($('#slider').text().length != 0) { 
+          slider.noUiSlider.destroy()
+        }
+        // create slider  
+        if(hist_type=="ALL") {
+            createSlider(0, 0, max_val-0.2, max_val);
+        }
+        else {
+            createSlider(min_val, min_val+0.1, max_val-0.1, max_val); 
+        } 
+        onChangeHistogram();
+  });
+}
+
+
+// on dropdown menu for histogram type -- ALL, gender, etc.
+$('#histogram_type').change(function(event) {
+    console.log("Change dropdown menu - histogram_type")
+    if($('#slider').text().length != 0) { // If slider for histogram exist
+          console.log("slider exist");
+          plot_histogram(); 
+    } 
+});
+
+
+// fetch and replot parallel coordiante
+function onChangeHistogram() {
+  hist_type = $("#histogram_type").val();
+  var slider_ranges = slider.noUiSlider.get();
+  // create parallel plot
+  $.get("/fetch_data", {
+    hist_type : hist_type,
+    slider_sel : slider_ranges
+  }, res => {
+      createParallelCoord(res);
+  });
+}
 
 
 // on clicking ShowBias button

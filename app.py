@@ -17,6 +17,7 @@ from datetime import datetime
 import os
 from flask import make_response
 from functools import wraps, update_wrapper
+from py_thesaurus import Thesaurus
 
 
 app = Flask(__name__, static_url_path='', static_folder='', template_folder='')
@@ -26,7 +27,7 @@ df, df_tar, model = None, None, None
 gender_bias = [("he","him","boy"),("she","her","girl")]
 eco_bias = [("rich","wealthy"),("poor","impoverished")]
 race_bias = [("african","black"),("european","white")]
-bias_words = [gender_bias, eco_bias, race_bias]
+bias_words = {"gender":gender_bias, "eco":eco_bias, "race":race_bias}
 
 
 @app.route('/')
@@ -38,6 +39,8 @@ def index():
 def setModel():
     global model, df, language
     name = request.args.get("embedding")
+    if model is None:
+        name = "Word2Vec" 
     print("Embedding name: ", name)
     if name=="Word2Vec":
         # print("word2vec model being loaded !!!")
@@ -65,22 +68,65 @@ def setModel():
         model = KeyedVectors.load_word2vec_format('./data/word_embeddings/glove.debiased.gender.race.bin', binary=True, limit=50000)
     #g,g1,g2 = None,None,None
     #deb_high = {}
-    df = pd.read_csv("./data/mutliple_biases_norm.csv",header=0, keep_default_na=False)
-    df = df.head(n=100)
-    print(df.head(5))
+    #df = pd.read_csv("./data/mutliple_biases_norm.csv",header=0, keep_default_na=False)
+    df = pd.read_csv("./data/all_biases_10k.csv",header=0, keep_default_na=False)
+    #df = df[["word", "race", "gender", "eco"]].head(n=100)
     return "success"
 
 
 @app.route('/get_csv/')
 def get_csv():
     global df
-    out = df.to_json(orient='records')
+    df2 = df[["word", "race", "gender", "eco"]].head(200)
+    out = df2.to_json(orient='records')
+    return out
+
+@app.route('/fetch_data')
+def fetch_data():
+    col_list = list(bias_words.keys())
+    # histogram type - ALL, gender, race, eco
+    hist_type = request.args.get("hist_type")
+    filter_column = None
+    if hist_type=="ALL":
+        filter_column = df[col_list].abs().mean(axis=1)
+    else:
+        filter_column = df[hist_type]
+
+    # histogram selection -- list of 4 int
+    slider_sel = request.args.getlist("slider_sel[]")
+    slider_sel = [float(x) for x in slider_sel]
+    print("Slider selection: ", slider_sel)
+    # list of selected index based on selection
+    ind = pd.Series([False]*df.shape[0])
+    if slider_sel[0]!=slider_sel[1]:
+        ind = (filter_column >= slider_sel[0]) & (filter_column <= slider_sel[1]) 
+
+    if slider_sel[2]!=slider_sel[3]:
+        ind = ind | ((filter_column >= slider_sel[2]) & (filter_column <= slider_sel[3]))
+
+    print("selected dataframe: ")
+    col_list = ["word"] + col_list
+    print(df.loc[ind, col_list].shape)
+    print(df.loc[ind, col_list])
+    out = df.loc[ind, col_list].to_json(orient='records')
     return out
 
 @app.route('/get_tar_csv/')
 def get_tar_csv():
     global df_tar
     out = df_tar.to_json(orient='records')
+    return out
+
+@app.route('/get_histogram/<type_var>')
+def get_histogram(type_var):
+    global df
+    bt = ["gender", "race", "eco"]
+    val = []
+    if type_var=="ALL":
+        val = df[bt].abs().mean(axis=1)
+    else:
+        val = df[type_var.lower()]
+    out = {"values":val.tolist(), "min":np.min(val), "max":np.max(val)}
     return out
 
 
@@ -96,6 +142,34 @@ def get_target_words(selVal):
             x = x.strip().lower()
             words.append(x)
     return jsonify(words)
+
+
+# First search for the given word in thesaurus
+# If not found finds word in word_embedding and its neighbors
+# thereafter, x and y components for each neighbors is calculated & returned
+@app.route('/search/<name>')
+def search(name):
+    num_results = 25
+    if model is None:
+        setModel()
+    neigh = []
+    try:
+        w = Word(name)
+        neigh = w.synonyms()
+    except:
+        print("Not Found in Thesaurus !!!")
+    
+    if neigh:
+        neigh = [x for x in neigh if x in model]
+    if not neigh or len(neigh)<num_results:
+        embd_neigh = model.similar_by_word(name, topn=50)
+        for x in embd_neigh:
+            if neigh and len(neigh)>=num_results:
+                break
+            if x[0] not in neigh:
+                neigh.append(x[0])  
+    #print(neigh)
+    return jsonify(neigh)
 
 
 # calculate bias direction when we have group of words not pairs
