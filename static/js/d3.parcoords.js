@@ -764,14 +764,29 @@ pc.createAxes = function() {
       .each(function(d) {
         var axisElement = d3.select(this).call( pc.applyAxisConfig(axis, __.dimensions[d]) );
 
+        // axisElement.selectAll("rect")
+        //     .attr("class","axis_rect")
+        //     .attr("x1", 0)
+        //     .attr("y1", 0)
+        //     .attr("width", 10)
+        //     .attr("height", 50)
+        //     .style("fill", "blue")
+        //     .style("stroke", "#222")
+        //     .style("shape-rendering", "crispEdges");
+
         axisElement.selectAll("path")
+            .attr("class","axis_path")
             .style("fill", "none")
             .style("stroke", "#222")
-            .style("shape-rendering", "crispEdges");
+            // .style("stroke-width","20")
+            .style("stroke-linejoin","round")
+            .style("opacity","0.5")
+            // .style("shape-rendering", "crispEdges");
 
         axisElement.selectAll("line")
             .style("fill", "none")
             .style("stroke", "#222")
+            .style("opacity","0.5")
             .style("shape-rendering", "crispEdges");
       })
     .append("svg:text")
@@ -839,11 +854,13 @@ pc.updateAxes = function(animationTime) {
         axisElement.selectAll("path")
             .style("fill", "none")
             .style("stroke", "#222")
+            .style("opacity","0.5")
             .style("shape-rendering", "crispEdges");
 
         axisElement.selectAll("line")
             .style("fill", "none")
             .style("stroke", "#222")
+            .style("opacity","0.5")
             .style("shape-rendering", "crispEdges");
       })
     .append("svg:text")
