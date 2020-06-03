@@ -1,7 +1,8 @@
 var thresh;
 var content;
-var data;
+var data, neighbors,selected_word ="none";
 var pc
+var attrs = ["gender","race","economic_status"]
 
 // called when the application is first loaded 
 $( document ).ready(function() {
@@ -18,29 +19,69 @@ $( document ).ready(function() {
         });
       console.log(data)
       this.pc = createParallelCoord(data);
+      // createZeroLine()
     });
 });
 
-function showText(word,x,y){
+function createZeroLine(){
+  // console.log(pc.svg)
+    // ctx = pc.ctx['highlight']
+    d = "M"
+    // x = pc.position(attrs[0])
+    // y = pc.dimensions()[attrs[0]].yscale(0)
+    for(i=0;i<attrs.length;i++){
+      // console.log(x,y)
+      x = pc.position(attrs[i])
+      y = pc.dimensions()[attrs[i]].yscale(0)
+      d = d+x.toString()+" "+y.toString()
+      if(i < attrs.length-1)
+        d = d+" L"
+    }
+    console.log(d)
+    d3.select("#canvas_svg>g")
+      .append('path')
+      .attr("d", "M 181.66666666666666 233 L 545 233 L 908.3333333333333 233")
+      .attr( "stroke","grey")
+      .attr( "stroke-width","3")
+       // fill="none"></path>')
+
+}
+
+function showText(data_rows, word){
   ctx = pc.ctx['highlight']
   console.log(ctx,word)
   ctx.font = "14px Verdana"
   ctx.textAlign = "end";
-  ctx.fillStyle = "#43a2ca";
-  ctx.fillText(word, x-10, y);
+  attr = "gender"
+  x = pc.position(attr)
+  data_rows.forEach(function(row){
+    y = pc.dimensions()[attr].yscale(row[attr])
+    if(row['word'] == word)
+      ctx.fillStyle = "#43a2ca";
+    else
+      ctx.fillStyle = "orange";
+    ctx.fillText(row['word'], x-10, y);
+  })
+  
+}
+function highlightWords(word){
+  data_rows = data.filter(function(d,i){return d.word == word || i== 1 || i==23 || i==50})
+  console.log(word,data_rows)
+  pc.highlight(data_rows)
+  showText(data_rows,word)
+
+  // neighbors = data.filter(function(d,i){return i== 1 || i==23 || i==50})
+  // console.log(neighbors)
 
 }
 $("body").on("mouseover",".result",function(){
   
   word = $(this).find(".title").html()
+  selected_word = word
   // console.log(data[0])
-  data_row = data.filter(function(d){return d.word == word})
-  console.log(word,data_row)
-  pc.highlight(data_row.map(function(d){return {gender:d.gender,race:d.race,economic_status:d.eco}}))
-  attr = "gender"
-  x = pc.position(attr)
-  y = pc.dimensions()[attr].yscale(data_row[0][attr])
-  showText(data_row[0]['word'],x,y)
+  
+  highlightWords(word)
+  
   // console.log(pc.dimensions()['gender'].yscale(data_row[0]['gender']))
   // console.log(pc.position("gender"))
 })

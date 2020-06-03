@@ -58,6 +58,7 @@ var pc = function(selection) {
   // svg tick and brush layers
   pc.svg = selection
     .append("svg")
+      .attr("id","canvas_svg")
       .attr("width", __.width)
       .attr("height", __.height)
       .style("font", "14px sans-serif")
@@ -687,7 +688,12 @@ function path_foreground(d, i) {
 };
 
 function path_highlight(d, i) {
-  ctx.highlight.strokeStyle = d3.functor(__.color)(d, i);
+  // console.log(selected_word)
+  if(d.word == selected_word)
+    ctx.highlight.strokeStyle = d3.functor(__.color)(d, i);
+  else
+    ctx.highlight.strokeStyle = "orange"
+
 	return color_path(d, ctx.highlight);
 };
 pc.clear = function(layer) {
