@@ -30,6 +30,9 @@
 .axisGrey text{
   opacity: 0.3;
 } 
+/*.tick {
+  opacity: 0.3;
+}*/
 
 path{
 	background-blend-mode:lighten;

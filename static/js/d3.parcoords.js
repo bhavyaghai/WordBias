@@ -81,7 +81,7 @@ var events = d3.dispatch.apply(this,["render", "resize", "highlight", "brush", "
     xscale = d3.scale.ordinal(),
     dragging = {},
     line = d3.svg.line(),
-    axis = d3.svg.axis().orient("left").ticks(5),
+    axis = d3.svg.axis().orient("right").ticks(5),
     g, // groups for axes, brushes
     ctx = {},
     canvas = {},
@@ -360,7 +360,7 @@ pc.applyDimensionDefaults = function(dims) {
   dims.forEach(function(k) {
     newDims[k] = __.dimensions[k] ? __.dimensions[k] : {};
     //Set up defaults
-    newDims[k].orient= newDims[k].orient ? newDims[k].orient : 'left';
+    newDims[k].orient= newDims[k].orient ? newDims[k].orient : 'right';
     newDims[k].ticks= newDims[k].ticks != null ? newDims[k].ticks : 5;
     newDims[k].innerTickSize= newDims[k].innerTickSize != null ? newDims[k].innerTickSize : 6;
     newDims[k].outerTickSize= newDims[k].outerTickSize != null ? newDims[k].outerTickSize : 0;
@@ -612,6 +612,7 @@ function single_curve(d, ctx) {
 
 	var centroids = compute_centroids(d);
 	var cps = compute_control_points(centroids);
+  // console.log(cps,d,centroids)
 
 	ctx.moveTo(cps[0].e(1), cps[0].e(2));
 	for (var i = 1; i < cps.length; i += 3) {
@@ -750,6 +751,7 @@ pc.createAxes = function() {
         return d;
       })
     .enter().append("svg:g")
+      .attr("id",function(d) {return d+"_dimension"})
       .attr("class", "dimension")
       .attr("transform", function(d) {
         return "translate(" + xscale(d) + ")";
@@ -776,7 +778,7 @@ pc.createAxes = function() {
       .attr({
         "text-anchor": "middle",
         "y": 0,
-        "transform": "translate(0,-5) rotate(" + __.dimensionTitleRotation + ")",
+        "transform": "translate(0,-10) rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
         "class": "label"
       })
@@ -2406,6 +2408,8 @@ pc.intersection =  function(a, b, c, d) {
     y: ((a.x * b.y - a.y * b.x) * (c.y - d.y) - (a.y - b.y) * (c.x * d.y - c.y * d.x)) / ((a.x - b.x) * (c.y - d.y) - (a.y - b.y) * (c.x - d.x))
   };
 };
+
+pc.position = function(d) { return position(d)}
 
 function position(d) {
   if (xscale.range().length === 0) {

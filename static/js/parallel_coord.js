@@ -13,12 +13,12 @@ function createParallelCoord(data){
 	  console.log(data.length)
 	  pc1 = d3.parcoords()("#parallel_coord")
 	    .data(data.map(function(d){return {gender:d.gender,race:d.race,economic_status:d.eco}}))
-	    .bundlingStrength(0.35) // set bundling strength
-		.smoothness(0.35)
+	    .bundlingStrength(0) // set bundling strength
+		.smoothness(0)
 		.bundleDimension("gender")
 	    .hideAxis(["name"])
 	    .composite("darken")
-	    .color(function(d) { return blue_to_brown(d['gender']); })  // quantitative color scale
+	    .color("#43a2ca")  // quantitative color scale
 	    .alpha(0.35)
 	    .mode("queue")
 	    .render()

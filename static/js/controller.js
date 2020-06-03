@@ -20,6 +20,16 @@ $( document ).ready(function() {
       this.pc = createParallelCoord(data);
     });
 });
+
+function showText(word,x,y){
+  ctx = pc.ctx['highlight']
+  console.log(ctx,word)
+  ctx.font = "14px Verdana"
+  ctx.textAlign = "end";
+  ctx.fillStyle = "#43a2ca";
+  ctx.fillText(word, x-10, y);
+
+}
 $("body").on("mouseover",".result",function(){
   
   word = $(this).find(".title").html()
@@ -27,6 +37,12 @@ $("body").on("mouseover",".result",function(){
   data_row = data.filter(function(d){return d.word == word})
   console.log(word,data_row)
   pc.highlight(data_row.map(function(d){return {gender:d.gender,race:d.race,economic_status:d.eco}}))
+  attr = "gender"
+  x = pc.position(attr)
+  y = pc.dimensions()[attr].yscale(data_row[0][attr])
+  showText(data_row[0]['word'],x,y)
+  // console.log(pc.dimensions()['gender'].yscale(data_row[0]['gender']))
+  // console.log(pc.position("gender"))
 })
 $("body").on("mouseout",".result",function(){
   console.log("mouseout")
