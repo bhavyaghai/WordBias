@@ -4,7 +4,7 @@
     <title>WEBViz: Visualizing social biases encoded in Word Embedding</title>
 	<link rel="stylesheet" href="{{ url_for('static', filename='/css/parallel-coordinates.css') }}">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/13.1.1/nouislider.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.5.0/nouislider.css" rel="stylesheet">
   </head>
   <body style="background-color: white;">   <!-- overflow:hidden; -->
   	<div class="container-fluid" style="padding-left: 10px; padding-right: 10px;">
@@ -79,11 +79,11 @@
 					<button type="submit" class="btn btn-primary center-block btn-sm" id="plot" style="width:100%;">Plot!</button>
 					<br><br>
 					<label>Bias Distribution</label>
-					<select id="dropdown_embedding" style="float:right; width: 40%">
+					<select id="histogram_type" style="float:right; width: 40%">
 							<option selected="">ALL</option>
-							<option>Gender</option>
-							<option>Race</option>
-							<option>Economic</option>
+							<option>gender</option>
+							<option>race</option>
+							<option>eco</option>
 					</select>
 					<div id="histogram" style="height: 20%;"></div>
 					<div id="slider"></div>
@@ -204,9 +204,12 @@
 		<!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script> -->
 		<script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
 		<script src="https://d3js.org/d3.v3.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.js"></script>
     	<script src="{{ url_for('static', filename='/js/parallel_coordinates.js') }}"></script>
     	<script src="{{ url_for('static', filename='/js/main.js') }}"></script>
+    	<script src="{{ url_for('static', filename='/js/histogram.js') }}"></script>
     	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    	<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/13.1.1/nouislider.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.5.0/nouislider.js"></script>
+    	<script src="{{ url_for('static', filename='/js/slider.js') }}"></script>
   </body>
 </html>

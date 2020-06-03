@@ -1,3 +1,4 @@
+var tmp;
 // Inspired from 
 // https://bl.ocks.org/jasondavies/1341281
 var margin = {top: 25, right: 10, bottom: 25, left: 10},
@@ -17,8 +18,12 @@ var line = d3.svg.line(),
 
 var svg,background,foreground;
 
-function createParallelCoord(url) {
-
+function createParallelCoord(data) {
+    // clear existing parallel coordinate if any
+    $("#parallel_coord").empty();
+    
+    data = JSON.parse(data)
+    tmp = data
     svg = d3.select("#parallel_coord").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -26,8 +31,8 @@ function createParallelCoord(url) {
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // delete existing parallel coordinates if exists
-    d3.json(url, function(data) {
-        temp = data;
+
+    //d3.json(url, function(data) {
         // Extract the list of dimensions and create a scale for each.
         x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
           if(d=="word") {
@@ -173,7 +178,7 @@ function createParallelCoord(url) {
               d3.select('#parallel_coord svg').attr("width", targetWidth);
               d3.select('#parallel_coord svg').attr("height", targetWidth / aspect);
           });  
-      });
+      //});
 }
 
 function position(d) {
