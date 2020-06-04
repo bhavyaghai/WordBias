@@ -140,7 +140,7 @@ def get_histogram(type_var):
     else:
         val = df[type_var.lower()]
     out = {"values":val.tolist(), "min":np.min(val), "max":np.max(val)}
-    return out
+    return jsonify(out)
 
 
 @app.route('/get_tar_words/<selVal>')
