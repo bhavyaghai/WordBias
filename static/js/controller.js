@@ -19,6 +19,7 @@ $( document ).ready(function() {
         });
       console.log(data)
       this.pc = createParallelCoord(data);
+      plot_histogram()
       // createZeroLine()
     });
 });
@@ -65,7 +66,8 @@ function showText(data_rows, word){
   
 }
 function highlightWords(word,neighbors){
-  data_rows = data.filter(function(d,i){return d.word == word || neighbors.includes(d.word)})
+  console.log(neighbors)
+  data_rows = data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
   console.log(word,data_rows)
   pc.highlight(data_rows)
   showText(data_rows,word)
@@ -73,6 +75,34 @@ function highlightWords(word,neighbors){
   // neighbors = data.filter(function(d,i){return i== 1 || i==23 || i==50})
   // console.log(neighbors)
 
+}
+function plot_histogram() {
+  hist_type = $("#histogram_type").val();
+  console.log(hist_type)
+  $.get("/get_histogram/"+hist_type, {
+      //type: bias_identify_type
+    }, res=>{
+        min_val = res["min"]
+        max_val = res["max"]
+        console.log("Min and max val: ", min_val, "    ", max_val)
+        values = res["values"]
+        console.log(values.length)
+        // clear existing histogram
+        $("#histogram").empty();
+        createHistogram(values)
+        // If slider for histogram exist
+        // if($('#slider').text().length != 0) { 
+        //   slider.noUiSlider.destroy()
+        // }
+        // create slider  
+        // if(hist_type=="ALL") {
+        //     createSlider(0, 0, max_val-0.2, max_val);
+        // }
+        // else {
+        //     createSlider(min_val, min_val+0.1, max_val-0.1, max_val); 
+        // } 
+        // onChangeHistogram();
+  });
 }
 $("body").on("mouseover",".result",function(){
   
@@ -82,7 +112,6 @@ $("body").on("mouseover",".result",function(){
   $.get("/search/"+word, {
       //type: bias_identify_type
   }, res=>{
-    console.log(res)
     highlightWords(word,res)
   })
   // console.log(pc.dimensions()['gender'].yscale(data_row[0]['gender']))
@@ -127,6 +156,7 @@ $("#quantification").dropdown({
   //   pc.bundleDimension(value)}
     // $("#bundle_text").html(bundle)
 })
+$("#histogram_type").dropdown({})
 
 $("#reset_brush").on("click",function(){
   pc.brushReset()

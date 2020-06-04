@@ -39,16 +39,16 @@ function createHistogram(values) {
         .domain([0, yMax])
         .range([height, 0]);
 
-    /*
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient("bottom");
+    
+    // var xAxis = d3.svg.axis()
+    //     .scale(x)
+    //     .orient("bottom");
 
-    var yAxis = d3.svg.axis()
-        .ticks(Math.round(height / 15))
-        .scale(y)
-        .orient("left");
-    */
+    // var yAxis = d3.svg.axis()
+    //     .ticks(Math.round(height / 15))
+    //     .scale(y)
+    //     .orient("left");
+    
 
     var svg = d3.select("#histogram").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -101,29 +101,27 @@ function createHistogram(values) {
         .attr("x", 1)
         .attr("width", (x(data[0].dx) - x(0)) - 1)
         .attr("height", function(d) { return height - y(d.y); })
-        .attr("fill", function(d) { return colorScale(d.y) })
+        .attr("fill", "#43a2ca")
         .on("mouseover", function(d) {
             d3.select(this)
                 .attr("fill", "red");
             tip.show(d);
         })
         .on("mouseout", function(d) {
-            d3.select(this).attr("fill", function(d) {
-                return colorScale(d.y);
-            });
+            d3.select(this).attr("fill", "#43a2ca");
             tip.hide(d);
         });
     
-    /*
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
+    // console.log(data)
+    // svg.append("g")
+    //     .attr("class", "x axis")
+    //     .attr("transform", "translate(0," + height + ")")
+    //     .call(xAxis);
 
-    svg.append("g")
-        .attr("class", "y axis")
-        //.attr("transform", "translate(0," + height + ")")
-        .call(yAxis);
-    */
+    // svg.append("g")
+    //     .attr("class", "y axis")
+    //     //.attr("transform", "translate(0," + height + ")")
+    //     .call(yAxis);
+    
     
 }
