@@ -2,7 +2,9 @@ var thresh;
 var content;
 var data, neighbors,selected_word ="none";
 var pc
-var attrs = ["gender","race","economic_status"]
+var attrs = ["gender","race","economic_status"],
+categories = [{"gender":"Male","race":"Caucasian","economic_status":"Rich"},
+              {"gender":"Female","race":"African American","economic_status":"Poor"}];
 
 // called when the application is first loaded 
 $( document ).ready(function() {
@@ -12,11 +14,7 @@ $( document ).ready(function() {
     // create parallel plot
     d3.json("/get_csv/", function(data) {
       this.data = data
-      content = data.map(function(d){return {title:d.word}})
-      $('.ui.search')
-        .search({
-          source: content
-        });
+      
       console.log(data)
       this.pc = createParallelCoord(data);
       plot_histogram()
@@ -103,7 +101,7 @@ function plot_histogram() {
         else {
             createSlider(min_val, min_val+0.1, max_val-0.1, max_val); 
         } 
-        // onChangeHistogram();
+        onChangeHistogram();
   });
 }
 // on dropdown menu for histogram type -- ALL, gender, etc.
@@ -115,7 +113,6 @@ $('#histogram_type').change(function(event) {
     } 
 });
 
-
 // fetch and replot parallel coordiante
 function onChangeHistogram() {
   hist_type = $("#histogram_type").val();
@@ -125,8 +122,13 @@ function onChangeHistogram() {
     hist_type : hist_type,
     slider_sel : slider_ranges
   }, res => {
-      data = JSON.parse(res)
+      this.data = JSON.parse(res)
       console.log(data)
+      content = data.map(function(d){return {title:d.word}})
+      $('.ui.search')
+        .search({
+          source: content
+        });
       pc.data(data.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})).render()
       // this.pc = createParallelCoord(res);
   });

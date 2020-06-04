@@ -764,7 +764,7 @@ pc.createAxes = function() {
       });
 
   // Add an axis and title.
-  g.append("svg:g")
+  var ax = g.append("svg:g")
       .attr("class", "axis")
       .attr("transform", "translate(0,0)")
       .each(function(d) {
@@ -794,18 +794,41 @@ pc.createAxes = function() {
             .style("stroke", "#222")
             .style("opacity","0.5")
             .style("shape-rendering", "crispEdges");
-      })
-    .append("svg:text")
+      });
+
+    ax.append("svg:text")
       .attr({
         "text-anchor": "middle",
         "y": 0,
         "transform": "translate(0,-10) rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
-        "class": "label"
+        "class": "label",
+        "font-weight": "bold"
       })
       .text(dimensionLabels)
       .on("dblclick", flipAxisAndUpdatePCP)
       .on("wheel", rotateLabels);
+
+    console.log(categories[0]["gender"],dimensionLabels)
+    ax.append("svg:text")
+      .attr({
+        "text-anchor": "left",
+        "y": 0,
+        "transform": "translate(40,5) rotate(" + __.dimensionTitleRotation + ")",
+        "x": 0,
+        "class": "label"
+      })
+      .text(function(d){ return categories[0][d]})
+
+    ax.append("svg:text")
+      .attr({
+        "text-anchor": "left",
+        "y": 0,
+        "transform": "translate(40,"+(h()+5)+") rotate(" + __.dimensionTitleRotation + ")",
+        "x": 0,
+        "class": "label"
+      })
+      .text(function(d){ return categories[1][d]})
 
   if (__.nullValueSeparator=="top") {
     pc.svg.append("line")
