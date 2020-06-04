@@ -64,8 +64,8 @@ function showText(data_rows, word){
   })
   
 }
-function highlightWords(word){
-  data_rows = data.filter(function(d,i){return d.word == word || i== 1 || i==23 || i==50})
+function highlightWords(word,neighbors){
+  data_rows = data.filter(function(d,i){return d.word == word || neighbors.includes(d.word)})
   console.log(word,data_rows)
   pc.highlight(data_rows)
   showText(data_rows,word)
@@ -79,9 +79,12 @@ $("body").on("mouseover",".result",function(){
   word = $(this).find(".title").html()
   selected_word = word
   // console.log(data[0])
-  
-  highlightWords(word)
-  
+  $.get("/search/"+word, {
+      //type: bias_identify_type
+  }, res=>{
+    console.log(res)
+    highlightWords(word,res)
+  })
   // console.log(pc.dimensions()['gender'].yscale(data_row[0]['gender']))
   // console.log(pc.position("gender"))
 })
