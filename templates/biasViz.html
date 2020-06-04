@@ -62,6 +62,7 @@
                 </div>
                 
                 <div id="histogram" class="feature" style="height: 200px; width: 300px;margin-top: 40px;"></div>
+                <div id="slider"></div>
                 <div class="feature">
                     <label><h4>Histrogram Attribute</h4></label>
                     <select id="histogram_type" class="ui dropdown">
@@ -105,7 +106,12 @@
                 </div>
                 <div class="control">
                     <button id="reset_brush" class="ui button">Reset Brush</button>
-                </div>     
+                </div> 
+                <div class="control">
+                    <p >Threshold</p>
+                    <input type="range" min="0.0" max="0.50" step="0.01" value="0" id="threshold" onchange="coeff_val_change(this.value)">
+                    <span id="coeff_slider_val">0.0</span>        
+                </div>    
             </div>      
         </div>
         <div class="col-lg-2">

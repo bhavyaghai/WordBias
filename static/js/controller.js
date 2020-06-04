@@ -68,6 +68,7 @@ function showText(data_rows, word){
 function highlightWords(word,neighbors){
   console.log(neighbors)
   data_rows = data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
+  data_rows = data_rows.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})
   console.log(word,data_rows)
   pc.highlight(data_rows)
   showText(data_rows,word)
@@ -91,17 +92,43 @@ function plot_histogram() {
         $("#histogram").empty();
         createHistogram(values)
         // If slider for histogram exist
-        // if($('#slider').text().length != 0) { 
-        //   slider.noUiSlider.destroy()
-        // }
+        if($('#slider').text().length != 0) { 
+          slider.noUiSlider.destroy()
+        }
         // create slider  
-        // if(hist_type=="ALL") {
-        //     createSlider(0, 0, max_val-0.2, max_val);
-        // }
-        // else {
-        //     createSlider(min_val, min_val+0.1, max_val-0.1, max_val); 
-        // } 
+        if(hist_type=="ALL") {
+            console.log("creating slider")
+            createSlider(0, 0, max_val-0.2, max_val);
+        }
+        else {
+            createSlider(min_val, min_val+0.1, max_val-0.1, max_val); 
+        } 
         // onChangeHistogram();
+  });
+}
+// on dropdown menu for histogram type -- ALL, gender, etc.
+$('#histogram_type').change(function(event) {
+    console.log("Change dropdown menu - histogram_type")
+    if($('#slider').text().length != 0) { // If slider for histogram exist
+          console.log("slider exist");
+          plot_histogram(); 
+    } 
+});
+
+
+// fetch and replot parallel coordiante
+function onChangeHistogram() {
+  hist_type = $("#histogram_type").val();
+  var slider_ranges = slider.noUiSlider.get();
+  // create parallel plot
+  $.get("/fetch_data", {
+    hist_type : hist_type,
+    slider_sel : slider_ranges
+  }, res => {
+      data = JSON.parse(res)
+      console.log(data)
+      pc.data(data.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})).render()
+      // this.pc = createParallelCoord(res);
   });
 }
 $("body").on("mouseover",".result",function(){

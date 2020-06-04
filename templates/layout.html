@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/semantic/semantic.min.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.5.0/nouislider.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/d3.parcoords.css') }}">
 
     {% if title %}
@@ -67,10 +68,14 @@
     <!-- user js files -->
     <script src="{{ url_for('static', filename='js/sylvester.js') }}"></script>
     <script src="{{ url_for('static', filename='js/d3.svg.multibrush.js') }}"></script>
+    
     <script src="{{ url_for('static', filename='js/histogram.js') }}"></script>
     <script src="{{ url_for('static', filename='js/d3.parcoords.js') }}"></script>
     <script src="{{ url_for('static', filename='js/parallel_coord_canvas.js') }}"></script>
     <script src="{{ url_for('static', filename='js/controller.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.5.0/nouislider.js"></script>
+    <script src="{{ url_for('static', filename='js/slider.js') }}"></script>
+
     
 
 </body>
