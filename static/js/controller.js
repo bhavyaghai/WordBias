@@ -112,6 +112,19 @@ $("#bundle_dimension").dropdown({
     pc.bundleDimension(value)}
     // $("#bundle_text").html(bundle)
 })
+$("#dropdown_embedding").dropdown({
+  // onChange: function(value){
+  //   console.log(value)
+  //   pc.bundleDimension(value)}
+    // $("#bundle_text").html(bundle)
+})
+$("#quantification").dropdown({
+  // onChange: function(value){
+  //   console.log(value)
+  //   pc.bundleDimension(value)}
+    // $("#bundle_text").html(bundle)
+})
+
 $("#reset_brush").on("click",function(){
   pc.brushReset()
 })

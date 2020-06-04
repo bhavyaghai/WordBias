@@ -90,7 +90,7 @@ def setModel():
 @app.route('/get_csv/')
 def get_csv():
     global df
-    df2 = df[["word", "race", "gender", "eco"]].head(200)
+    df2 = df[["word", "race", "gender", "eco"]]
     out = df2.to_json(orient='records')
     return out
 
