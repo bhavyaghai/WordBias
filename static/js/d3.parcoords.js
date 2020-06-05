@@ -809,7 +809,7 @@ pc.createAxes = function() {
       .on("dblclick", flipAxisAndUpdatePCP)
       .on("wheel", rotateLabels);
 
-    console.log(categories[0]["gender"],dimensionLabels)
+    // console.log(categories[0]["gender"],dimensionLabels)
     ax.append("svg:text")
       .attr({
         "text-anchor": "left",
@@ -824,7 +824,7 @@ pc.createAxes = function() {
       .attr({
         "text-anchor": "left",
         "y": 0,
-        "transform": "translate(40,"+(h()+5)+") rotate(" + __.dimensionTitleRotation + ")",
+        "transform": "translate(40,"+(h()+2)+") rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
         "class": "label"
       })

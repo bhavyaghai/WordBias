@@ -25,7 +25,7 @@ $( document ).ready(function() {
 function createZeroLine(){
   // console.log(pc.svg)
     // ctx = pc.ctx['highlight']
-    d = "M"
+    d = "M "
     // x = pc.position(attrs[0])
     // y = pc.dimensions()[attrs[0]].yscale(0)
     for(i=0;i<attrs.length;i++){
@@ -34,12 +34,12 @@ function createZeroLine(){
       y = pc.dimensions()[attrs[i]].yscale(0)
       d = d+x.toString()+" "+y.toString()
       if(i < attrs.length-1)
-        d = d+" L"
+        d = d+" L "
     }
     console.log(d)
     d3.select("#canvas_svg>g")
       .append('path')
-      .attr("d", "M 181.66666666666666 233 L 545 233 L 908.3333333333333 233")
+      .attr("d", d)
       .attr( "stroke","grey")
       .attr( "stroke-width","3")
        // fill="none"></path>')
@@ -129,8 +129,12 @@ function onChangeHistogram() {
         .search({
           source: content
         });
-      pc.data(data.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})).render()
-      // this.pc = createParallelCoord(res);
+      if(this.pc){
+        console.log("rerender")
+        pc.data(data.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})).render()
+      }
+      else
+        this.pc = createParallelCoord(data);
   });
 }
 $("body").on("mouseover",".result",function(){

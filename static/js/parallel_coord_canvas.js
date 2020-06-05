@@ -1,5 +1,6 @@
 function createParallelCoord(data){
 	// linear color scale
+	$("#parallel_coord").empty()
 	var blue_to_brown = d3.scale.linear()
 	  .domain([-1, 1])
 	  .range(["steelblue", "brown"])
