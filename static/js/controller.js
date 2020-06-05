@@ -1,6 +1,6 @@
 var thresh;
 var content;
-var data, neighbors,selected_word ="none";
+var data,active_data, neighbors,selected_word ="none";
 var pc
 var attrs = ["gender","race","economic_status"],
 categories = [{"gender":"Male","race":"Caucasian","economic_status":"Rich"},
@@ -14,8 +14,12 @@ $( document ).ready(function() {
     // create parallel plot
     d3.json("/get_csv/", function(data) {
       this.data = data
-      
-      console.log(data)
+      console.log(data.length)
+      content = data.map(function(d){return {title:d.word}})
+      $('.ui.search')
+        .search({
+          source: content
+        });
       this.pc = createParallelCoord(data);
       plot_histogram()
       // createZeroLine()
@@ -122,19 +126,14 @@ function onChangeHistogram() {
     hist_type : hist_type,
     slider_sel : slider_ranges
   }, res => {
-      this.data = JSON.parse(res)
-      console.log(data)
-      content = data.map(function(d){return {title:d.word}})
-      $('.ui.search')
-        .search({
-          source: content
-        });
+      this.active_data = JSON.parse(res)
+      console.log(active_data)
       if(this.pc){
         console.log("rerender")
-        pc.data(data.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})).render()
+        pc.data(active_data.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})).render()
       }
       else
-        this.pc = createParallelCoord(data);
+        this.pc = createParallelCoord(active_data);
   });
 }
 $("body").on("mouseover",".result",function(){

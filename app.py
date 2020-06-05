@@ -35,7 +35,7 @@ def setModelBackup(name="Word2Vec"):
     model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True)
     #df = pd.read_csv("./data/bias.csv",header=0, keep_default_na=False)
     df = pd.read_csv("./data/all_biases_10k.csv",header=0, keep_default_na=False)
-    print(len(df))
+    # print(len(df))
     df = df
     return "success"
 
@@ -108,7 +108,7 @@ def fetch_data():
     # histogram selection -- list of 4 int
     slider_sel = request.args.getlist("slider_sel[]")
     slider_sel = [float(x) for x in slider_sel]
-    print("Slider selection: ", slider_sel)
+    # print("Slider selection: ", slider_sel)
     # list of selected index based on selection
     ind = pd.Series([False]*df.shape[0])
     if slider_sel[0]!=slider_sel[1]:
@@ -117,10 +117,10 @@ def fetch_data():
     if slider_sel[2]!=slider_sel[3]:
         ind = ind | ((filter_column >= slider_sel[2]) & (filter_column <= slider_sel[3]))
 
-    print("selected dataframe: ")
+    # print("selected dataframe: ")
     col_list = ["word"] + col_list
-    print(df.loc[ind, col_list].shape)
-    print(df.loc[ind, col_list])
+    # print(df.loc[ind, col_list].shape)
+    # print(df.loc[ind, col_list])
     out = df.loc[ind, col_list].to_json(orient='records')
     return out
 
