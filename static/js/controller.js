@@ -98,19 +98,22 @@ function showText(data_rows, word){
 function highlightWords(word,neighbors){
   console.log(neighbors)
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
-  new_words = [...active_words]
-  data_rows.forEach(function(row){
-    if(active_words.indexOf(row['word'] == -1))
-      new_words.push(row['word'])
-  })
-  pc.dimensions()["word"].yscale.domain(new_words)
-  pc.dimensions()["word"].tickValues = new_words
-  pc.updateAxes()
-
-  // data_rows = data_rows
+  if(active_words.length <70){
+    new_words = [...active_words]
+    data_rows.forEach(function(row){
+      if(active_words.indexOf(row['word'] == -1))
+        new_words.push(row['word'])
+    })
+    pc.dimensions()["word"].yscale.domain(new_words)
+    pc.dimensions()["word"].tickValues = new_words
+    pc.updateAxes()
+    
+  }
   console.log(word,data_rows)
   pc.highlight(data_rows)
-  // showText(data_rows,word)
+  
+  if(active_words.length>= 70)
+    showText(data_rows,word)
 
   // neighbors = data.filter(function(d,i){return i== 1 || i==23 || i==50})
   // console.log(neighbors)
@@ -215,14 +218,18 @@ $("body").on("mouseover",".result",function(){
   // console.log(pc.position("gender"))
 })
 $("body").on("mouseout",".result",function(){
-  console.log("mouseout")
-  // pc.clear("highlight")
-  console.log(new_words,active_words)
-  pc.dimensions()["word"].yscale.domain(active_words)
-  pc.dimensions()["word"].tickValues = active_words
-  pc.updateAxes()
-  // pc
+  if(active_words.length<70){
+    console.log("mouseout")
+    // pc.clear("highlight")
+    console.log(new_words,active_words)
+    pc.dimensions()["word"].yscale.domain(active_words)
+    pc.dimensions()["word"].tickValues = active_words
+    pc.updateAxes()
+    // pc
+    
+  }
   pc.unhighlight()
+  
 })
 
 $("#alpha_input").on("change",function(){
