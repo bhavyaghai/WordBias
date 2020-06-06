@@ -226,7 +226,7 @@ pc.autoscale = function() {
       }
 
       return d3.scale.linear()
-        .domain(extent)
+        .domain([-1,1])
         .range(getRange());
     },
     "string": function(k) {
@@ -263,7 +263,7 @@ pc.autoscale = function() {
   });
 
   // xscale
-  xscale.rangePoints([0, w()], 1);
+  xscale.rangePoints([200, w()], 1);
 
   // Retina display, etc.
   var devicePixelRatio = window.devicePixelRatio || 1;

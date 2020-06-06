@@ -1,5 +1,5 @@
 var thresh;
-var content;
+var words,active_words;
 var data,active_data, neighbors,selected_word ="none";
 var pc
 var attrs = ["gender","race","economic_status"],
@@ -15,12 +15,12 @@ $( document ).ready(function() {
     d3.json("/get_csv/", function(data) {
       this.data = data.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})
       console.log(data.length)
-      content = data.map(function(d){return {title:d.word}})
+      this.words = data.map(function(d){return {title:d.word}})
       $('.ui.search')
         .search({
-          source: content
+          source: words
         });
-      this.pc = createParallelCoord(this.data);
+      // this.pc = createParallelCoord(this.data);
       plot_histogram()
       // pc.dimensions()
       // console.log(pc.dimensions())
@@ -69,6 +69,32 @@ function showText(data_rows, word){
   })
   
 }
+function listWords(data){
+  data.sort(function(a, b){return b.gender - a.gender})
+  ctx = pc.ctx['foreground']
+  // ctx_word = $(".words").getContext("2d")
+  ctx.font = "10px Verdana"
+  ctx.textAlign = "end";
+  // ctx.fillStyle = "#43a2ca";
+  // ctx.strokeStyle = "#43a2ca"
+  // ctx.lineWidth = 1.4
+  // console.log(ctx.globalAlpha)
+  // ctx.globalAlpha = 0.8
+  attr = "gender"
+  x = pc.position(attr)
+  y = 10
+  step = 690/data.length
+  data.forEach(function(row){
+    // console.log(pc.dimensions()[attr].yscale)
+    ctx.fillText(row['word'], x-210, y);
+    ctx.beginPath();
+    ctx.moveTo(x-200, y)
+    ctx.lineTo(x, pc.dimensions()[attr].yscale(row[attr]))
+    ctx.stroke();
+    y +=step
+  })
+
+}
 function highlightWords(word,neighbors){
   console.log(neighbors)
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
@@ -80,6 +106,13 @@ function highlightWords(word,neighbors){
   // neighbors = data.filter(function(d,i){return i== 1 || i==23 || i==50})
   // console.log(neighbors)
 
+}
+function cloneCanvas(){
+  var canvas = $('.foreground')
+  console.log(canvas.width())
+  clone = canvas.clone(); // true means clone all childNodes and all event handlers
+  clone.attr("class", "words");
+  $("#parallel_coord").append(clone);
 }
 function plot_histogram() {
   hist_type = $("#histogram_type").val();
@@ -130,24 +163,18 @@ function onChangeHistogram() {
   }, res => {
       this.active_data = JSON.parse(res).map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})
       console.log(active_data)
+      this.active_words = active_data.map(function(d){return {word:d.word}})
       if(this.pc){
         console.log("rerender")
-        // pc.hideAxis([])
         this.pc.data(active_data).render()
       }
       else{
         this.pc = createParallelCoord(active_data);
-        pc.data(active_data).render()
-      
-        // pc.render()
-        // pc.dimensions()["gender"].yscale.domain([-1,1])
-        // pc.dimensions()["race"].yscale.domain([-1,1])
-        // pc.dimensions()["economic_status"].yscale.domain([-1,1])
-        // pc.updateAxes()
-        
-        // pc.render()
-        // console.log(pc.dimensions()["gender"].yscale.domain())
+        pc.render()
+        cloneCanvas()
       }
+      if(active_words.length < 50)
+        listWords(active_data)
   });
 }
 $("body").on("mouseover",".result",function(){

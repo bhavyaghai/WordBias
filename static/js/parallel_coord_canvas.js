@@ -20,7 +20,7 @@ function createParallelCoord(data){
 		.hideAxis(['word'])
 	    .composite("darken")
 	    .color("#43a2ca")  // quantitative color scale
-	    .alpha(0.35)
+	    .alpha(0.5)
 	    .mode("queue")
 	    // .render()
 	    .brushMode("1D-axes-multi")  // enable brushing
