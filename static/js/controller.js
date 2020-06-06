@@ -13,15 +13,17 @@ $( document ).ready(function() {
 
     // create parallel plot
     d3.json("/get_csv/", function(data) {
-      this.data = data
+      this.data = data.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})
       console.log(data.length)
       content = data.map(function(d){return {title:d.word}})
       $('.ui.search')
         .search({
           source: content
         });
-      this.pc = createParallelCoord(data);
+      this.pc = createParallelCoord(this.data);
       plot_histogram()
+      // pc.dimensions()
+      // console.log(pc.dimensions())
       // createZeroLine()
     });
 });
@@ -69,8 +71,8 @@ function showText(data_rows, word){
 }
 function highlightWords(word,neighbors){
   console.log(neighbors)
-  data_rows = data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
-  data_rows = data_rows.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})
+  data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
+  // data_rows = data_rows
   console.log(word,data_rows)
   pc.highlight(data_rows)
   showText(data_rows,word)
@@ -126,14 +128,26 @@ function onChangeHistogram() {
     hist_type : hist_type,
     slider_sel : slider_ranges
   }, res => {
-      this.active_data = JSON.parse(res)
+      this.active_data = JSON.parse(res).map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})
       console.log(active_data)
       if(this.pc){
         console.log("rerender")
-        pc.data(active_data.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})).render()
+        // pc.hideAxis([])
+        this.pc.data(active_data).render()
       }
-      else
+      else{
         this.pc = createParallelCoord(active_data);
+        pc.data(active_data).render()
+      
+        // pc.render()
+        // pc.dimensions()["gender"].yscale.domain([-1,1])
+        // pc.dimensions()["race"].yscale.domain([-1,1])
+        // pc.dimensions()["economic_status"].yscale.domain([-1,1])
+        // pc.updateAxes()
+        
+        // pc.render()
+        // console.log(pc.dimensions()["gender"].yscale.domain())
+      }
   });
 }
 $("body").on("mouseover",".result",function(){

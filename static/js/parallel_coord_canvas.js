@@ -13,16 +13,16 @@ function createParallelCoord(data){
 	
 	  console.log(data.length)
 	  pc1 = d3.parcoords()("#parallel_coord")
-	    .data(data.map(function(d){return {gender:d.gender,race:d.race,economic_status:d.eco}}))
+	    .data(data)
 	    .bundlingStrength(0) // set bundling strength
 		.smoothness(0)
 		.bundleDimension("gender")
-	    .hideAxis(["name"])
+		.hideAxis(['word'])
 	    .composite("darken")
 	    .color("#43a2ca")  // quantitative color scale
 	    .alpha(0.35)
 	    .mode("queue")
-	    .render()
+	    // .render()
 	    .brushMode("1D-axes-multi")  // enable brushing
 	    .interactive()  // command line mode
 	    .reorderable()

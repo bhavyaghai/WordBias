@@ -82,7 +82,7 @@ var events = d3.dispatch.apply(this,["render", "resize", "highlight", "brush", "
     xscale = d3.scale.ordinal(),
     dragging = {},
     line = d3.svg.line(),
-    axis = d3.svg.axis().orient("right").ticks(5),
+    axis = d3.svg.axis().orient("left").ticks(5),
     g, // groups for axes, brushes
     ctx = {},
     canvas = {},
@@ -361,7 +361,7 @@ pc.applyDimensionDefaults = function(dims) {
   dims.forEach(function(k) {
     newDims[k] = __.dimensions[k] ? __.dimensions[k] : {};
     //Set up defaults
-    newDims[k].orient= newDims[k].orient ? newDims[k].orient : 'right';
+    newDims[k].orient= newDims[k].orient ? newDims[k].orient : 'left';
     newDims[k].ticks= newDims[k].ticks != null ? newDims[k].ticks : 5;
     newDims[k].innerTickSize= newDims[k].innerTickSize != null ? newDims[k].innerTickSize : 6;
     newDims[k].outerTickSize= newDims[k].outerTickSize != null ? newDims[k].outerTickSize : 0;
@@ -896,7 +896,7 @@ pc.updateAxes = function(animationTime) {
       .attr({
         "text-anchor": "middle",
         "y": 0,
-        "transform": "translate(0,-5) rotate(" + __.dimensionTitleRotation + ")",
+        "transform": "translate(0,-10) rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
         "class": "label"
       })
@@ -915,7 +915,7 @@ pc.updateAxes = function(animationTime) {
     .transition()
       .duration(animationTime)
       .text(dimensionLabels)
-      .attr("transform", "translate(0,-5) rotate(" + __.dimensionTitleRotation + ")");
+      .attr("transform", "translate(0,-10) rotate(" + __.dimensionTitleRotation + ")");
 
   // Exit
   g_data.exit().remove();
