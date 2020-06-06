@@ -69,39 +69,48 @@ function showText(data_rows, word){
   })
   
 }
-function listWords(data){
-  data.sort(function(a, b){return b.gender - a.gender})
-  ctx = pc.ctx['foreground']
-  // ctx_word = $(".words").getContext("2d")
-  ctx.font = "10px Verdana"
-  ctx.textAlign = "end";
-  // ctx.fillStyle = "#43a2ca";
-  // ctx.strokeStyle = "#43a2ca"
-  // ctx.lineWidth = 1.4
-  // console.log(ctx.globalAlpha)
-  // ctx.globalAlpha = 0.8
-  attr = "gender"
-  x = pc.position(attr)
-  y = 10
-  step = 690/data.length
-  data.forEach(function(row){
-    // console.log(pc.dimensions()[attr].yscale)
-    ctx.fillText(row['word'], x-210, y);
-    ctx.beginPath();
-    ctx.moveTo(x-200, y)
-    ctx.lineTo(x, pc.dimensions()[attr].yscale(row[attr]))
-    ctx.stroke();
-    y +=step
-  })
+// function listWords(data){
+//   // data.sort(function(a, b){return b.gender - a.gender})
+//   ctx = pc.ctx['words']
+//   // ctx_word = $(".words").getContext("2d")
+//   ctx.font = "10px Verdana"
+//   ctx.textAlign = "end";
+//   // ctx.fillStyle = "#43a2ca";
+//   // ctx.strokeStyle = "#43a2ca"
+//   // ctx.lineWidth = 1.4
+//   // console.log(ctx.globalAlpha)
+//   // ctx.globalAlpha = 0.8
+//   attr = "gender"
+//   x = pc.position(attr)
+//   y = 10
+//   step = 690/data.length
+//   data.forEach(function(row){
+//     // console.log(pc.dimensions()[attr].yscale)
+//     ctx.fillText(row['word'], x-210, y);
+//     ctx.beginPath();
+//     ctx.moveTo(x-200, y)
+//     ctx.lineTo(x, pc.dimensions()[attr].yscale(row[attr]))
+//     ctx.stroke();
+//     y +=step
+//   })
 
-}
+// }
 function highlightWords(word,neighbors){
   console.log(neighbors)
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
+  new_words = [...active_words]
+  data_rows.forEach(function(row){
+    if(active_words.indexOf(row['word'] == -1))
+      new_words.push(row['word'])
+  })
+  pc.dimensions()["word"].yscale.domain(new_words)
+  pc.dimensions()["word"].tickValues = new_words
+  pc.updateAxes()
+
   // data_rows = data_rows
   console.log(word,data_rows)
   pc.highlight(data_rows)
-  showText(data_rows,word)
+  // showText(data_rows,word)
 
   // neighbors = data.filter(function(d,i){return i== 1 || i==23 || i==50})
   // console.log(neighbors)
@@ -162,10 +171,25 @@ function onChangeHistogram() {
     slider_sel : slider_ranges
   }, res => {
       this.active_data = JSON.parse(res).map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})
+      this.active_words = active_data.map(function(d){return d.word})
       console.log(active_data)
-      this.active_words = active_data.map(function(d){return {word:d.word}})
       if(this.pc){
-        console.log("rerender")
+        // console.log(pc.dimensions()["word"])
+        if(active_words.length <70){
+          pc.hideAxis([])
+          pc.dimensions()["word"].yscale.domain( active_words)
+          pc.dimensions()['word'].tickValues = active_words
+          pc.updateAxes()
+        }
+        else{
+          // pc.dimensions()["word"].yscale.domain( active_words)
+          // pc.dimensions()['word'].tickValues = []
+          // pc.updateAxes()
+          pc.hideAxis(["word"])
+          pc.updateAxes()
+          pc.render()
+        }
+        
         this.pc.data(active_data).render()
       }
       else{
@@ -173,8 +197,8 @@ function onChangeHistogram() {
         pc.render()
         cloneCanvas()
       }
-      if(active_words.length < 50)
-        listWords(active_data)
+      // if(active_words.length < 50)
+      //   listWords(active_data)
   });
 }
 $("body").on("mouseover",".result",function(){
@@ -193,6 +217,11 @@ $("body").on("mouseover",".result",function(){
 $("body").on("mouseout",".result",function(){
   console.log("mouseout")
   // pc.clear("highlight")
+  console.log(new_words,active_words)
+  pc.dimensions()["word"].yscale.domain(active_words)
+  pc.dimensions()["word"].tickValues = active_words
+  pc.updateAxes()
+  // pc
   pc.unhighlight()
 })
 

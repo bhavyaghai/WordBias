@@ -8,16 +8,23 @@ function createParallelCoord(data){
 
 	// interact with this variable from a javascript console
 	var pc1;
+	var dimensions = {
+			'word': {title: "word",'tickValues':[]},
+            'gender': {title: "gender"},
+            'race': {title: "race"},
+            'economic_status': {'title':'economic_status'}
+        };
 
 	// load csv file and create the chart
 	
 	  console.log(data.length)
 	  pc1 = d3.parcoords()("#parallel_coord")
 	    .data(data)
+	    // .dimensions(dimensions)
 	    .bundlingStrength(0) // set bundling strength
 		.smoothness(0)
 		.bundleDimension("gender")
-		.hideAxis(['word'])
+		// .hideAxis(['word'])
 	    .composite("darken")
 	    .color("#43a2ca")  // quantitative color scale
 	    .alpha(0.5)

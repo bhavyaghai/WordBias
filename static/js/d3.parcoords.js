@@ -253,6 +253,7 @@ pc.autoscale = function() {
       return d3.scale.ordinal()
         .domain(domain)
         .rangePoints(getRange());
+        // .tickValues([]);
     }
   };
 
@@ -263,7 +264,7 @@ pc.autoscale = function() {
   });
 
   // xscale
-  xscale.rangePoints([200, w()], 1);
+  xscale.rangePoints([0, w()], 1);
 
   // Retina display, etc.
   var devicePixelRatio = window.devicePixelRatio || 1;
@@ -814,7 +815,7 @@ pc.createAxes = function() {
       .attr({
         "text-anchor": "left",
         "y": 0,
-        "transform": "translate(40,5) rotate(" + __.dimensionTitleRotation + ")",
+        "transform": "translate(20,5) rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
         "class": "label"
       })
@@ -824,7 +825,7 @@ pc.createAxes = function() {
       .attr({
         "text-anchor": "left",
         "y": 0,
-        "transform": "translate(40,"+(h()+2)+") rotate(" + __.dimensionTitleRotation + ")",
+        "transform": "translate(20,"+(h()+2)+") rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
         "class": "label"
       })
@@ -942,14 +943,17 @@ pc.updateAxes = function(animationTime) {
 };
 
 pc.applyAxisConfig = function(axis, dimension) {
-  return axis.scale(dimension.yscale)
-    .orient(dimension.orient)
-    .ticks(dimension.ticks)
-    .tickValues(dimension.tickValues)
-    .innerTickSize(dimension.innerTickSize)
-    .outerTickSize(dimension.outerTickSize)
-    .tickPadding(dimension.tickPadding)
-    .tickFormat(dimension.tickFormat)
+  // console.log(dimension)
+  // if(dimension.type == "number")
+    return axis.scale(dimension.yscale)
+      .orient(dimension.orient)
+      .ticks(dimension.ticks)
+      .tickValues(dimension.tickValues)
+      .innerTickSize(dimension.innerTickSize)
+      .outerTickSize(dimension.outerTickSize)
+      .tickPadding(dimension.tickPadding)
+      .tickFormat(dimension.tickFormat)
+
 };
 
 // Jason Davies, http://bl.ocks.org/1341281
