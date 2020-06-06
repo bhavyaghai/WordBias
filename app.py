@@ -81,6 +81,12 @@ def get_csv():
     out = df2.to_json(orient='records')
     return out
 
+@app.route('/get_all_words')
+def get_all_words():
+    if not model:
+        setModel()
+    return jsonify(list(model.vocab.keys()))
+
 @app.route('/fetch_data')
 def fetch_data():
     col_list = list(bias_words.keys())
