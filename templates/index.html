@@ -1,0 +1,215 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>WEBViz: Visualizing social biases encoded in Word Embedding</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/parallel-coordinates.css') }}">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.5.0/nouislider.css" rel="stylesheet">
+  </head>
+  <body style="background-color: white;">   <!-- overflow:hidden; -->
+  	<div class="container-fluid" style="padding-left: 10px; padding-right: 10px;">
+		
+  		<nav class="navbar navbar-inverse bg-primary" style="background-color: dimgrey; color: black; border-radius: 15px;border: 2px solid dimgray; margin-bottom: 5px; display: none;" id="navbar"> <!-- #3B5998 -->
+	
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">
+						<!-- <span><img src="{{ url_for('static', filename='/data/logo.png') }}" alt="Logo WEBVis" style="width:25px;height:25px;"/></span> -->
+						<span style="color:white; font-size: x-large;"><b>WEBViz: Visualizing Intersectional Social biases encoded in Word Embedding</b></span>
+					</a>
+				</div>
+				<!--
+				<ul class="nav navbar-nav navbar-right">
+					<li><a title="List of labeled words" data-toggle="modal" data-target="#myModal" 
+					style="padding-top: 10px; padding-bottom: 10px;"><span class="glyphicon glyphicon-th-list"></span></a></li>
+					<li><a onclick="startNewSession()" title="New Session" style="padding-top: 10px; 
+						padding-bottom: 10px;"><span class="glyphicon glyphicon-refresh" ></span></a></li>
+					<li><a target="_blank" href="/download" title="Download" style="padding-top: 10px;
+						padding-bottom: 10px;"><span class="glyphicon glyphicon-download-alt"></span></a></li>
+				</ul>
+				-->
+			</div>
+        </nav>
+    	
+  		<div class="row" style="height: 100%; background-color:white; padding-bottom: 10px; padding-top: 5px;">
+				
+				<div class="col-md-2" style="padding-right: 0px;">  <!-- style=" margin-right: 10px;" -->
+					<div style="padding:20px; border-radius: 15px;border: 2px solid dimgray; height:94%;">
+					<div style="margin-bottom: 10px;">
+						<label>Word Embedding</label>
+						<select id="dropdown_embedding" style="float:right; width: 100%;">
+							<option selected>Word2Vec</option>
+							<option>Word2Vec debiased</option>
+							<option>Glove (wiki 300d)</option>
+							<option>Hindi fastText</option>
+							<option>French fastText</option>
+							<option>Temp</option>
+							<option disabled>German fastText</option>
+							<option disabled>Chinese fastText</option>
+							<option disabled>Spanish fastText</option>
+						</select>
+					</div>
+
+					<br>
+
+					<div style="margin-bottom: 10px;">
+						<label>Bias Quantification Algorithm</label>
+						<select id="dropdown_embedding" style="float:right; width: 100%;">
+							<option>Paired PCA Projection</option>
+							<option>Group Difference</option>
+						</select>
+					</div>
+
+					<br>
+
+					<div class="form-group">
+								<label id="gp1_label" for="gp1" style="background-color: orangered; color:white;">Group 1:</label>
+								<select id="gp1_dropdown" style="float:right;" onchange="changeBiastype(this.id)"></select>
+								<p style="clear:left;"></p>
+								<textarea class="form-control" rows="2" id="gp1"></textarea>
+								
+								<br>
+								<label id="gp2_label" for="gp2" style="background-color: green; color:white;">Group 2:</label>
+								<select id="gp2_dropdown" style="float:right;" onchange="changeBiastype(this.id)"></select>
+								<p style="clear:left;"></p>
+								<textarea class="form-control" rows="2" id="gp2"></textarea>
+								<p style="clear:left;"></p>
+					</div>
+
+					<button type="submit" class="btn btn-primary center-block btn-sm" id="plot" style="width:100%;">Plot!</button>
+					<br><br>
+					<label>Bias Distribution</label>
+					<select id="histogram_type" style="float:right; width: 40%">
+							<option selected="">ALL</option>
+							<option>gender</option>
+							<option>race</option>
+							<option>eco</option>
+					</select>
+					<div id="histogram" style="height: 20%;"></div>
+					<div id="slider"></div>
+					<br>
+					<!--
+					<div class="slider-wrapper">
+						<span style="float:left; font-size:small;"># Words:</span>
+						<input type="range" min="0" max="10000" step="50" value="50" style="width:50%; float:left;" id="word_cnt" onchange="on_word_cnt_change(this.value)">
+						<span id="word_cnt_val" style="float:right; font-size:small;">50</span>
+						<p style="clear:left;"></p>
+					</div>
+					-->
+					
+					<div style="margin-top: 5px;">
+						<label for="target">Highlight Words</label>
+						<select style="float:right;" id="dropdown_target" onchange="load_target_words(this.value)">
+							<option selected>Profession</option>
+							<option>Sentiments</option>
+							<option>Personality Traits</option>
+							<option>Extremism</option>
+							<option>Custom</option>
+						</select>
+						<p style="clear:left;"></p>
+						<textarea class="form-control" rows="7" id="target"></textarea>
+					</div>
+					<button type="submit" class="btn btn-primary center-block btn-sm" id="showBias" style="margin-top: 10px; width: 100%">Highlight</button>
+				</div>
+				</div>
+				
+			  <div class="col-md-8">
+				<div style="border-radius: 15px;border: 2px solid dimgray; height: 94%; padding: 5px;"> 
+				<div id="scatter_options" style="height:5%; float:left; width:92%; padding-top:5px; padding-left:10px;">
+					<label class="checkbox-inline" style="padding-right: 10px;"><b>word:</b><div id="word" style="display:inline-block; width:60px;"></div></label>
+					
+					<label class="checkbox-inline" style="padding-right: 10px;"><button type="button" class="btn btn-sm" onclick="changeZoom()"><b>Reset Zoom</b></button></label>
+					
+					<label class="checkbox-inline">
+					<div class="form-group" style="width: 100px;">
+            			<!-- <span style="font-size:small;"><b>Threshold:</b></span>  -->
+            			<input type="range" min="0.0" max="0.50" step="0.01" value="0" style="float:left; width:45%;" id="threshold" onchange="coeff_val_change(this.value)">
+            			<span id="coeff_slider_val" style="float:left; font-size:small; padding-left: 3px;">0.0</span>
+            			<p style="clear:left;"></p>
+          			</div>
+          			</label>
+
+          			<label class="checkbox-inline">
+		          	<div class="form-group" style="padding-left: 5px; padding-right: 5px;">
+		              <span><b>Color:</b></span>
+		              <select id="dropdown_color">
+		                <option selected>Default</option>
+		                <option>Gender</option>
+		                <option>Race</option>
+		                <option>Economic status</option>
+		                <option disabled>Age</option>
+		              </select>
+		          	</div>
+		          	</label>
+
+		          	<!--
+					<div id="search" style="float: right; padding-right: 0px;">    
+						<datalist id="json-datalist"></datalist>
+						<input class="form-control" type="search" id="searchBar" placeholder="Search"> 
+					</div>  -->
+					<p style="clear:left;"></p>
+				</div>
+				<div id="parallel_coord" style="background-color: white; height: 800px;"></div>
+				</div>
+    		</div>
+
+			<div class="col-md-2">
+				<div class="row" style="border-radius: 15px;border: 2px solid dimgray; height: 94%; padding: 20px; width:99%;">
+					<div id="search" style="width: 100%;">    
+						<datalist id="json-datalist"></datalist>
+						<input class="form-control" type="search" id="searchBar" placeholder="Search"> 
+					</div>
+					<div id="wordList" style="overflow: auto; height: 86%;"></div>
+				</div>
+    		</div>
+  	
+	  	</div>
+	  
+	  <!-- Modal -->
+	  <div id="myModal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-lg">
+	  
+		  <!-- Modal content-->
+		  <div class="modal-content">
+			<div class="modal-header" style="padding-bottom:5px; background-color: dimgrey;">
+			  <button type="button" class="close" data-dismiss="modal">&times;</button>
+			  <h4 class="modal-title" style="color: white;"><b>Labeled Words</b></h4>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid" style="padding: 0px;">
+					<div class="col-md-6" style="padding:0px; padding-right:10px;">
+						<div style="padding-left:5px; padding-bottom:5px;"><b>Biased Words</b></div>
+						<div style="border-radius:15px; border: 1px solid dimgray;">
+							<div id="biased_words_div" style="padding:10px; height: 500px; overflow: auto;">
+							
+							</div>		
+						</div>
+					</div>
+					<div class="col-md-6" style="padding:0px; padding-left:10px;">
+						<div style="padding-left:5px; padding-bottom:5px;"><b>Neutral Words</b></div>
+						<div style="border-radius:15px; border: 1px solid dimgray;">
+							<div id="neutral_words_div" style="padding:10px; height: 500px; overflow: auto;">
+									
+							</div>	
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="modal-footer">
+			  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div> -->
+		  </div>
+		</div>
+	   </div>
+		<!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script> -->
+		<script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
+		<script src="https://d3js.org/d3.v3.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.js"></script>
+    	<script src="{{ url_for('static', filename='js/parallel_coordinates.js') }}"></script>
+    	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    	<script src="{{ url_for('static', filename='js/histogram.js') }}"></script>
+    	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.5.0/nouislider.js"></script>
+    	<script src="{{ url_for('static', filename='js/slider.js') }}"></script>
+  </body>
+</html>

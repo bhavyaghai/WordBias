@@ -1,0 +1,140 @@
+/*used for defining the custom color of the website*/
+.site-color { 
+  background-color: #0f4191 !important;
+  border-color: #0f4191 !important;
+}
+.scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+.feature{
+  display: inline-block;
+  padding-bottom: 20px;
+
+}
+.controls{
+  /*width:80%;*/
+  margin-top: 30px;
+  margin-left: 150px ;
+}
+.control{
+  display: inline-block;
+  padding-right: 30px;
+  padding-bottom: 10px;
+
+}
+input[type="range"]{
+  width: 100px;
+}
+
+/*used to set padding to leftmost object*/
+.set-padding{
+	padding-left: 30px; 
+	padding-top: 30px;
+
+}
+.axisGrey line{
+  opacity: 0.3;
+}
+.axisGrey path{
+  opacity: 0.3;
+}
+
+.axisGrey text{
+  opacity: 0.3;
+} 
+/*.tick {
+  opacity: 0.3;
+}*/
+
+path{
+	background-blend-mode:lighten;
+}
+
+.main_knobs .rs-range {
+    stroke: rgb(102, 204, 102);
+    stroke-opacity:1;
+    background-color: rgb(102, 204, 102);
+}
+
+.change_knobs .rs-range {
+    stroke: #F2711C;
+    stroke-opacity:1;
+    background-color: #ff8d00;
+}
+
+.change_knobs .rs-border {
+    stroke:none;
+}
+.rs-tooltip-text {
+  font-size: 10px;
+  color:green;
+}
+/*.rs-tooltip.edit {
+    padding: 5px 8px;
+    padding-top: 5px;
+    padding-right: 8px;
+    padding-bottom: 5px;
+    padding-left: 8px;
+}*/
+
+.tooltip {
+      position: absolute;
+      width: 200px;
+      height: auto;
+      padding: 8px;
+      background-color: #F2711C;
+      color: #fff;
+      opacity: 0.9;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+      border-radius: 10px;
+      -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+      -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+      pointer-events: none;
+    }
+    .tooltip.hidden {
+      display: none;
+    }
+    .tooltip p {
+      margin: 0;
+      font-family: Futura;
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+.rect {
+    fill: white;
+    stroke-opacity: 0.7;
+    opacity: 0;
+}
+.latent {
+    fill: white;
+    stroke: black;
+    stroke-width: 0.8;
+    stroke-opacity: 0.4;
+    /*opacity: 0;*/
+}
+.maininput{
+  width: 50px;
+  height: 20px;
+  border:none;
+  background:none;
+  font-size: 12px;
+  color:rgb(102, 204, 102);
+}
+
+.changeinput{
+  width: 50px;
+  height: 20px;
+  border:none;
+  background:none;
+  font-size: 12px;
+  color:#F2711C;
+}
+
+
+
+

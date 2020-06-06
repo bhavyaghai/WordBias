@@ -20,7 +20,7 @@ from functools import wraps, update_wrapper
 from py_thesaurus import Thesaurus
 
 
-app = Flask(__name__, static_url_path='', static_folder='', template_folder='')
+app = Flask(__name__, template_folder='templates')
 
 language = "en"
 df, df_tar, model = None, None, None
@@ -29,11 +29,24 @@ eco_bias = [("rich","wealthy"),("poor","impoverished")]
 race_bias = [("african","black"),("european","white")]
 bias_words = {"gender":gender_bias, "eco":eco_bias, "race":race_bias}
 
+@app.route('/setModelBackup/<name>')
+def setModelBackup(name="Word2Vec"):
+    global model, df
+    model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True)
+    #df = pd.read_csv("./data/bias.csv",header=0, keep_default_na=False)
+    df = pd.read_csv("./data/all_biases_10k.csv",header=0, keep_default_na=False)
+    # print(len(df))
+    df = df
+    return "success"
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+@app.route('/biasViz')
+def biasViz():
+    setModelBackup()
+    return render_template('biasViz.html')
 
 @app.route('/setModel')
 def setModel():
@@ -77,7 +90,7 @@ def setModel():
 @app.route('/get_csv/')
 def get_csv():
     global df
-    df2 = df[["word", "race", "gender", "eco"]].head(200)
+    df2 = df[["word", "race", "gender", "eco"]]
     out = df2.to_json(orient='records')
     return out
 
@@ -101,7 +114,7 @@ def fetch_data():
     # histogram selection -- list of 4 int
     slider_sel = request.args.getlist("slider_sel[]")
     slider_sel = [float(x) for x in slider_sel]
-    print("Slider selection: ", slider_sel)
+    # print("Slider selection: ", slider_sel)
     # list of selected index based on selection
     ind = pd.Series([False]*df.shape[0])
     if slider_sel[0]!=slider_sel[1]:
@@ -110,10 +123,10 @@ def fetch_data():
     if slider_sel[2]!=slider_sel[3]:
         ind = ind | ((filter_column >= slider_sel[2]) & (filter_column <= slider_sel[3]))
 
-    print("selected dataframe: ")
+    # print("selected dataframe: ")
     col_list = ["word"] + col_list
-    print(df.loc[ind, col_list].shape)
-    print(df.loc[ind, col_list])
+    # print(df.loc[ind, col_list].shape)
+    # print(df.loc[ind, col_list])
     out = df.loc[ind, col_list].to_json(orient='records')
     return out
 
@@ -133,7 +146,7 @@ def get_histogram(type_var):
     else:
         val = df[type_var.lower()]
     out = {"values":val.tolist(), "min":np.min(val), "max":np.max(val)}
-    return out
+    return jsonify(out)
 
 
 @app.route('/get_tar_words/<selVal>')
