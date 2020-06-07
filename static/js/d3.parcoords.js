@@ -951,7 +951,7 @@ pc.updateAxes = function(animationTime) {
 
   g = pc.svg.selectAll(".dimension");
   g.transition().duration(animationTime)
-    .attr("transform", function(p) {console.log(p); return "translate(" + position(p) + ")"; })
+    .attr("transform", function(p) { return "translate(" + position(p) + ")"; })
     .attr("id",function(p){ return p+"_dimension"})
     .style("opacity", 1);
 

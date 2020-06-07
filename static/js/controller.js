@@ -1,12 +1,11 @@
-var thresh;
-var words,active_words;
-var data,active_data,hideAxis=false, neighbors,selected_word ="none";
-var pc
-var attrs = ["gender","race","economic_status"],
+var thresh,
+words,active_words,selected_word ="none",
+data,active_data, neighbors,
+pc,
+attrs = ["gender","race","economic_status"],
 categories = [{"gender":"Male","race":"Caucasian","economic_status":"Rich"},
-              {"gender":"Female","race":"African American","economic_status":"Poor"}];
-categories1 = [{"word":"Male","gender":"Caucasian","race":"Rich"},
-              {"word":"Female","gender":"African American","race":"Poor"}];
+              {"gender":"Female","race":"African American","economic_status":"Poor"}],
+hideAxis=false, inSearch= false;
 
 // called when the application is first loaded 
 $( document ).ready(function() {
@@ -18,9 +17,15 @@ $( document ).ready(function() {
       this.data = data.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})
       console.log(data.length)
       this.words = data.map(function(d){return {title:d.word}})
+      $('.ui.search').search('refresh')
       $('.ui.search')
         .search({
-          source: words
+          source: words,
+          onSelect: function(d){
+            inSearch = true
+            // console.log(d)
+            // searchWords(d)
+          }
         });
       // this.pc = createParallelCoord(this.data);
       plot_histogram()
@@ -92,14 +97,6 @@ function highlightWords(word,neighbors){
     showText(data_rows,word)
 
 }
-// function moveLabels(){
-//   // $(".polarity1").empty()
-//   // $(".polarity2").empty()
-//   attrs.forEach(function(attr){
-//     console.log(d3.select(".polarity1").text())
-//   })
-
-// }
 function cloneCanvas(){
   var canvas = $('.foreground')
   console.log(canvas.width())
@@ -169,7 +166,6 @@ function onChangeHistogram() {
           pc.updateAxes()
         }
         else if(!hideAxis){
-          // moveLabels()
           pc.hideAxis(["word"])
           hideAxis = true
         }
@@ -182,32 +178,37 @@ function onChangeHistogram() {
       }
   });
 }
-$("body").on("mouseover",".result",function(){
+function searchWords(word){
   
-  word = $(this).find(".title").html()
-  selected_word = word
-  // console.log(data[0])
   $.get("/search/"+word, {
       //type: bias_identify_type
   }, res=>{
     highlightWords(word,res)
   })
-  // console.log(pc.dimensions()['gender'].yscale(data_row[0]['gender']))
-  // console.log(pc.position("gender"))
-})
-$("body").on("mouseout",".result",function(){
+}
+function cancelHighlight(){
   if(active_words.length<70){
     console.log("mouseout")
-    // pc.clear("highlight")
-    // console.log(new_words,active_words)
     pc.dimensions()["word"].yscale.domain(active_words)
     pc.dimensions()["word"].tickValues = active_words
     pc.updateAxes()
-    // pc
-    
-  }
-  pc.unhighlight()
-  
+
+    }
+    pc.unhighlight()
+}
+$("body").on("mouseover",".result",function(){
+  inSearch = false
+  word = $(this).find(".title").html()
+  selected_word = word
+  searchWords(word)
+})
+$("body").on("mouseout",".result",function(){
+  if(!inSearch)
+    cancelHighlight()  
+})
+$(".cancel.icon").on("click",function(){
+  $(".ui.search").search("set value","")
+  cancelHighlight()
 })
 
 $("#alpha_input").on("change",function(){
