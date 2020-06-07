@@ -59,61 +59,84 @@ function createZeroLine(){
 Word search and highlight functions
 */
 function showText(data_rows, word){
+  if(hideAxis)
+    attr = "gender"
+  else
+    attr = "word"
+
   ctx = pc.ctx['highlight']
   console.log(ctx,word)
   ctx.font = "14px sans-serif"
   ctx.textAlign = "end";
-  attr = "gender"
+  
   x = pc.position(attr)
+  y1 = 10
   data_rows.forEach(function(row){
     y = pc.dimensions()[attr].yscale(row[attr])
+    console.log(row[attr],y)
     if(row['word'] == word)
       ctx.fillStyle = "#43a2ca";
     else
       ctx.fillStyle = "orange";
-    ctx.fillText(row['word'], x-10, y);
+
+    if (typeof y == 'undefined'){
+      ctx.fillText(row['word'], x-10, y1+3);
+      if(!hideAxis){
+        ctx.strokeStyle = "orange"
+        ctx.beginPath();
+        ctx.moveTo(x, y1+3) 
+        ctx.lineTo(pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"])) 
+        ctx.stroke();
+      }
+    }
+    else
+      ctx.fillText(row['word'], x-10, y+3);
+
+    y1 += 20
   })
   
 }
 function highlightWords(word,neighbors){
   // console.log(neighbors)
+  $("#word_dimension .tick text").animate({"opacity":"0.1"},500)
   this.neighbors = neighbors
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
-  if(active_words.length <70){
-    new_words = [...active_words]
-    data_rows.forEach(function(row){
-      if(active_words.indexOf(row['word'] == -1))
-        new_words.push(row['word'])
-    })
-    pc.dimensions()["word"].yscale.domain(new_words)
-    pc.dimensions()["word"].tickValues = new_words
-    pc.updateAxes()
+  // if(active_words.length <70){
+  //   new_words = [...active_words]
+  //   data_rows.forEach(function(row){
+  //     if(active_words.indexOf(row['word'] == -1))
+  //       new_words.push(row['word'])
+  //   })
+  //   // pc.dimensions()["word"].yscale.domain(new_words)
+  //   // pc.dimensions()["word"].tickValues = new_words
+  //   // pc.updateAxes()
     
-  }
-  console.log(word,data_rows)
+  // }
+  // console.log(word,data_rows)
   pc.highlight(data_rows)
   
-  if(active_words.length >= 70)
-    showText(data_rows,word)
+  // if(active_words.length >= 70)
+  showText(data_rows,word)
 
 }
+function cancelHighlight(){
+  if(active_words.length<70){
+    console.log("mouseout")
+    // pc.dimensions()["word"].yscale.domain(active_words)
+    // pc.dimensions()["word"].tickValues = active_words
+    $("#word_dimension .tick text").animate({"opacity":"1"},500)
+    // pc.updateAxes()
+
+  }
+  pc.unhighlight()
+}
 function searchWords(word){
-  
+  selected_word = word
   $.get("/search/"+word, {
       //type: bias_identify_type
   }, res=>{
     highlightWords(word,res)
   })
-}
-function cancelHighlight(){
-  if(active_words.length<70){
-    console.log("mouseout")
-    pc.dimensions()["word"].yscale.domain(active_words)
-    pc.dimensions()["word"].tickValues = active_words
-    pc.updateAxes()
-
-  }
-  pc.unhighlight()
 }
 
 /*
@@ -188,7 +211,9 @@ function onChangeHistogram() {
   });
 }
 
-// on dropdown menu for histogram type -- ALL, gender, etc.
+/* 
+on dropdown menu for histogram type -- ALL, gender, etc.
+*/
 $('#histogram_type').change(function(event) {
     console.log("Change dropdown menu - histogram_type")
     if($('#slider').text().length != 0) { // If slider for histogram exist
@@ -197,13 +222,23 @@ $('#histogram_type').change(function(event) {
     } 
 });
 
+$("body").on("mouseover","#word_dimension .tick text",function(){
+  // console.log("mouseover")
+  // console.log($(this).html())
+  searchWords($(this).html())
+})
+$("body").on("mouseout","#word_dimension .tick text",function(){
+  // console.log("mouseover")
+  // console.log($(this).html())
+  cancelHighlight()
+})
+
 /*
 Search events
 */
 $("body").on("mouseover",".result",function(){
   inSearch = false
   word = $(this).find(".title").html()
-  selected_word = word
   searchWords(word)
 })
 $("body").on("mouseout",".result",function(){
