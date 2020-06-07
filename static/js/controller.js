@@ -1,10 +1,12 @@
 var thresh;
 var words,active_words;
-var data,active_data, neighbors,selected_word ="none";
+var data,active_data,hideAxis=false, neighbors,selected_word ="none";
 var pc
 var attrs = ["gender","race","economic_status"],
 categories = [{"gender":"Male","race":"Caucasian","economic_status":"Rich"},
               {"gender":"Female","race":"African American","economic_status":"Poor"}];
+categories1 = [{"word":"Male","gender":"Caucasian","race":"Rich"},
+              {"word":"Female","gender":"African American","race":"Poor"}];
 
 // called when the application is first loaded 
 $( document ).ready(function() {
@@ -55,7 +57,7 @@ function createZeroLine(){
 function showText(data_rows, word){
   ctx = pc.ctx['highlight']
   console.log(ctx,word)
-  ctx.font = "14px Verdana"
+  ctx.font = "14px sans-serif"
   ctx.textAlign = "end";
   attr = "gender"
   x = pc.position(attr)
@@ -69,34 +71,8 @@ function showText(data_rows, word){
   })
   
 }
-// function listWords(data){
-//   // data.sort(function(a, b){return b.gender - a.gender})
-//   ctx = pc.ctx['words']
-//   // ctx_word = $(".words").getContext("2d")
-//   ctx.font = "10px Verdana"
-//   ctx.textAlign = "end";
-//   // ctx.fillStyle = "#43a2ca";
-//   // ctx.strokeStyle = "#43a2ca"
-//   // ctx.lineWidth = 1.4
-//   // console.log(ctx.globalAlpha)
-//   // ctx.globalAlpha = 0.8
-//   attr = "gender"
-//   x = pc.position(attr)
-//   y = 10
-//   step = 690/data.length
-//   data.forEach(function(row){
-//     // console.log(pc.dimensions()[attr].yscale)
-//     ctx.fillText(row['word'], x-210, y);
-//     ctx.beginPath();
-//     ctx.moveTo(x-200, y)
-//     ctx.lineTo(x, pc.dimensions()[attr].yscale(row[attr]))
-//     ctx.stroke();
-//     y +=step
-//   })
-
-// }
 function highlightWords(word,neighbors){
-  console.log(neighbors)
+  // console.log(neighbors)
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
   if(active_words.length <70){
     new_words = [...active_words]
@@ -115,10 +91,15 @@ function highlightWords(word,neighbors){
   if(active_words.length>= 70)
     showText(data_rows,word)
 
-  // neighbors = data.filter(function(d,i){return i== 1 || i==23 || i==50})
-  // console.log(neighbors)
-
 }
+// function moveLabels(){
+//   // $(".polarity1").empty()
+//   // $(".polarity2").empty()
+//   attrs.forEach(function(attr){
+//     console.log(d3.select(".polarity1").text())
+//   })
+
+// }
 function cloneCanvas(){
   var canvas = $('.foreground')
   console.log(canvas.width())
@@ -134,9 +115,9 @@ function plot_histogram() {
     }, res=>{
         min_val = res["min"]
         max_val = res["max"]
-        console.log("Min and max val: ", min_val, "    ", max_val)
+        // console.log("Min and max val: ", min_val, "    ", max_val)
         values = res["values"]
-        console.log(values.length)
+        // console.log(values.length)
         // clear existing histogram
         $("#histogram").empty();
         createHistogram(values)
@@ -175,33 +156,30 @@ function onChangeHistogram() {
   }, res => {
       this.active_data = JSON.parse(res).map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})
       this.active_words = active_data.map(function(d){return d.word})
-      console.log(active_data)
+      // console.log(active_data)
       if(this.pc){
         // console.log(pc.dimensions()["word"])
         if(active_words.length <70){
-          pc.hideAxis([])
+          if(hideAxis){
+            pc.hideAxis([])
+            hideAxis = false
+          }
           pc.dimensions()["word"].yscale.domain( active_words)
           pc.dimensions()['word'].tickValues = active_words
           pc.updateAxes()
         }
-        else{
-          // pc.dimensions()["word"].yscale.domain( active_words)
-          // pc.dimensions()['word'].tickValues = []
-          // pc.updateAxes()
+        else if(!hideAxis){
+          // moveLabels()
           pc.hideAxis(["word"])
-          pc.updateAxes()
-          pc.render()
+          hideAxis = true
         }
-        
         this.pc.data(active_data).render()
       }
       else{
         this.pc = createParallelCoord(active_data);
         pc.render()
-        cloneCanvas()
+        // cloneCanvas()
       }
-      // if(active_words.length < 50)
-      //   listWords(active_data)
   });
 }
 $("body").on("mouseover",".result",function(){
@@ -221,7 +199,7 @@ $("body").on("mouseout",".result",function(){
   if(active_words.length<70){
     console.log("mouseout")
     // pc.clear("highlight")
-    console.log(new_words,active_words)
+    // console.log(new_words,active_words)
     pc.dimensions()["word"].yscale.domain(active_words)
     pc.dimensions()["word"].tickValues = active_words
     pc.updateAxes()

@@ -771,16 +771,6 @@ pc.createAxes = function() {
       .each(function(d) {
         var axisElement = d3.select(this).call( pc.applyAxisConfig(axis, __.dimensions[d]) );
 
-        // axisElement.selectAll("rect")
-        //     .attr("class","axis_rect")
-        //     .attr("x1", 0)
-        //     .attr("y1", 0)
-        //     .attr("width", 10)
-        //     .attr("height", 50)
-        //     .style("fill", "blue")
-        //     .style("stroke", "#222")
-        //     .style("shape-rendering", "crispEdges");
-
         axisElement.selectAll("path")
             .attr("class","axis_path")
             .style("fill", "none")
@@ -867,11 +857,12 @@ pc.updateAxes = function(animationTime) {
   if (typeof animationTime === 'undefined') {
     animationTime = __.animationTime;
   }
-
+  // console.log("update!!!",pc.getOrderedDimensionKeys())
   var g_data = pc.svg.selectAll(".dimension").data(pc.getOrderedDimensionKeys());
 
   // Enter
-  g_data.enter().append("svg:g")
+  ax = g_data.enter().append("svg:g")
+      .attr("id",function(d) {return d+"_dimension"})
       .attr("class", "dimension")
       .attr("transform", function(p) { return "translate(" + position(p) + ")"; })
       .style("opacity", 0)
@@ -879,6 +870,7 @@ pc.updateAxes = function(animationTime) {
       .attr("class", "axis")
       .attr("transform", "translate(0,0)")
       .each(function(d) {
+        console.log(g)
         var axisElement = d3.select(this).call( pc.applyAxisConfig(axis, __.dimensions[d]) );
 
         axisElement.selectAll("path")
@@ -893,17 +885,38 @@ pc.updateAxes = function(animationTime) {
             .style("opacity","0.5")
             .style("shape-rendering", "crispEdges");
       })
-    .append("svg:text")
+
+  ax.append("svg:text")
       .attr({
         "text-anchor": "middle",
         "y": 0,
         "transform": "translate(0,-10) rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
-        "class": "label"
+        "class": "label",
+        "font-weight": "bold"
       })
       .text(dimensionLabels)
       .on("dblclick", flipAxisAndUpdatePCP)
       .on("wheel", rotateLabels);
+  ax.append("svg:text")
+      .attr({
+        "text-anchor": "left",
+        "y": 0,
+        "transform": "translate(20,5) rotate(" + __.dimensionTitleRotation + ")",
+        "x": 0,
+        "class": "label"
+      })
+      .text(function(d){ return categories[0][d]})
+
+    ax.append("svg:text")
+      .attr({
+        "text-anchor": "left",
+        "y": 0,
+        "transform": "translate(20,"+(h()+2)+") rotate(" + __.dimensionTitleRotation + ")",
+        "x": 0,
+        "class": "label"
+      })
+      .text(function(d){ return categories[1][d]})
 
   // Update
   g_data.attr("opacity", 0);
@@ -916,7 +929,7 @@ pc.updateAxes = function(animationTime) {
     .transition()
       .duration(animationTime)
       .text(dimensionLabels)
-      .attr("transform", "translate(0,-10) rotate(" + __.dimensionTitleRotation + ")");
+      .attr("transform", "translate(0,-10) rotate(" + __.dimensionTitleRotation + ")")
 
   // Exit
   g_data.exit().remove();
@@ -924,7 +937,13 @@ pc.updateAxes = function(animationTime) {
   g = pc.svg.selectAll(".dimension");
   g.transition().duration(animationTime)
     .attr("transform", function(p) { return "translate(" + position(p) + ")"; })
+    .attr("id",function(p){ return p+"_dimension"})
     .style("opacity", 1);
+
+  // g.selectAll(".polarity2")
+  //   .transition()
+  //     .duration(animationTime)
+  //     .attr("transform", "translate(20,"+(h()+2)+") rotate(" + __.dimensionTitleRotation + ")");
 
   pc.svg.selectAll(".axis")
     .transition()
