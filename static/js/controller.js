@@ -23,8 +23,11 @@ $( document ).ready(function() {
           source: words,
           onSelect: function(d){
             inSearch = true
-            // console.log(d)
-            // searchWords(d)
+            $("#neighbors_list").empty()
+            neighbors.forEach(function(neighbor,i){
+              if(i<20)
+                $("#neighbors_list").append('<div class="item">'+neighbor+'</div>')
+            })
           }
         });
       // this.pc = createParallelCoord(this.data);
@@ -78,6 +81,7 @@ function showText(data_rows, word){
 }
 function highlightWords(word,neighbors){
   // console.log(neighbors)
+  this.neighbors = neighbors
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
   if(active_words.length <70){
     new_words = [...active_words]
@@ -96,13 +100,6 @@ function highlightWords(word,neighbors){
   if(active_words.length>= 70)
     showText(data_rows,word)
 
-}
-function cloneCanvas(){
-  var canvas = $('.foreground')
-  console.log(canvas.width())
-  clone = canvas.clone(); // true means clone all childNodes and all event handlers
-  clone.attr("class", "words");
-  $("#parallel_coord").append(clone);
 }
 function plot_histogram() {
   hist_type = $("#histogram_type").val();
@@ -209,6 +206,7 @@ $("body").on("mouseout",".result",function(){
 $(".cancel.icon").on("click",function(){
   $(".ui.search").search("set value","")
   cancelHighlight()
+  $("#neighbors_list").empty()
 })
 
 $("#alpha_input").on("change",function(){
