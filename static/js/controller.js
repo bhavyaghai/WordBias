@@ -7,11 +7,10 @@ categories = [{"gender":"Male","race":"Caucasian","economic_status":"Rich"},
               {"gender":"Female","race":"African American","economic_status":"Poor"}],
 hideAxis=false, inSearch= false;
 
-// called when the application is first loaded 
+/* 
+called when the application is first loaded 
+*/
 $( document ).ready(function() {
-    // load default target words
-    // load_default_words()
-
     // create parallel plot
     d3.json("/get_csv/", function(data) {
       this.data = data.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})
@@ -32,18 +31,14 @@ $( document ).ready(function() {
         });
       // this.pc = createParallelCoord(this.data);
       plot_histogram()
-      // pc.dimensions()
-      // console.log(pc.dimensions())
-      // createZeroLine()
     });
 });
 
+/*
+Create zero divider
+*/
 function createZeroLine(){
-  // console.log(pc.svg)
-    // ctx = pc.ctx['highlight']
     d = "M "
-    // x = pc.position(attrs[0])
-    // y = pc.dimensions()[attrs[0]].yscale(0)
     for(i=0;i<attrs.length;i++){
       // console.log(x,y)
       x = pc.position(attrs[i])
@@ -58,10 +53,11 @@ function createZeroLine(){
       .attr("d", d)
       .attr( "stroke","grey")
       .attr( "stroke-width","3")
-       // fill="none"></path>')
-
 }
 
+/*
+Word search and highlight functions
+*/
 function showText(data_rows, word){
   ctx = pc.ctx['highlight']
   console.log(ctx,word)
@@ -97,10 +93,32 @@ function highlightWords(word,neighbors){
   console.log(word,data_rows)
   pc.highlight(data_rows)
   
-  if(active_words.length>= 70)
+  if(active_words.length >= 70)
     showText(data_rows,word)
 
 }
+function searchWords(word){
+  
+  $.get("/search/"+word, {
+      //type: bias_identify_type
+  }, res=>{
+    highlightWords(word,res)
+  })
+}
+function cancelHighlight(){
+  if(active_words.length<70){
+    console.log("mouseout")
+    pc.dimensions()["word"].yscale.domain(active_words)
+    pc.dimensions()["word"].tickValues = active_words
+    pc.updateAxes()
+
+  }
+  pc.unhighlight()
+}
+
+/*
+Plot histogram, and histogram change functions
+*/
 function plot_histogram() {
   hist_type = $("#histogram_type").val();
   console.log(hist_type)
@@ -130,14 +148,6 @@ function plot_histogram() {
         onChangeHistogram();
   });
 }
-// on dropdown menu for histogram type -- ALL, gender, etc.
-$('#histogram_type').change(function(event) {
-    console.log("Change dropdown menu - histogram_type")
-    if($('#slider').text().length != 0) { // If slider for histogram exist
-          console.log("slider exist");
-          plot_histogram(); 
-    } 
-});
 
 // fetch and replot parallel coordiante
 function onChangeHistogram() {
@@ -148,7 +158,9 @@ function onChangeHistogram() {
     hist_type : hist_type,
     slider_sel : slider_ranges
   }, res => {
-      this.active_data = JSON.parse(res).map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})
+      this.active_data = JSON.parse(res).map(function(d){
+        return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}
+      })
       this.active_words = active_data.map(function(d){return d.word})
       // console.log(active_data)
       if(this.pc){
@@ -175,24 +187,19 @@ function onChangeHistogram() {
       }
   });
 }
-function searchWords(word){
-  
-  $.get("/search/"+word, {
-      //type: bias_identify_type
-  }, res=>{
-    highlightWords(word,res)
-  })
-}
-function cancelHighlight(){
-  if(active_words.length<70){
-    console.log("mouseout")
-    pc.dimensions()["word"].yscale.domain(active_words)
-    pc.dimensions()["word"].tickValues = active_words
-    pc.updateAxes()
 
-    }
-    pc.unhighlight()
-}
+// on dropdown menu for histogram type -- ALL, gender, etc.
+$('#histogram_type').change(function(event) {
+    console.log("Change dropdown menu - histogram_type")
+    if($('#slider').text().length != 0) { // If slider for histogram exist
+        console.log("slider exist");
+        plot_histogram(); 
+    } 
+});
+
+/*
+Search events
+*/
 $("body").on("mouseover",".result",function(){
   inSearch = false
   word = $(this).find(".title").html()
@@ -209,6 +216,9 @@ $(".cancel.icon").on("click",function(){
   $("#neighbors_list").empty()
 })
 
+/*
+paracoord.js library events
+*/
 $("#alpha_input").on("change",function(){
   alpha =+ $(this).val()
   pc.alpha(alpha).render()
@@ -230,6 +240,10 @@ $("#bundle_dimension").dropdown({
     pc.bundleDimension(value)}
     // $("#bundle_text").html(bundle)
 })
+
+/*
+Bias options change events
+*/
 $("#dropdown_embedding").dropdown({
   // onChange: function(value){
   //   console.log(value)
