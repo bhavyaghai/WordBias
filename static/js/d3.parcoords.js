@@ -749,6 +749,10 @@ function dimensionLabels(d) {
   return __.dimensions[d].title ? __.dimensions[d].title : d;  // dimension display names
 }
 
+function dimensionPolarity(d,i){
+  return categories[i][d]
+}
+
 pc.createAxes = function() {
   if (g) pc.removeAxes();
 
@@ -807,7 +811,7 @@ pc.createAxes = function() {
         "y": 0,
         "transform": "translate(20,5) rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
-        "class": "label"
+        "class": "polarity1"
       })
       .text(function(d){ return categories[0][d]})
 
@@ -817,7 +821,7 @@ pc.createAxes = function() {
         "y": 0,
         "transform": "translate(20,"+(h()+2)+") rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
-        "class": "label"
+        "class": "polarity2"
       })
       .text(function(d){ return categories[1][d]})
 
@@ -904,7 +908,7 @@ pc.updateAxes = function(animationTime) {
         "y": 0,
         "transform": "translate(20,5) rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
-        "class": "label"
+        "class": "polarity1"
       })
       .text(function(d){ return categories[0][d]})
 
@@ -914,7 +918,7 @@ pc.updateAxes = function(animationTime) {
         "y": 0,
         "transform": "translate(20,"+(h()+2)+") rotate(" + __.dimensionTitleRotation + ")",
         "x": 0,
-        "class": "label"
+        "class": "polarity2"
       })
       .text(function(d){ return categories[1][d]})
 
@@ -931,12 +935,23 @@ pc.updateAxes = function(animationTime) {
       .text(dimensionLabels)
       .attr("transform", "translate(0,-10) rotate(" + __.dimensionTitleRotation + ")")
 
+  g_data.select(".polarity1")
+    .transition()
+      .duration(animationTime)
+      .text(function(d){return dimensionPolarity(d,0)})
+      .attr("transform", "translate(20,5) rotate(" + __.dimensionTitleRotation + ")")
+  g_data.select(".polarity2")
+    .transition()
+      .duration(animationTime)
+      .text(function(d){return dimensionPolarity(d,1)})
+      .attr("transform", "translate(20,"+(h()+2)+") rotate(" + __.dimensionTitleRotation + ")")
+
   // Exit
   g_data.exit().remove();
 
   g = pc.svg.selectAll(".dimension");
   g.transition().duration(animationTime)
-    .attr("transform", function(p) { return "translate(" + position(p) + ")"; })
+    .attr("transform", function(p) {console.log(p); return "translate(" + position(p) + ")"; })
     .attr("id",function(p){ return p+"_dimension"})
     .style("opacity", 1);
 
