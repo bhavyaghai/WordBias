@@ -110,7 +110,7 @@ function highlightWords(word,neighbors=[]){
   $("#neighbors_list").empty()
     neighbors.forEach(function(neighbor,i){
       if(i<20)
-        $("#neighbors_list").append('<div class="item">'+neighbor+'</div>')
+        $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
   })
 
 }
@@ -222,21 +222,31 @@ $("body").on("mouseover","#word_dimension .tick text",function(){
     highlightWords($(this).html())
 })
 $("body").on("click","svg",function(e){
-  if ($("#word_dimension .tick text").contains(e.target)){
-    inSearch = true
-    searchWords($(this).html())
+  // if ($("#word_dimension .tick text").contains(e.target)){
+    // target = $(e.target)
+    console.log(e.target.nodeName)
+    
+    if(e.target.nodeName == "text"){
+      // console.log(target)
+      inSearch = true
+      searchWords($(e.target).html())
+    }
+    else{
+      inSearch = false
+      cancelHighlight()
+    }
 
-  } 
+  // } 
 })
 $("body").on("mouseout","#word_dimension .tick text",function(){
   cancelHighlight()
 })
-$("body").on("click","svg",function(){
-  if(inSearch){
-    inSearch = false
-    cancelHighlight()
-  }
-})
+// $("body").on("click","svg",function(){
+//   if(inSearch){
+//     inSearch = false
+//     cancelHighlight()
+//   }
+// })
 
 /*
 Search events
