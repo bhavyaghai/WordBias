@@ -31,6 +31,12 @@ input[type="range"]{
 path{
 	background-blend-mode:lighten;
 }
+html,body{
+  height: 100%
+}
+.list-group-item{
+  background: #F8F8F8 !important;
+}
 
 
 

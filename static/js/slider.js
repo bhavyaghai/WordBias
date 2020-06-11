@@ -5,7 +5,7 @@ console.log($("#histogram").width())
 
 // val_n represents initial position of 4 headers in the slider accompnaying the histogram
 function createSlider(val1, val2, val3, val4) {
-    $("#slider").css("width",$("#histogram>svg").width())
+    $("#slider").css("width",$("#histogram>svg").width()-50)
     min_val = val1 - 0.01;
     max_val = val4 + 0.01;
     $("#slider").empty();

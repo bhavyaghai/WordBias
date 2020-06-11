@@ -4,8 +4,8 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-2">
-            <div class="row ui segment" id="features">
+        <div class="col-lg-2" style="background-color: #F8F8F8">
+            <div id="features" style="border-bottom: 1px solid #DCDCDC;">
                 <div class="feature">
                     <label><h4>Word Embeddings</h4></label>
                     <select id="dropdown_embedding" class="ui dropdown">
@@ -28,7 +28,7 @@
                     </select>
                 </div>   
             </div>
-            <!-- <div class="row"> -->
+            <!-- <div style="border-bottom: 1px solid #DCDCDC;"> -->
                 <div class="feature">
                     <label><h4>Histrogram Attribute</h4></label>
                     <select id="histogram_type" class="ui dropdown">
@@ -42,7 +42,7 @@
                 <div id="slider"></div>    
             <!-- </div> -->
         </div>
-        <div class="col-lg-8 ui segment" style="margin-top:0"> 
+        <div class="col-lg-8" style="margin-top:0"> 
             <div class="controls">
                 <div class="control">
                     <p>Alpha/opacity</p>
@@ -79,8 +79,8 @@
             </div>   
             <div id="parallel_coord" class="parcoords"></div>     
         </div>
-        <div class="col-lg-2" style="height: 100%">
-            <div class="row ui segment">
+        <div class="col-lg-2" style="background-color: #F8F8F8">
+            <!-- <div class="row"> -->
                 <div class="ui search feature">
                   <div class="ui icon input">
                     <!-- <i class="cancel icon"></i> -->
@@ -95,7 +95,7 @@
                     <h4>Neighbours in High Dimensions</h4>
                     <ul id="neighbors_list" class="list-group list-group-flush" style="overflow: scroll;"></ul>            
                 </div>   
-            </div>
+            <!-- </div> -->
             
         </div>
         
