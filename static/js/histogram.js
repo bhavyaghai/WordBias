@@ -8,7 +8,7 @@ function createHistogram(values) {
     // A formatter for counts.
     var formatCount = d3.format(",.0f");
 
-    var max_width=$("#histogram").width(), max_height=$("#histogram").height();
+    var max_width=$(".feature").width(), max_height=$("#histogram").height();
     var margin = {top: 5, right: 0, bottom: 10, left: 0},
         width = max_width - margin.left - margin.right,
         height = max_height - margin.top - margin.bottom;

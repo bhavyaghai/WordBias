@@ -22,11 +22,8 @@ $( document ).ready(function() {
           source: words,
           onSelect: function(d){
             inSearch = true
-            $("#neighbors_list").empty()
-            neighbors.forEach(function(neighbor,i){
-              if(i<20)
-                $("#neighbors_list").append('<div class="item">'+neighbor+'</div>')
-            })
+            // console.log(d)
+            searchWords(d.title)
           }
         });
       // this.pc = createParallelCoord(this.data);
@@ -65,6 +62,7 @@ function showText(data_rows, word){
     attr = "word"
 
   ctx = pc.ctx['highlight']
+  // ctx.globalAlpha = 0.5;
   console.log(ctx,word)
   ctx.font = "14px sans-serif"
   ctx.textAlign = "end";
@@ -74,15 +72,18 @@ function showText(data_rows, word){
   data_rows.forEach(function(row){
     y = pc.dimensions()[attr].yscale(row[attr])
     console.log(row[attr],y)
-    if(row['word'] == word)
+    if(row['word'] == word){
       ctx.fillStyle = "#43a2ca";
-    else
+      ctx.strokeStyle = "#43a2ca"
+    }
+    else{
       ctx.fillStyle = "orange";
+      ctx.strokeStyle = "orange"
+    }
 
     if (typeof y == 'undefined'){
       ctx.fillText(row['word'], x-10, y1+3);
       if(!hideAxis){
-        ctx.strokeStyle = "orange"
         ctx.beginPath();
         ctx.moveTo(x, y1+3) 
         ctx.lineTo(pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"])) 
@@ -96,42 +97,34 @@ function showText(data_rows, word){
   })
   
 }
-function highlightWords(word,neighbors){
+function highlightWords(word,neighbors=[]){
   // console.log(neighbors)
-  $("#word_dimension .tick text").animate({"opacity":"0.1"},500)
+  selected_word = word
+  $("#word_dimension .tick text").attr("opacity","0.1")
   this.neighbors = neighbors
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
-  // if(active_words.length <70){
-  //   new_words = [...active_words]
-  //   data_rows.forEach(function(row){
-  //     if(active_words.indexOf(row['word'] == -1))
-  //       new_words.push(row['word'])
-  //   })
-  //   // pc.dimensions()["word"].yscale.domain(new_words)
-  //   // pc.dimensions()["word"].tickValues = new_words
-  //   // pc.updateAxes()
-    
-  // }
-  // console.log(word,data_rows)
   pc.highlight(data_rows)
   
   // if(active_words.length >= 70)
   showText(data_rows,word)
+  $("#neighbors_list").empty()
+    neighbors.forEach(function(neighbor,i){
+      if(i<20)
+        $("#neighbors_list").append('<div class="item">'+neighbor+'</div>')
+  })
 
 }
 function cancelHighlight(){
-  if(active_words.length<70){
-    console.log("mouseout")
-    // pc.dimensions()["word"].yscale.domain(active_words)
-    // pc.dimensions()["word"].tickValues = active_words
-    $("#word_dimension .tick text").animate({"opacity":"1"},500)
-    // pc.updateAxes()
-
-  }
-  pc.unhighlight()
+  if(!inSearch){
+    if(active_words.length<70){
+      console.log("mouseout")
+      $("#word_dimension .tick text").attr("opacity","1")
+      // pc.updateAxes()
+    }
+    pc.unhighlight()
+  }   
 }
 function searchWords(word){
-  selected_word = word
   $.get("/search/"+word, {
       //type: bias_identify_type
   }, res=>{
@@ -187,6 +180,8 @@ function onChangeHistogram() {
       this.active_words = active_data.map(function(d){return d.word})
       // console.log(active_data)
       if(this.pc){
+        // inSearch = false
+        // cancelHighlight()
         // console.log(pc.dimensions()["word"])
         if(active_words.length <70){
           if(hideAxis){
@@ -223,14 +218,24 @@ $('#histogram_type').change(function(event) {
 });
 
 $("body").on("mouseover","#word_dimension .tick text",function(){
-  // console.log("mouseover")
-  // console.log($(this).html())
-  searchWords($(this).html())
+  if(!inSearch)
+    highlightWords($(this).html())
+})
+$("body").on("click","svg",function(e){
+  if ($("#word_dimension .tick text").contains(e.target)){
+    inSearch = true
+    searchWords($(this).html())
+
+  } 
 })
 $("body").on("mouseout","#word_dimension .tick text",function(){
-  // console.log("mouseover")
-  // console.log($(this).html())
   cancelHighlight()
+})
+$("body").on("click","svg",function(){
+  if(inSearch){
+    inSearch = false
+    cancelHighlight()
+  }
 })
 
 /*
@@ -239,11 +244,10 @@ Search events
 $("body").on("mouseover",".result",function(){
   inSearch = false
   word = $(this).find(".title").html()
-  searchWords(word)
+  highlightWords(word)
 })
 $("body").on("mouseout",".result",function(){
-  if(!inSearch)
-    cancelHighlight()  
+  cancelHighlight()  
 })
 $(".cancel.icon").on("click",function(){
   $(".ui.search").search("set value","")

@@ -1,7 +1,7 @@
 /*used for defining the custom color of the website*/
 .site-color { 
-  background-color: #0f4191 !important;
-  border-color: #0f4191 !important;
+  background-color: #0779e4 !important;
+  border-color: #40bad5 !important;
 }
 .scrollable-menu {
     height: auto;
@@ -15,13 +15,14 @@
 }
 .controls{
   /*width:80%;*/
-  margin-top: 30px;
-  margin-left: 150px ;
+  margin-top: 0px;
+  margin-bottom: 30px ;
+  margin-left: 50px
 }
 .control{
   display: inline-block;
   padding-right: 30px;
-  padding-bottom: 10px;
+  padding-bottom: 0px;
 
 }
 input[type="range"]{

@@ -1,6 +1,7 @@
 function createParallelCoord(data){
 	// linear color scale
 	$("#parallel_coord").empty()
+	$("#parallel_coord").css("height",4*$(window).height()/5)
 	var blue_to_brown = d3.scale.linear()
 	  .domain([-1, 1])
 	  .range(["steelblue", "brown"])
@@ -26,7 +27,7 @@ function createParallelCoord(data){
 		.bundleDimension("gender")
 		// .hideAxis(['word'])
 	    .composite("darken")
-	    .color("#43a2ca")  // quantitative color scale
+	    .color("#40bad5")  // quantitative color scale
 	    .alpha(0.5)
 	    .mode("queue")
 	    // .render()
@@ -37,37 +38,6 @@ function createParallelCoord(data){
 	  var explore_count = 0;
 	  var exploring = {};
 	  var explore_start = false;
-	  pc1.svg
-	    .selectAll(".dimension")
-	    .style("cursor", "pointer")
-	    .on("click", function(d) {
-	      exploring[d] = d in exploring ? false : true;
-	      event.preventDefault();
-	      if (exploring[d]) d3.timer(explore(d,explore_count));
-	    });
-
-	  function explore(dimension,count) {
-	    if (!explore_start) {
-	      explore_start = true;
-	      d3.timer(pc1.brush);
-	    }
-	    var speed = (Math.round(Math.random()) ? 1 : -1) * (Math.random()+0.5);
-	    return function(t) {
-	      if (!exploring[dimension]) return true;
-	      var domain = pc1.yscale[dimension].domain();
-	      var width = (domain[1] - domain[0])/4;
-
-	      var center = width*1.5*(1+Math.sin(speed*t/1200)) + domain[0];
-
-	      pc1.yscale[dimension].brush.extent([
-	        d3.max([center-width*0.01, domain[0]-width/400]),
-	        d3.min([center+width*1.01, domain[1]+width/100])
-	      ])(pc1.g()
-	          .filter(function(d) {
-	            return d == dimension;
-	          })
-	      )
-	    }
-	  }
+	  
 	  return pc1
 }

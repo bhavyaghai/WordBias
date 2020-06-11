@@ -3,42 +3,9 @@
 {% block content %}
 
 <div class="container-fluid">
-    <br>
     <div class="row">
-        <!-- <div id="attributes_div" class="col-lg-2" >
-            <div class="ui segment">
-                
-                <button id="go" class="ui primary button">
-                  Run
-                </button>
-                <button id="update" class="ui button">
-                  Update
-                </button>
-            </div>
-            <div class="ui segment">
-                <div class="ui list">
-                    <div class="item">
-                        <i class="file outline icon"></i>
-                        <div class="content">
-                          <a id="load_desc_modal" href="#">Learn more about biasViz</a>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <i class="video icon"></i>
-                        <div class="content">
-                          <a href="#">See a tutorial</a>
-                        </div>
-                    </div>
-                </div>
-            </div>  -->  
-        <!-- </div> -->
-        <!-- <div class="col-lg-6"> 
-            <div id="scatter_plot" class="ui segment" style="height:400px;"></div> 
-        </div>  --> 
         <div class="col-lg-2">
-
-            
-            <div id="features">
+            <div class="row ui segment" id="features">
                 <div class="feature">
                     <label><h4>Word Embeddings</h4></label>
                     <select id="dropdown_embedding" class="ui dropdown">
@@ -59,7 +26,9 @@
                         <option>Paired PCA Projection</option>
                         <option>Group Difference</option>
                     </select>
-                </div>
+                </div>   
+            </div>
+            <!-- <div class="row"> -->
                 <div class="feature">
                     <label><h4>Histrogram Attribute</h4></label>
                     <select id="histogram_type" class="ui dropdown">
@@ -68,16 +37,12 @@
                         <option>race</option>
                         <option>eco</option>
                     </select>
-                </div> 
-                
-                <div id="histogram" class="feature" style="height: 200px; width: 300px;margin-top: 40px;"></div>
-                <div id="slider"></div>
-                
-            </div>
-            
+                </div>   
+                <div id="histogram" class="feature" style="height: 200px;"></div>
+                <div id="slider"></div>    
+            <!-- </div> -->
         </div>
-        <div class="col-lg-8">     
-            <div id="parallel_coord" class="parcoords" style="height: 700px"></div>   
+        <div class="col-lg-8 ui segment" style="margin-top:0"> 
             <div class="controls">
                 <div class="control">
                     <p>Alpha/opacity</p>
@@ -95,6 +60,11 @@
                     <span id="bundle_text">0</span>  
                 </div>
                 <div class="control">
+                    <p >Threshold</p>
+                    <input type="range" min="0.0" max="0.50" step="0.01" value="0" id="threshold" onchange="coeff_val_change(this.value)">
+                    <span id="coeff_slider_val">0.0</span>        
+                </div> 
+                <div class="control">
                     <p>Bundle curves by:</p>
                     <select id="bundle_dimension" class="ui dropdown">
                       <!-- <option value="">-----</option> -->
@@ -105,30 +75,28 @@
                 </div>
                 <div class="control">
                     <button id="reset_brush" class="ui button">Reset Brush</button>
-                </div> 
-                <div class="control">
-                    <p >Threshold</p>
-                    <input type="range" min="0.0" max="0.50" step="0.01" value="0" id="threshold" onchange="coeff_val_change(this.value)">
-                    <span id="coeff_slider_val">0.0</span>        
                 </div>    
-            </div>      
+            </div>   
+            <div id="parallel_coord" class="parcoords"></div>     
         </div>
         <div class="col-lg-2">
-            <div class="ui search" style="margin-bottom: 300px">
-              <div class="ui icon input">
-                <!-- <i class="cancel icon"></i> -->
-                <input class="prompt" type="text" placeholder="Search words...">
-                <i class="search icon"></i>
-              </div>
-              <i class="cancel icon" style="cursor: pointer"></i>
-              <div class="results"></div>
-            </div>
+            <div class="row ui segment">
+                <div class="ui search feature">
+                  <div class="ui icon input">
+                    <!-- <i class="cancel icon"></i> -->
+                    <input class="prompt" type="text" placeholder="Search words...">
+                    <i class="search icon"></i>
+                  </div>
+                  <i class="cancel icon" style="cursor: pointer"></i>
+                  <div class="results"></div>
+                </div>
 
-            <div>
-                <h4>Neighbours in High Dimensions</h4>
-                <div id="neighbors_list" class="ui list">
-                </div>            
+                <div>
+                    <h4>Neighbours in High Dimensions</h4>
+                    <div id="neighbors_list" class="ui list"></div>            
+                </div>   
             </div>
+            
         </div>
         
     </div>
