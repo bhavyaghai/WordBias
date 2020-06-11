@@ -121,6 +121,7 @@ function cancelHighlight(){
       $("#word_dimension .tick text").attr("opacity","1")
       // pc.updateAxes()
     }
+    $("#neighbors_list").empty()
     pc.unhighlight()
   }   
 }
@@ -241,12 +242,6 @@ $("body").on("click","svg",function(e){
 $("body").on("mouseout","#word_dimension .tick text",function(){
   cancelHighlight()
 })
-// $("body").on("click","svg",function(){
-//   if(inSearch){
-//     inSearch = false
-//     cancelHighlight()
-//   }
-// })
 
 /*
 Search events
@@ -261,8 +256,9 @@ $("body").on("mouseout",".result",function(){
 })
 $(".cancel.icon").on("click",function(){
   $(".ui.search").search("set value","")
+  inSearch = false
   cancelHighlight()
-  $("#neighbors_list").empty()
+  // $("#neighbors_list").empty()
 })
 
 /*
