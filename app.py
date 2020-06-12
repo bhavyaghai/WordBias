@@ -39,14 +39,17 @@ def setModelBackup(name="Word2Vec"):
     df = df
     return "success"
 
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+	setModelBackup()
+	return render_template('index.html')
+
 
 @app.route('/biasViz')
 def biasViz():
-    setModelBackup()
-    return render_template('biasViz.html')
+	return render_template('old.html')
+
 
 @app.route('/setModel')
 def setModel():

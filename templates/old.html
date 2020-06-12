@@ -2,7 +2,7 @@
   <head>
     <meta charset="utf-8">
     <title>WEBViz: Visualizing social biases encoded in Word Embedding</title>
-	<link rel="stylesheet" href="{{ url_for('static', filename='/css/parallel-coordinates.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/parallel-coordinates.css') }}">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.5.0/nouislider.css" rel="stylesheet">
   </head>
@@ -63,13 +63,13 @@
 					<br>
 
 					<div class="form-group">
-								<label id="gp1_label" for="gp1" style="">Group 1:</label>
+								<label id="gp1_label" for="gp1" style="background-color: orangered; color:white;">Group 1:</label>
 								<select id="gp1_dropdown" style="float:right;" onchange="changeBiastype(this.id)"></select>
 								<p style="clear:left;"></p>
 								<textarea class="form-control" rows="2" id="gp1"></textarea>
 								
 								<br>
-								<label id="gp2_label" for="gp2" style="">Group 2:</label>
+								<label id="gp2_label" for="gp2" style="background-color: green; color:white;">Group 2:</label>
 								<select id="gp2_dropdown" style="float:right;" onchange="changeBiastype(this.id)"></select>
 								<p style="clear:left;"></p>
 								<textarea class="form-control" rows="2" id="gp2"></textarea>
@@ -205,11 +205,11 @@
 		<script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
 		<script src="https://d3js.org/d3.v3.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.js"></script>
-    	<script src="{{ url_for('static', filename='/js/parallel_coordinates.js') }}"></script>
-    	<script src="{{ url_for('static', filename='/js/main.js') }}"></script>
-    	<script src="{{ url_for('static', filename='/js/histogram.js') }}"></script>
+    	<script src="{{ url_for('static', filename='js/parallel_coordinates.js') }}"></script>
+    	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    	<script src="{{ url_for('static', filename='js/histogram.js') }}"></script>
     	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     	<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.5.0/nouislider.js"></script>
-    	<script src="{{ url_for('static', filename='/js/slider.js') }}"></script>
+    	<script src="{{ url_for('static', filename='js/slider.js') }}"></script>
   </body>
 </html>
