@@ -1,8 +1,8 @@
 function createParallelCoord(data){
 	// linear color scale
 	$("#parallel_coord").empty()
-	$("#parallel_coord").css("height",4*$(window).height()/5)
-	$("#neighbors_list").css("max-height",4*$(window).height()/5)
+	// $("#parallel_coord").css("height",4*$(window).height()/5)
+	// $("#neighbors_list").css("max-height",4*$(window).height()/5)
 	var blue_to_brown = d3.scale.linear()
 	  .domain([-1, 1])
 	  .range(["steelblue", "brown"])

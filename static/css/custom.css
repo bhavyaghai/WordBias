@@ -1,12 +1,21 @@
+html,body{
+  height: 100%;
+  overflow: hidden;
+}
+.container-fluid, .row, .col-lg-8 .col-lg-2{
+  height: 100%;
+  /*max-height: 100%*/
+}
+.greyed{
+  background-color: #F8F8F8;
+}
 /*used for defining the custom color of the website*/
 .site-color { 
   background-color: #40bad5 !important;
   border-color: #40bad5 !important;
 }
-.scrollable-menu {
-    height: auto;
-    max-height: 200px;
-    overflow-x: hidden;
+.separator{
+  border-bottom: 1px solid #DCDCDC;
 }
 .feature{
   display: inline-block;
@@ -31,12 +40,14 @@ input[type="range"]{
 path{
 	background-blend-mode:lighten;
 }
-html,body{
-  height: 100%
+#neighbors_list{
+  max-height: 80%;
+  overflow: scroll
 }
 .list-group-item{
   background: #F8F8F8 !important;
 }
+
 
 
 

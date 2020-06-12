@@ -109,7 +109,7 @@ function highlightWords(word,neighbors=[]){
   showText(data_rows,word)
   $("#neighbors_list").empty()
     neighbors.forEach(function(neighbor,i){
-      if(i<20)
+      // if(i<)
         $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
   })
 

@@ -4,8 +4,8 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-2" style="background-color: #F8F8F8">
-            <div id="features" style="border-bottom: 1px solid #DCDCDC;">
+        <div class="col-lg-2 greyed">
+            <div class="features separator">
                 <div class="feature">
                     <label><h4>Word Embeddings</h4></label>
                     <select id="dropdown_embedding" class="ui dropdown">
@@ -38,11 +38,11 @@
                         <option>eco</option>
                     </select>
                 </div>   
-                <div id="histogram" class="feature" style="height: 200px;"></div>
+                <div id="histogram" class="feature" style="height: 20%"></div>
                 <div id="slider"></div>    
             <!-- </div> -->
         </div>
-        <div class="col-lg-8" style="margin-top:0"> 
+        <div class="col-lg-8"> 
             <div class="controls">
                 <div class="control">
                     <p>Alpha/opacity</p>
@@ -77,26 +77,21 @@
                     <button id="reset_brush" class="ui button">Reset Brush</button>
                 </div>    
             </div>   
-            <div id="parallel_coord" class="parcoords"></div>     
+            <div id="parallel_coord" class="parcoords" style="height: 80%"></div>     
         </div>
-        <div class="col-lg-2" style="background-color: #F8F8F8">
-            <!-- <div class="row"> -->
-                <div class="ui search feature">
-                  <div class="ui icon input">
-                    <!-- <i class="cancel icon"></i> -->
-                    <input class="prompt" type="text" placeholder="Search words...">
-                    <i class="search icon"></i>
-                  </div>
-                  <i class="cancel icon" style="cursor: pointer"></i>
-                  <div class="results"></div>
-                </div>
-
-                <div>
-                    <h4>Neighbours in High Dimensions</h4>
-                    <ul id="neighbors_list" class="list-group list-group-flush" style="overflow: scroll;"></ul>            
-                </div>   
-            <!-- </div> -->
-            
+        <div class="col-lg-2 greyed">
+            <div class="ui search feature">
+              <div class="ui icon input">
+                <input class="prompt" type="text" placeholder="Search words...">
+                <i class="search icon"></i>
+              </div>
+              <i class="cancel icon" style="cursor: pointer"></i>
+              <div class="results"></div>
+            </div>
+            <div style="height: 85%">
+                <h4>Neighbours in High Dimensions</h4>
+                <ul id="neighbors_list" class="list-group list-group-flush"></ul>
+            </div>  
         </div>
         
     </div>
