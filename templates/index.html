@@ -1,11 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-{% extends "layout.html" %}
-{% block content %}
+    <!-- Bootstrap CSS -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/semantic/semantic.min.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.5.0/nouislider.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/d3.parcoords.css') }}">
 
-<div class="container-fluid">
-    <div class="row">
+    <title>WordBias</title>
+</head>
+<body>
+
+	<!-- Nav bar start -->
+	<nav class="navbar navbar-expand-lg navbar-dark site-color" style="display: none;">
+		<a class="navbar-brand" href="#" >biasViz</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+	  	</button>
+	  	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+		    <div class="navbar-nav">
+		      <a class="nav-item nav-link active" href="#" >Home <span class="sr-only">(current)</span></a>
+		      <a class="nav-item nav-link" href="#">About</a>  
+                
+		    </div>
+            
+	  	</div>
+	</nav>
+    
+    <div class="container-fluid" style="padding-left: 10px; padding-right: 10px;">
+        <div class="row">
         <div class="col-lg-2 greyed">
-            <div class="features separator">
                 <div class="feature">
                     <label><h4>Word Embeddings</h4></label>
                     <select id="dropdown_embedding" class="ui dropdown">
@@ -27,11 +57,10 @@
                         <option>Group Difference</option>
                     </select>
                 </div>   
-            </div>
             <!-- <div style="border-bottom: 1px solid #DCDCDC;"> -->
                 <div class="feature">
-                    <label><h4>Histrogram Attribute</h4></label>
-                    <select id="histogram_type" class="ui dropdown">
+                    <label><h4>Bias Distribution</h4></label>
+                    <select id="histogram_type">
                         <option selected="">ALL</option>
                         <option>gender</option>
                         <option>race</option>
@@ -39,7 +68,40 @@
                     </select>
                 </div>   
                 <div id="histogram" class="feature" style="height: 20%"></div>
-                <div id="slider"></div>    
+                <div class="feature">
+                    <div id="slider"></div>    
+                </div>
+
+                <div class="form-group">
+                    <label><h4>Bias Defining Words</h4></label><br>
+                    <label id="gp1_label" for="gp1">Group 1:</label>
+                    <select id="gp1_dropdown" style="float:right;" onchange="changeBiastype(this.id)"></select>
+                    <textarea class="form-control" rows="2" id="gp1" style="margin-bottom: 7px;"></textarea>
+                                
+                    <label id="gp2_label" for="gp2">Group 2:</label>
+                    <select id="gp2_dropdown" style="float:right;" onchange="changeBiastype(this.id)"></select>
+
+                    <textarea class="form-control" rows="2" id="gp2"></textarea>
+                    <div style="padding-top: 5px;">
+                        <button type="submit" class="btn btn-primary btn-sm" id="add" style="width: 30%">Add</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="update" style="width: 30%">Update</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="delete" style="width: 30%">Delete</button>
+                    </div>
+                </div>
+                <br>
+
+                <div class="feature">
+                        <label for="target"><h4>Highlight Words</h4></label>
+                        <select style="float:right;" id="dropdown_target" onchange="load_target_words(this.value)">
+                            <option selected>Profession</option>
+                            <option>Sentiments</option>
+                            <option>Personality Traits</option>
+                            <option>Extremism</option>
+                            <option>Custom</option>
+                        </select>
+                        
+                        <textarea class="form-control" rows="5" id="target"></textarea>
+                </div>
             <!-- </div> -->
         </div>
         <div class="col-lg-8"> 
@@ -96,5 +158,35 @@
         
     </div>
 </div>
+<!--
 <script type="text/javascript"> var baseline= false</script>
-{% endblock content %}
+-->
+    <!-- main container ends -->
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
+    <!-- <script type = "text/javascript" src="{{ url_for('static', filename='vendor/popper.min.js') }}"></script> -->
+    <!-- <script type = "text/javascript" src="{{ url_for('static', filename='vendor/bootstrap.min.js') }}"></script> -->
+    <script src="{{ url_for('static', filename='vendor/semantic/semantic.min.js') }}"></script>
+    
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.js"></script>
+
+    <!-- user js files -->
+    <script src="{{ url_for('static', filename='js/sylvester.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/d3.svg.multibrush.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/histogram.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/d3.parcoords.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/parallel_coord_canvas.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/controller.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.5.0/nouislider.js"></script>
+    <script src="{{ url_for('static', filename='js/slider.js') }}"></script>
+
+    
+
+</body>
+</html>
+

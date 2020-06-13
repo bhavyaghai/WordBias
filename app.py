@@ -20,7 +20,7 @@ from functools import wraps, update_wrapper
 from py_thesaurus import Thesaurus
 
 
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__, template_folder='templates', static_folder='')
 
 language = "en"
 df, df_tar, model = None, None, None
@@ -32,9 +32,10 @@ bias_words = {"gender":gender_bias, "eco":eco_bias, "race":race_bias}
 @app.route('/setModelBackup/<name>')
 def setModelBackup(name="Word2Vec"):
     global model, df
-    model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True)
+    path = "./data/"
+    model =  word2vec.KeyedVectors.load_word2vec_format(path+'word_embeddings/word2vec_50k.bin', binary=True)
     #df = pd.read_csv("./data/bias.csv",header=0, keep_default_na=False)
-    df = pd.read_csv("./data/all_biases_10k.csv",header=0, keep_default_na=False)
+    df = pd.read_csv(path+"all_biases_10k.csv",header=0, keep_default_na=False)
     # print(len(df))
     df = df
     return "success"

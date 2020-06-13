@@ -1,0 +1,62 @@
+html,body{
+  height: 100%;
+  overflow: hidden;
+}
+.container-fluid, .row, .col-lg-8 .col-lg-2{
+  height: 100%;
+  /*max-height: 100%*/
+}
+.greyed{
+  background-color: #F8F8F8;
+  padding-top: 10px;
+}
+/*used for defining the custom color of the website*/
+.site-color { 
+  background-color: #40bad5 !important;
+  border-color: #40bad5 !important;
+}
+.separator{
+  border-bottom: 1px solid #DCDCDC;
+}
+.feature{
+  display: inline-block;
+  padding-bottom: 20px;
+  width: 100%;
+}
+.controls{
+  /*width:80%;*/
+  margin-top: 0px;
+  margin-bottom: 30px ;
+  margin-left: 50px
+}
+.control{
+  display: inline-block;
+  padding-right: 30px;
+  padding-bottom: 0px;
+
+}
+input[type="range"]{
+  width: 100px;
+}
+path{
+	background-blend-mode:lighten;
+}
+#neighbors_list{
+  max-height: 80%;
+  overflow: scroll
+}
+.list-group-item{
+  background: #F8F8F8 !important;
+}
+
+
+/*
+Bootstrap button
+*/
+.btn-primary {
+  background-color: steelblue !important;
+  border-color: steelblue !important;
+}
+
+
+
