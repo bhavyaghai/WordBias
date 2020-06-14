@@ -50,7 +50,7 @@ var pc = function(selection) {
   __.height = selection[0][0].clientHeight-20;
 
   // canvas data layers
-  ["marks", "foreground", "brushed", "highlight"].forEach(function(layer) {
+  ["marks", "foreground", "brushed", "highlight","after_highlight"].forEach(function(layer) {
     canvas[layer] = selection
       .append("canvas")
       .attr("class", layer)[0][0];
@@ -291,8 +291,10 @@ pc.autoscale = function() {
   ctx.brushed.globalCompositeOperation = __.composite;
   ctx.brushed.globalAlpha = __.alpha;
   ctx.brushed.scale(devicePixelRatio, devicePixelRatio);
-  ctx.highlight.lineWidth = 3;
+  ctx.highlight.lineWidth = 1.4;
   ctx.highlight.scale(devicePixelRatio, devicePixelRatio);
+  ctx.after_highlight.lineWidth = 1.4;
+  ctx.after_highlight.scale(devicePixelRatio, devicePixelRatio);
 
   return this;
 };

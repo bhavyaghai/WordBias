@@ -1,6 +1,6 @@
 html,body{
   height: 100%;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 .container-fluid, .row, .col-lg-8 .col-lg-2{
   height: 100%;
@@ -47,6 +47,10 @@ path{
 }
 .list-group-item{
   background: #F8F8F8 !important;
+}
+.focused{
+  /*fill: "#43a2ca" !important;*/
+  opacity: 1;
 }
 
 

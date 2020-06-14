@@ -20,7 +20,7 @@ from functools import wraps, update_wrapper
 from py_thesaurus import Thesaurus
 
 
-app = Flask(__name__, template_folder='templates', static_folder='')
+app = Flask(__name__, template_folder='templates', static_folder='', static_url_path="/static")
 
 language = "en"
 df, df_tar, model = None, None, None

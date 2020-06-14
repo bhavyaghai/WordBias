@@ -56,45 +56,42 @@ function createZeroLine(){
 Word search and highlight functions
 */
 function showText(data_rows, word){
-  if(hideAxis)
-    attr = "gender"
-  else
-    attr = "word"
-
+  attr = hideAxis ? "gender": "word"
   ctx = pc.ctx['highlight']
-  // ctx.globalAlpha = 0.5;
-  console.log(ctx,word)
-  ctx.font = "14px sans-serif"
-  ctx.textAlign = "end";
-  
   x = pc.position(attr)
   y1 = 10
   data_rows.forEach(function(row){
     y = pc.dimensions()[attr].yscale(row[attr])
-    console.log(row[attr],y)
-    if(row['word'] == word){
-      ctx.fillStyle = "#43a2ca";
-      ctx.strokeStyle = "#43a2ca"
+    color = "#43a2ca"
+    if(row['word'] != word) {
+      color =  "orange"
+      row["x"] = x-10
+      row["color"] = color
     }
-    else{
-      ctx.fillStyle = "orange";
-      ctx.strokeStyle = "orange"
-    }
-
-    if (typeof y == 'undefined'){
-      ctx.fillText(row['word'], x-10, y1+3);
-      if(!hideAxis){
-        ctx.beginPath();
-        ctx.moveTo(x, y1+3) 
-        ctx.lineTo(pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"])) 
-        ctx.stroke();
-      }
+    ctx.strokeStyle = color
+    if (typeof y == 'undefined' & !hideAxis){
+      row["y"] = y1+3
+      ctx.beginPath();
+      ctx.moveTo(x, y1+3) 
+      ctx.lineTo(pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"])) 
+      ctx.stroke();
     }
     else
-      ctx.fillText(row['word'], x-10, y+3);
+      row["y"] = y+3
 
     y1 += 20
   })
+  d3.select("#canvas_svg>g")
+    .selectAll(".dynamicLabel")
+      .data(data_rows).enter()
+        .append("text")
+        .attr("class","dynamicLabel")
+        .attr("x",d => d.x)
+        .attr("y",d => d.y)
+        .attr("fill",d => d.color)
+        .attr("text-anchor","end")
+        .style("z-index","-4")
+        .text(d => d.word)
   
 }
 function highlightWords(word,neighbors=[]){
@@ -105,25 +102,25 @@ function highlightWords(word,neighbors=[]){
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
   pc.highlight(data_rows)
   
-  // if(active_words.length >= 70)
   showText(data_rows,word)
   $("#neighbors_list").empty()
-    neighbors.forEach(function(neighbor,i){
+  neighbors.forEach(function(neighbor,i){
       // if(i<)
-        $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
+      $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
   })
 
 }
 function cancelHighlight(){
-  if(!inSearch){
-    if(active_words.length<70){
-      console.log("mouseout")
-      $("#word_dimension .tick text").attr("opacity","1")
-      // pc.updateAxes()
-    }
-    $("#neighbors_list").empty()
-    pc.unhighlight()
-  }   
+  $("text").removeClass("focused")
+  if(active_words.length<70){
+    console.log("mouseout")
+    $("#word_dimension .tick text").attr("opacity","1")
+    // pc.updateAxes()
+  }
+  $("#neighbors_list").empty()
+  $(".dynamicLabel").remove()
+  pc.unhighlight()
+    
 }
 function searchWords(word){
   $.get("/search/"+word, {
@@ -132,6 +129,34 @@ function searchWords(word){
     highlightWords(word,res)
   })
 }
+
+$("body").on("mouseenter","#word_dimension .tick text",function(e){
+  if(!inSearch){
+    $(this).addClass("focused")
+    highlightWords($(this).html())
+  }
+  
+})
+
+$("body").on("mouseleave","#word_dimension .tick text",function(){
+  if(!inSearch)
+    cancelHighlight()
+  
+})
+$("body").on("click","#canvas_svg",function(e){
+    console.log(e.target.nodeName)
+    if(e.target.nodeName == "text"){
+      // console.log(target)
+      inSearch = true
+      searchWords($(e.target).html())
+    }
+    else{
+      inSearch = false
+      cancelHighlight()
+    }
+
+  // } 
+})
 
 /*
 Plot histogram, and histogram change functions
@@ -217,31 +242,6 @@ $('#histogram_type').change(function(event) {
         plot_histogram(); 
     } 
 });
-
-$("body").on("mouseover","#word_dimension .tick text",function(){
-  if(!inSearch)
-    highlightWords($(this).html())
-})
-$("body").on("click","svg",function(e){
-  // if ($("#word_dimension .tick text").contains(e.target)){
-    // target = $(e.target)
-    console.log(e.target.nodeName)
-    
-    if(e.target.nodeName == "text"){
-      // console.log(target)
-      inSearch = true
-      searchWords($(e.target).html())
-    }
-    else{
-      inSearch = false
-      cancelHighlight()
-    }
-
-  // } 
-})
-$("body").on("mouseout","#word_dimension .tick text",function(){
-  cancelHighlight()
-})
 
 /*
 Search events
