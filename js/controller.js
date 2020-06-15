@@ -61,25 +61,26 @@ function showText(data_rows, word){
   x = pc.position(attr)
   y1 = 10
   data_rows.forEach(function(row){
-    y = pc.dimensions()[attr].yscale(row[attr])
-    color = "#43a2ca"
-    if(row['word'] != word) {
-      color =  "orange"
+    // if(row['word'])
+    color = (row['word'] == word) ? "#43a2ca" : "orange"
+    ctx.strokeStyle = color
+
+    y = pc.dimensions()[attr].yscale(row[attr]) 
+    if (typeof y == 'undefined' & !hideAxis){
       row["x"] = x-10
       row["color"] = color
-    }
-    ctx.strokeStyle = color
-    if (typeof y == 'undefined' & !hideAxis){
       row["y"] = y1+3
       ctx.beginPath();
       ctx.moveTo(x, y1+3) 
       ctx.lineTo(pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"])) 
       ctx.stroke();
+      y1 += 20
     }
-    else
-      row["y"] = y+3
-
-    y1 += 20
+    else if(row['word'] != word){
+      row["x"] = x-10
+      row["color"] = color
+      row["y"] = y+3 
+    }
   })
   d3.select("#canvas_svg>g")
     .selectAll(".dynamicLabel")
@@ -112,6 +113,7 @@ function highlightWords(word,neighbors=[]){
 }
 function cancelHighlight(){
   $("text").removeClass("focused")
+  $("text").removeAttr("fill")
   if(active_words.length<70){
     console.log("mouseout")
     $("#word_dimension .tick text").attr("opacity","1")
@@ -124,7 +126,6 @@ function cancelHighlight(){
 }
 function searchWords(word){
   $.get("/search/"+word, {
-      //type: bias_identify_type
   }, res=>{
     highlightWords(word,res)
   })
@@ -132,7 +133,9 @@ function searchWords(word){
 
 $("body").on("mouseenter","#word_dimension .tick text",function(e){
   if(!inSearch){
+    // $("text").removeClass("focused")
     $(this).addClass("focused")
+    $(this).attr("fill","#43a2ca")
     highlightWords($(this).html())
   }
   
@@ -154,8 +157,25 @@ $("body").on("click","#canvas_svg",function(e){
       inSearch = false
       cancelHighlight()
     }
+})
 
-  // } 
+/*
+Search events
+*/
+$("body").on("mouseover",".result",function(){
+  inSearch = false
+  word = $(this).find(".title").html()
+  highlightWords(word)
+})
+$("body").on("mouseout",".result",function(){
+  if(!inSearch)
+    cancelHighlight()  
+})
+$(".cancel.icon").on("click",function(){
+  $(".ui.search").search("set value","")
+  inSearch = false
+  cancelHighlight()
+  // $("#neighbors_list").empty()
 })
 
 /*
@@ -242,24 +262,6 @@ $('#histogram_type').change(function(event) {
         plot_histogram(); 
     } 
 });
-
-/*
-Search events
-*/
-$("body").on("mouseover",".result",function(){
-  inSearch = false
-  word = $(this).find(".title").html()
-  highlightWords(word)
-})
-$("body").on("mouseout",".result",function(){
-  cancelHighlight()  
-})
-$(".cancel.icon").on("click",function(){
-  $(".ui.search").search("set value","")
-  inSearch = false
-  cancelHighlight()
-  // $("#neighbors_list").empty()
-})
 
 /*
 paracoord.js library events
