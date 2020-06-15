@@ -21,6 +21,9 @@
 .parcoords canvas.faded {
   opacity: 0.25;
 }
+.parcoords canvas.mildfaded {
+  opacity: 0.5;
+}
 .parcoords {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

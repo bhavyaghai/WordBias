@@ -291,9 +291,9 @@ pc.autoscale = function() {
   ctx.brushed.globalCompositeOperation = __.composite;
   ctx.brushed.globalAlpha = __.alpha;
   ctx.brushed.scale(devicePixelRatio, devicePixelRatio);
-  ctx.highlight.lineWidth = 1.4;
+  ctx.highlight.lineWidth = 3;
   ctx.highlight.scale(devicePixelRatio, devicePixelRatio);
-  ctx.after_highlight.lineWidth = 1.4;
+  ctx.after_highlight.lineWidth = 3;
   ctx.after_highlight.scale(devicePixelRatio, devicePixelRatio);
 
   return this;
@@ -694,12 +694,16 @@ function path_foreground(d, i) {
 
 function path_highlight(d, i) {
   // console.log(selected_word)
-  if(d.word == selected_word)
+  if(d.word == selected_word){
     ctx.highlight.strokeStyle = d3.functor(__.color)(d, i);
-  else
+    ctx.after_highlight.strokeStyle = d3.functor(__.color)(d, i);
+  }
+  else{
     ctx.highlight.strokeStyle = "orange"
-
-	return color_path(d, ctx.highlight);
+    ctx.after_highlight.strokeStyle = "orange"
+  }
+	if(!afterHighlight) return color_path(d, ctx.highlight);
+  return color_path(d, ctx.after_highlight);
 };
 pc.clear = function(layer) {
   ctx[layer].clearRect(0, 0, w() + 2, h() + 2);
@@ -2487,6 +2491,29 @@ pc.unhighlight = function() {
   d3.selectAll([canvas.foreground, canvas.brushed]).classed("faded", false);
   return this;
 };
+
+// after-highlight an array of data
+pc.afterHighlight = function(data) {
+  if (arguments.length === 0) {
+    return __.highlighted;
+  }
+
+  __.highlighted = data;
+  pc.clear("after_highlight");
+  d3.selectAll([canvas.highlight]).classed("faded", true);
+  data.forEach(path_highlight);
+  events.highlight.call(this, data);
+  return this;
+};
+
+// clear after-highlighting
+pc.unAfterHighlight = function() {
+  __.highlighted = [];
+  pc.clear("after_highlight");
+  d3.selectAll([canvas.highlight]).classed("faded", false);
+  return this;
+};
+
 
 // calculate 2d intersection of line a->b with line c->d
 // points are objects with x and y properties

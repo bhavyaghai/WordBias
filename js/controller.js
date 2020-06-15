@@ -5,7 +5,7 @@ pc,
 attrs = ["gender","race","economic_status"],
 categories = [{"gender":"Male","race":"Caucasian","economic_status":"Rich"},
               {"gender":"Female","race":"African American","economic_status":"Poor"}],
-hideAxis=false, inSearch= false;
+hideAxis=false, inSearch= false, afterHighlight=false;
 
 /* 
 called when the application is first loaded 
@@ -64,7 +64,6 @@ function showText(data_rows, word){
     // if(row['word'])
     color = (row['word'] == word) ? "#43a2ca" : "orange"
     ctx.strokeStyle = color
-
     y = pc.dimensions()[attr].yscale(row[attr]) 
     if (typeof y == 'undefined' & !hideAxis){
       row["x"] = x-10
@@ -98,31 +97,44 @@ function showText(data_rows, word){
 function highlightWords(word,neighbors=[]){
   // console.log(neighbors)
   selected_word = word
-  $("#word_dimension .tick text").attr("opacity","0.1")
   this.neighbors = neighbors
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
-  pc.highlight(data_rows)
+  if(!afterHighlight){
+    console.log("enterrr")
+    $("#word_dimension .tick text").attr("opacity","0.0")
+    pc.highlight(data_rows)
   
-  showText(data_rows,word)
-  $("#neighbors_list").empty()
-  neighbors.forEach(function(neighbor,i){
-      // if(i<)
-      $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
-  })
+    showText(data_rows,word)
+    $("#neighbors_list").empty()
+    neighbors.forEach(function(neighbor,i){
+        // if(i<)
+        $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
+    })
 
+  }
+  else
+    pc.afterHighlight(data_rows)
+  
 }
 function cancelHighlight(){
   $("text").removeClass("focused")
   $("text").removeAttr("fill")
-  if(active_words.length<70){
-    console.log("mouseout")
-    $("#word_dimension .tick text").attr("opacity","1")
-    // pc.updateAxes()
+  if(afterHighlight){
+    afterHighlight = false
+    pc.unAfterHighlight()
+
   }
-  $("#neighbors_list").empty()
-  $(".dynamicLabel").remove()
-  pc.unhighlight()
-    
+  else{
+    if(active_words.length<70){
+      console.log("mouseout")
+      $("#word_dimension .tick text").attr("opacity","1")
+      // pc.updateAxes()
+    }
+    $("#neighbors_list").empty()
+    $(".dynamicLabel").remove()
+    pc.unhighlight()
+
+  }  
 }
 function searchWords(word){
   $.get("/search/"+word, {
@@ -157,6 +169,15 @@ $("body").on("click","#canvas_svg",function(e){
       inSearch = false
       cancelHighlight()
     }
+    // afterHighlight = true
+})
+
+$("body").on("mouseenter",".dynamicLabel",function(){
+  afterHighlight = true
+  highlightWords($(this).html())
+})
+$("body").on("mouseleave",".dynamicLabel",function(){
+  cancelHighlight()
 })
 
 /*
@@ -175,7 +196,6 @@ $(".cancel.icon").on("click",function(){
   $(".ui.search").search("set value","")
   inSearch = false
   cancelHighlight()
-  // $("#neighbors_list").empty()
 })
 
 /*
