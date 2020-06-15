@@ -2501,6 +2501,7 @@ pc.afterHighlight = function(data) {
   __.highlighted = data;
   pc.clear("after_highlight");
   d3.selectAll([canvas.highlight]).classed("faded", true);
+  d3.selectAll([canvas.foreground, canvas.brushed]).classed("invisible", true);
   data.forEach(path_highlight);
   events.highlight.call(this, data);
   return this;
@@ -2511,6 +2512,7 @@ pc.unAfterHighlight = function() {
   __.highlighted = [];
   pc.clear("after_highlight");
   d3.selectAll([canvas.highlight]).classed("faded", false);
+  d3.selectAll([canvas.foreground, canvas.brushed]).classed("invisible", false);
   return this;
 };
 
