@@ -23,6 +23,7 @@ $( document ).ready(function() {
           onSelect: function(d){
             inSearch = true
             // console.log(d)
+            $("#word_dimension .tick text").attr("opacity","0.0")
             searchWords(d.title)
           }
         });
@@ -38,6 +39,7 @@ $("body").on("mouseenter","#word_dimension .tick text",function(e){
   if(!inSearch){
     $(this).addClass("focused")
     $(this).attr("fill","#43a2ca")
+    $("#word_dimension .tick text").attr("opacity","0.1")
     highlightWords($(this).html())
   }
   
@@ -56,7 +58,7 @@ $("body").on("click","#canvas_svg",function(e){
       searchWords($(e.target).html())
       $("#word_dimension .tick text").attr("opacity","0.0")
     }
-    else{
+    else if(!$(e.target).hasClass("dynamicLabel")){
       inSearch = false
       cancelHighlight()
     }
@@ -70,7 +72,24 @@ $("body").on("mouseenter",".dynamicLabel",function(){
 })
 $("body").on("mouseleave",".dynamicLabel",function(){
   $(".dynamicLabel").attr("opacity","1")
-  // $(".focused").attr("opacity","1")
+  cancelHighlight()
+})
+$("body").on("mouseenter",".list-group-item",function(e){
+  $(this).css("color","orange")
+  word = $(this).html()
+  wordLabel = $(".dynamicLabel").filter(function(){
+    // console.log(d)
+    return $(this).html() == word
+  })
+  // console.log(wordLabel)
+  $(".dynamicLabel").not(wordLabel).attr("opacity","0.5")
+  afterHighlight = true
+  globalY = parseFloat(wordLabel.attr("y"))
+  highlightWords(word)
+})
+$("body").on("mouseleave",".list-group-item",function(e){
+  $(this).css("color","black")
+  $(".dynamicLabel").attr("opacity","1")
   cancelHighlight()
 })
 
@@ -80,6 +99,7 @@ Search events
 $("body").on("mouseover",".result",function(){
   inSearch = false
   word = $(this).find(".title").html()
+  $("#word_dimension .tick text").attr("opacity","0.1")
   highlightWords(word)
 })
 $("body").on("mouseout",".result",function(){
