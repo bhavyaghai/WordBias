@@ -51,11 +51,11 @@ $("body").on("mouseleave","#word_dimension .tick text",function(){
 $("body").on("click","#canvas_svg",function(e){
     console.log(e.target.nodeName)
     if(e.target.nodeName == "text"){
-      if($(e.target).hasClass("dynamicLabel")){
-        afterHighlight = false
-        cancelHighlight()
-      }
-      if($(e.target).hasClass("dynamicLabel") || ($(e.target).parents("#word_dimension").length)){
+      // if($(e.target).hasClass("dynamicLabel")){
+      //   afterHighlight = false
+      //   cancelHighlight()
+      // }
+      if(($(e.target).parents("#word_dimension").length)){
         inSearch = true
         searchWords($(e.target).html())
       }
