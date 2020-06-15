@@ -50,15 +50,11 @@ $("body").on("mouseleave","#word_dimension .tick text",function(){
 })
 $("body").on("click","#canvas_svg",function(e){
     console.log(e.target.nodeName)
-    if(e.target.nodeName == "text"){
-      // if($(e.target).hasClass("dynamicLabel")){
-      //   afterHighlight = false
-      //   cancelHighlight()
-      // }
-      if(($(e.target).parents("#word_dimension").length)){
-        inSearch = true
-        searchWords($(e.target).html())
-      }
+    if(e.target.nodeName == "text" && ($(e.target).parents("#word_dimension").length)){
+      console.log("enterr")
+      inSearch = true
+      searchWords($(e.target).html())
+      $("#word_dimension .tick text").attr("opacity","0.0")
     }
     else{
       inSearch = false

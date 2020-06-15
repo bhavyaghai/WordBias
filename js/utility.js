@@ -77,9 +77,8 @@ function highlightWords(word,neighbors=[]){
   this.neighbors = neighbors
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
   if(!afterHighlight){
-    console.log("enterrr")
     selected_word = word
-    $("#word_dimension .tick text").attr("opacity","0.0")
+    // $("#word_dimension .tick text").attr("opacity","0.1")
     pc.highlight(data_rows)
     showText(data_rows,word)
     $("#neighbors_list").empty()
