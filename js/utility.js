@@ -139,17 +139,17 @@ function plot_histogram() {
         $("#histogram").empty();
         createHistogram(values)
         // If slider for histogram exist
-        if($('#slider').text().length != 0) { 
-          slider.noUiSlider.destroy()
-        }
-        // create slider  
-        if(hist_type=="ALL") {
-            console.log("creating slider")
-            createSlider(0, 0, max_val-0.2, max_val);
-        }
-        else {
-            createSlider(min_val, min_val+0.1, max_val-0.1, max_val); 
-        } 
+        // if($('#slider').text().length != 0) { 
+        //   slider.noUiSlider.destroy()
+        // }
+        // // create slider  
+        // if(hist_type=="ALL") {
+        //     console.log("creating slider")
+        //     createSlider(0, 0, max_val-0.2, max_val);
+        // }
+        // else {
+        //     createSlider(min_val, min_val+0.1, max_val-0.1, max_val); 
+        // } 
         onChangeHistogram();
   });
 }
@@ -157,11 +157,11 @@ function plot_histogram() {
 // fetch and replot parallel coordiante
 function onChangeHistogram() {
   hist_type = $("#histogram_type").val();
-  var slider_ranges = slider.noUiSlider.get();
+  // var slider_ranges = slider.noUiSlider.get();
   // create parallel plot
   $.get("/fetch_data", {
     hist_type : hist_type,
-    slider_sel : slider_ranges
+    slider_sel : [0,0,0.45,0.65]
   }, res => {
       this.active_data = JSON.parse(res).map(function(d){
         return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}

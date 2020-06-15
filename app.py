@@ -118,7 +118,7 @@ def fetch_data():
     # histogram selection -- list of 4 int
     slider_sel = request.args.getlist("slider_sel[]")
     slider_sel = [float(x) for x in slider_sel]
-    # print("Slider selection: ", slider_sel)
+    print("Slider selection: ", slider_sel)
     # list of selected index based on selection
     ind = pd.Series([False]*df.shape[0])
     if slider_sel[0]!=slider_sel[1]:

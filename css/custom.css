@@ -53,6 +53,30 @@ path{
   opacity: 1;
 }
 
+.bar rect {
+  shape-rendering: crispEdges;
+}
+
+.bar text {
+  fill: #999999;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+/*.brush .background {
+  stroke: none;
+  fill: none;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}*/
+
 
 /*
 Bootstrap button
