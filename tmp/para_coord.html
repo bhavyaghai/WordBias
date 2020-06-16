@@ -1,0 +1,73 @@
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
+<script src="d3.parcoords.js"></script>
+<link rel="stylesheet" type="text/css" href="d3.parcoords.css">
+<div id="example" class="parcoords" style="width:960px;height:450px"></div>
+
+<script>
+var data2 = [
+  [0,-0,0,0,0,3 ],
+  [1,-1,1,2,1,6 ],
+  [2,-2,4,4,0.5,2],
+  [3,-3,9,6,0.33,4],
+  [4,-4,16,8,0.25,9]
+];
+
+var data = [
+  {name: "Asparagus", protein: 2.2, calcium: 0.024, sodium: 0.002},
+  {name: "Butter", protein: 0.85, calcium: 0.024, sodium: 0.714},
+  {name: "Coffeecake", protein: 6.8, calcium: 0.054, sodium: 0.351},
+  {name: "Pork", protein: 28.5, calcium: 0.016, sodium: 0.056},
+  {name: "Provolone", protein: 25.58, calcium: 0.756, sodium: 0.876}
+]
+
+var pc = d3.parcoords()("#example")
+  .data(data)
+  .render()
+  .createAxes()
+  //.reorderable()
+  .brushMode("1D-axes")  // enable brushing
+  .interactive()  // command line mode
+
+/*
+$(".axis .label").on('click', function(event){
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    //(... rest of your JS code)
+    console.log("Axes clicked! "+ $(this).text())
+});
+*/
+
+var ele;
+$("body").on("click","svg",function(e){
+  // if ($("#word_dimension .tick text").contains(e.target)){
+    // target = $(e.target)
+    console.log(e.target.nodeName)
+    ele = $(e.target);
+    
+    // clicking on word in the word axis
+    if(e.target.nodeName == "text"){
+      // console.log(target)
+      //inSearch = true
+      word_selected = $(e.target).html();
+      console.log("word_selected "+word_selected);
+      //$(".ui.search").search("set value",word_selected)
+      //searchWords(word_selected)
+    }
+    // clicking on title of axis like "gender", "race", etc.
+    //else if() {
+
+    //}
+    // clicking anywhere else -> cancelHighlight
+    else{
+      //inSearch = false
+      //$(".ui.search").search("set value","")
+      //cancelHighlight()
+      console.log("cancel highlight");
+    }
+
+  // } 
+})
+
+
+</script>

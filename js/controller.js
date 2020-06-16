@@ -6,6 +6,21 @@ attrs = ["gender","race","economic_status"],
 categories = [{"gender":"Male","race":"Caucasian","economic_status":"Rich"},
               {"gender":"Female","race":"African American","economic_status":"Poor"}],
 hideAxis=false, inSearch= false;
+bias_words = {
+  "gender": {
+      "Male": "he,him,boy",
+      "Female": "she,her,girl"
+  },
+  "race": {
+      "White": "european,white",
+      "Black": "african,black"
+  },
+  "economic_status": {
+      "rich": "rich,wealthy",
+      "poor": "poor,impoverished"
+  }
+}
+var last_selected_axis_name = null;
 
 /* 
 called when the application is first loaded 
@@ -31,9 +46,41 @@ $( document ).ready(function() {
     });
 });
 
+// highlight a given word with optional neighbors
+function highlightWords(word,neighbors=[]){
+  // console.log(neighbors)
+  selected_word = word
+  $("#word_dimension .tick text").attr("opacity","0.1")
+  this.neighbors = neighbors
+  data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
+  pc.highlight(data_rows)
+  
+  // if(active_words.length >= 70)
+  showText(data_rows,word)
+
+  $("#neighbors_list").empty()
+    neighbors.forEach(function(neighbor,i){
+        if(i<20) {
+          $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
+        }
+  })
+
+}
+
+function cancelHighlight(){
+  if(!inSearch){
+    if(active_words.length<70){
+      //console.log("mouseout")
+      $("#word_dimension .tick text").attr("opacity","1")
+      // pc.updateAxes()
+    }
+    $("#neighbors_list").empty()
+    pc.unhighlight()
+  }   
+}
+
 /*
 Create zero divider
-*/
 function createZeroLine(){
     d = "M "
     for(i=0;i<attrs.length;i++){
@@ -51,6 +98,8 @@ function createZeroLine(){
       .attr( "stroke","grey")
       .attr( "stroke-width","3")
 }
+*/
+
 
 /*
 Word search and highlight functions
@@ -63,7 +112,7 @@ function showText(data_rows, word){
 
   ctx = pc.ctx['highlight']
   // ctx.globalAlpha = 0.5;
-  console.log(ctx,word)
+  //console.log(ctx,word)
   ctx.font = "14px sans-serif"
   ctx.textAlign = "end";
   
@@ -71,10 +120,10 @@ function showText(data_rows, word){
   y1 = 10
   data_rows.forEach(function(row){
     y = pc.dimensions()[attr].yscale(row[attr])
-    console.log(row[attr],y)
+    //console.log(row[attr],y)
     if(row['word'] == word){
-      ctx.fillStyle = "#43a2ca";
-      ctx.strokeStyle = "#43a2ca"
+      ctx.fillStyle = "steelblue";  //"#43a2ca"
+      ctx.strokeStyle = "steelblue";  //"#43a2ca"
     }
     else{
       ctx.fillStyle = "orange";
@@ -97,34 +146,8 @@ function showText(data_rows, word){
   })
   
 }
-function highlightWords(word,neighbors=[]){
-  // console.log(neighbors)
-  selected_word = word
-  $("#word_dimension .tick text").attr("opacity","0.1")
-  this.neighbors = neighbors
-  data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
-  pc.highlight(data_rows)
-  
-  // if(active_words.length >= 70)
-  showText(data_rows,word)
-  $("#neighbors_list").empty()
-    neighbors.forEach(function(neighbor,i){
-      // if(i<)
-        $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
-  })
 
-}
-function cancelHighlight(){
-  if(!inSearch){
-    if(active_words.length<70){
-      console.log("mouseout")
-      $("#word_dimension .tick text").attr("opacity","1")
-      // pc.updateAxes()
-    }
-    $("#neighbors_list").empty()
-    pc.unhighlight()
-  }   
-}
+
 function searchWords(word){
   $.get("/search/"+word, {
       //type: bias_identify_type
@@ -133,115 +156,17 @@ function searchWords(word){
   })
 }
 
-/*
-Plot histogram, and histogram change functions
-*/
-function plot_histogram() {
-  hist_type = $("#histogram_type").val();
-  console.log(hist_type)
-  $.get("/get_histogram/"+hist_type, {
-      //type: bias_identify_type
-    }, res=>{
-        min_val = res["min"]
-        max_val = res["max"]
-        // console.log("Min and max val: ", min_val, "    ", max_val)
-        values = res["values"]
-        // console.log(values.length)
-        // clear existing histogram
-        $("#histogram").empty();
-        createHistogram(values)
-        // If slider for histogram exist
-        if($('#slider').text().length != 0) { 
-          slider.noUiSlider.destroy()
-        }
-        // create slider  
-        if(hist_type=="ALL") {
-            console.log("creating slider")
-            createSlider(0, 0, max_val-0.2, max_val);
-        }
-        else {
-            createSlider(min_val, min_val+0.1, max_val-0.1, max_val); 
-        } 
-        onChangeHistogram();
-  });
-}
-
-// fetch and replot parallel coordiante
-function onChangeHistogram() {
-  hist_type = $("#histogram_type").val();
-  var slider_ranges = slider.noUiSlider.get();
-  // create parallel plot
-  $.get("/fetch_data", {
-    hist_type : hist_type,
-    slider_sel : slider_ranges
-  }, res => {
-      this.active_data = JSON.parse(res).map(function(d){
-        return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}
-      })
-      this.active_words = active_data.map(function(d){return d.word})
-      // console.log(active_data)
-      if(this.pc){
-        // inSearch = false
-        // cancelHighlight()
-        // console.log(pc.dimensions()["word"])
-        if(active_words.length <70){
-          if(hideAxis){
-            pc.hideAxis([])
-            hideAxis = false
-          }
-          pc.dimensions()["word"].yscale.domain( active_words)
-          pc.dimensions()['word'].tickValues = active_words
-          pc.updateAxes()
-        }
-        else if(!hideAxis){
-          pc.hideAxis(["word"])
-          hideAxis = true
-        }
-        this.pc.data(active_data).render()
-      }
-      else{
-        this.pc = createParallelCoord(active_data);
-        pc.render()
-        // cloneCanvas()
-      }
-  });
-}
-
-/* 
-on dropdown menu for histogram type -- ALL, gender, etc.
-*/
-$('#histogram_type').change(function(event) {
-    console.log("Change dropdown menu - histogram_type")
-    if($('#slider').text().length != 0) { // If slider for histogram exist
-        console.log("slider exist");
-        plot_histogram(); 
-    } 
-});
-
+// Hover over any word in the word axis
+// Highlight word on hover
 $("body").on("mouseover","#word_dimension .tick text",function(){
   if(!inSearch)
     highlightWords($(this).html())
 })
-$("body").on("click","svg",function(e){
-  // if ($("#word_dimension .tick text").contains(e.target)){
-    // target = $(e.target)
-    console.log(e.target.nodeName)
-    
-    if(e.target.nodeName == "text"){
-      // console.log(target)
-      inSearch = true
-      searchWords($(e.target).html())
-    }
-    else{
-      inSearch = false
-      cancelHighlight()
-    }
-
-  // } 
-})
+// Remove highlighting on mouseout
 $("body").on("mouseout","#word_dimension .tick text",function(){
   cancelHighlight()
 })
+
 
 /*
 Search events
@@ -251,34 +176,44 @@ $("body").on("mouseover",".result",function(){
   word = $(this).find(".title").html()
   highlightWords(word)
 })
-$("body").on("mouseout",".result",function(){
-  cancelHighlight()  
-})
-$(".cancel.icon").on("click",function(){
-  $(".ui.search").search("set value","")
-  inSearch = false
-  cancelHighlight()
-  // $("#neighbors_list").empty()
-})
+
+
+//$("body").on("mouseout",".result",function(){
+//  cancelHighlight()  
+//})
+
+//$(".cancel.icon").on("click",function(){
+//  $(".ui.search").search("set value","")
+//  inSearch = false
+//  cancelHighlight()
+//  // $("#neighbors_list").empty()
+// })
 
 /*
+Top pane events
+Parallel coordinates properties
+smoothness, alpha. etc.
 paracoord.js library events
 */
 $("#alpha_input").on("change",function(){
-  alpha =+ $(this).val()
+  alpha = parseFloat($(this).val())
   pc.alpha(alpha).render()
   $("#alpha_text").html(alpha)
 })
+
 $("#smoothness_input").on("change",function(){
-  smooth =+ $(this).val()
+  smooth = parseFloat($(this).val())
+  console.log("Smoothness: ", smooth)
   pc.smoothness(smooth).render()
   $("#smoothness_text").html(smooth)
 })
+
 $("#bundle_input").on("change",function(){
   bundle =+ $(this).val()
   pc.bundlingStrength(bundle).render()
   $("#bundle_text").html(bundle)
 })
+
 $("#bundle_dimension").dropdown({
   onChange: function(value){
     console.log(value)
@@ -286,27 +221,13 @@ $("#bundle_dimension").dropdown({
     // $("#bundle_text").html(bundle)
 })
 
-/*
-Bias options change events
-*/
-$("#dropdown_embedding").dropdown({
-  // onChange: function(value){
-  //   console.log(value)
-  //   pc.bundleDimension(value)}
-    // $("#bundle_text").html(bundle)
-})
-$("#quantification").dropdown({
-  // onChange: function(value){
-  //   console.log(value)
-  //   pc.bundleDimension(value)}
-    // $("#bundle_text").html(bundle)
-})
-$("#histogram_type").dropdown({})
-
+// Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){
   pc.brushReset()
 })
 
+
+// EXTRAS
 // on clicking ShowBias button
 $('#showBias').on('click', function(event) {
     var tar = document.getElementById("target").value;
@@ -320,7 +241,7 @@ $('#showBias').on('click', function(event) {
       createParallelCoord('/get_tar_csv/');
     });
     //highlight(tar);
-  });
+});
 
 function coeff_val_change(newVal){
     thresh = newVal;

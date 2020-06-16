@@ -38,7 +38,7 @@
         <div class="col-lg-2 greyed">
                 <div class="feature">
                     <label><h4>Word Embeddings</h4></label>
-                    <select id="dropdown_embedding" class="ui dropdown">
+                    <select id="dropdown_embedding">
                         <option selected>Word2Vec</option>
                         <option>Word2Vec debiased</option>
                         <option>Glove (wiki 300d)</option>
@@ -52,7 +52,7 @@
                 </div>
                 <div class="feature">
                     <label><h4>Bias Measuring Method</h4></label>
-                    <select id="quantification" class="ui dropdown">
+                    <select id="quantification">
                         <option>Subspace Projection</option>
                         <option>Group Difference</option>
                     </select>
@@ -74,18 +74,22 @@
 
                 <div class="form-group">
                     <label><h4>Bias Defining Words</h4></label><br>
-                    <label id="gp1_label" for="gp1">Group 1:</label>
+                    <div style="padding-bottom: 5px;">
+                        <!-- <label>Bias Type:</label>  -->
+                        <input type="text" id="bias_type" placeholder="Bias Type" style="width: 100%;">
+                    </div>
+                    <input type="text" id="gp1_label" placeholder="Group 1 name" style="width: 50%;">
                     <select id="gp1_dropdown" style="float:right;" onchange="changeBiastype(this.id)"></select>
                     <textarea class="form-control" rows="2" id="gp1" style="margin-bottom: 7px;"></textarea>
                                 
-                    <label id="gp2_label" for="gp2">Group 2:</label>
+                    <input type="text" id="gp2_label" placeholder="Group 2 name" style="width: 50%;">
                     <select id="gp2_dropdown" style="float:right;" onchange="changeBiastype(this.id)"></select>
-
                     <textarea class="form-control" rows="2" id="gp2"></textarea>
+
                     <div style="padding-top: 5px;">
-                        <button type="submit" class="btn btn-primary btn-sm" id="add" style="width: 30%">Add</button>
-                        <button type="submit" class="btn btn-primary btn-sm" id="update" style="width: 30%">Update</button>
-                        <button type="submit" class="btn btn-primary btn-sm" id="delete" style="width: 30%">Delete</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="add_axis" style="width: 30%">Add</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="update_axis" style="width: 30%">Update</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="delete_axis" style="width: 30%">Delete</button>
                     </div>
                 </div>
                 <br>
@@ -100,7 +104,7 @@
                             <option>Custom</option>
                         </select>
                         
-                        <textarea class="form-control" rows="5" id="target"></textarea>
+                        <textarea class="form-control" rows="3" id="target"></textarea>
                 </div>
             <!-- </div> -->
         </div>
@@ -142,16 +146,20 @@
             <div id="parallel_coord" class="parcoords" style="height: 80%"></div>     
         </div>
         <div class="col-lg-2 greyed">
-            <div class="ui search feature">
-              <div class="ui icon input">
+            <div class="ui search feature" style="padding-bottom: 5px !important;">
+              <div class="ui icon input" style="width: 100%;">
                 <input class="prompt" type="text" placeholder="Search words...">
                 <i class="search icon"></i>
               </div>
+              <!--
               <i class="cancel icon" style="cursor: pointer"></i>
               <div class="results"></div>
+              -->
             </div>
             <div style="height: 85%">
+                <!-- 
                 <h4>Neighbours in High Dimensions</h4>
+                -->
                 <ul id="neighbors_list" class="list-group list-group-flush"></ul>
             </div>  
         </div>
@@ -176,12 +184,12 @@
 
     <!-- user js files -->
     <script src="{{ url_for('static', filename='js/sylvester.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/d3.svg.multibrush.js') }}"></script>
-    
+    <script src="{{ url_for('static', filename='js/d3.svg.multibrush.js') }}"></script>    
     <script src="{{ url_for('static', filename='js/histogram.js') }}"></script>
     <script src="{{ url_for('static', filename='js/d3.parcoords.js') }}"></script>
     <script src="{{ url_for('static', filename='js/parallel_coord_canvas.js') }}"></script>
     <script src="{{ url_for('static', filename='js/controller.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/left_pane.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.5.0/nouislider.js"></script>
     <script src="{{ url_for('static', filename='js/slider.js') }}"></script>
 
