@@ -19,7 +19,24 @@ function createHistogram(values) {
 
     var brush = d3.svg.multibrush()
                 .x(x)
-                .on("brushend", brushMove);
+                .extent(defaultBrushExtent)
+                .on("brushend", brushMove)
+                .extentAdaption(function(selection) {
+                      selection
+                      .style("visibility", null)
+                      .attr("y", -10)
+                      .attr("height", 20)
+                      .style("fill", "rgba(255,255,255,0.25)")
+                      .style("stroke", "rgba(0,0,0,0.6)");
+                  })
+                  .resizeAdaption(function(selection) {
+                     selection
+                       .selectAll("rect")
+                       .attr("y", -10)
+                       .attr("height", 20)
+                     .style("visibility", null)
+                     .style("fill", "rgba(0,0,0,0.1)");
+                  });;
     // .on("brushend", brushend);
 
     // Number of bins: Sturge's formula
@@ -107,7 +124,9 @@ function createHistogram(values) {
         onChangeHistogram(brush.extent())
     }
     $("#reset_hist_brush").on("click",function(){
-      d3.select(".brush").call(brush.clear());
+      d3.select(".brush").call(brush.clear().extent([[0.45,0.65]]));
+      onChangeHistogram([[0.45,0.65]])
+
     })
 
     function resetBrush() {

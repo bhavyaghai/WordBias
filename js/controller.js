@@ -6,6 +6,7 @@ attrs = ["gender","race","economic_status"],
 categories = [{"gender":"Male","race":"Caucasian","economic_status":"Rich"},
               {"gender":"Female","race":"African American","economic_status":"Poor"}],
 hideAxis=false, inSearch= false, afterHighlight=false,globalY;
+var defaultBrushExtent = [[0.45,0.65]];
 
 /* 
 called when the application is first loaded 
