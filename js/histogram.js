@@ -17,7 +17,7 @@ function createHistogram(values) {
         .domain([0, 1])
         .range([0, width]);
 
-    var brush = d3.svg.brush()
+    var brush = d3.svg.multibrush()
                 .x(x)
                 .on("brushend", brushMove);
     // .on("brushend", brushend);
@@ -94,8 +94,6 @@ function createHistogram(values) {
     //     .attr("transform", "translate(0,0)")
     //     .call(yAxis);
 
-    
-
     // var tip = d3.tip()
     //     .attr('class', 'd3-tip')
     //     .offset([-10, 0])
@@ -104,8 +102,17 @@ function createHistogram(values) {
     //     });    
     // svg.call(tip);
     function brushMove(){
-        console.log("brushMoved")
+        // console.log("brushMoved")
+        // console.log(brush.extent())
+        onChangeHistogram(brush.extent())
     }
-    
-    
+    $("#reset_hist_brush").on("click",function(){
+      d3.select(".brush").call(brush.clear());
+    })
+
+    function resetBrush() {
+      brush
+        .clear()
+        .event(d3.select(".brush"));
+    }   
 }

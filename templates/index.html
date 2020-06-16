@@ -67,7 +67,8 @@
                         <option>eco</option>
                     </select>
                 </div>   
-                <div id="histogram" class="feature" style="height: 25%"></div>
+                <div id="histogram" class="feature" style="height: 20%"></div>
+                <button id="reset_hist_brush" class="mini ui button">Reset Brush</button>
                 <!-- <div class="feature">
                     <div id="slider"></div>    
                 </div> -->
@@ -177,7 +178,6 @@
     <!-- user js files -->
     <script src="{{ url_for('static', filename='js/sylvester.js') }}"></script>
     <script src="{{ url_for('static', filename='js/d3.svg.multibrush.js') }}"></script>
-    
     <script src="{{ url_for('static', filename='js/histogram.js') }}"></script>
     <script src="{{ url_for('static', filename='js/d3.parcoords.js') }}"></script>
     <script src="{{ url_for('static', filename='js/parallel_coord_canvas.js') }}"></script>
