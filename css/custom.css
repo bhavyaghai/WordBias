@@ -1,6 +1,5 @@
 html,body{
   height: 100%;
-  /*overflow: hidden;*/
 }
 .container-fluid, .row, .col-lg-8 .col-lg-2{
   height: 100%;
@@ -20,7 +19,7 @@ html,body{
 }
 .feature{
   display: inline-block;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
   width: 100%;
 }
 .controls{
@@ -42,8 +41,9 @@ path{
 	background-blend-mode:lighten;
 }
 #neighbors_list{
-  max-height: 80%;
-  overflow: scroll
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: auto;
 }
 .list-group-item{
   background: #F8F8F8 !important;
@@ -86,5 +86,11 @@ Bootstrap button
   border-color: steelblue !important;
 }
 
-
-
+/* Bias defining words section */
+input[type=text] {
+  /*
+  border: 1px solid #ced4da;
+  */
+  border: none;
+  background-color: #F8F8F8;
+}

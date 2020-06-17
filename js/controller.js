@@ -5,8 +5,25 @@ pc,
 attrs = ["gender","race","economic_status"],
 categories = [{"gender":"Male","race":"Caucasian","economic_status":"Rich"},
               {"gender":"Female","race":"African American","economic_status":"Poor"}],
+
 hideAxis=false, inSearch= false, afterHighlight=false,globalY;
 var defaultBrushExtent = [[0.45,0.65]];
+
+bias_words = {
+  "gender": {
+      "Male": "he,him,boy",
+      "Female": "she,her,girl"
+  },
+  "race": {
+      "White": "european,white",
+      "Black": "african,black"
+  },
+  "economic_status": {
+      "rich": "rich,wealthy",
+      "poor": "poor,impoverished"
+  }
+}
+var last_selected_axis_name = null;
 
 /* 
 called when the application is first loaded 
@@ -51,6 +68,7 @@ $("body").on("mouseleave","#word_dimension .tick text",function(){
     cancelHighlight()
   
 })
+
 $("body").on("click","#canvas_svg",function(e){
     console.log(e.target.nodeName)
     if(e.target.nodeName == "text" && ($(e.target).parents("#word_dimension").length)){
@@ -91,7 +109,6 @@ $("body").on("mouseenter",".list-group-item",function(e){
 $("body").on("mouseleave",".list-group-item",function(e){
   $(this).css("color","black")
   $(".dynamicLabel").attr("opacity","1")
-  cancelHighlight()
 })
 
 /*
@@ -103,15 +120,17 @@ $("body").on("mouseover",".result",function(){
   $("#word_dimension .tick text").attr("opacity","0.1")
   highlightWords(word)
 })
-$("body").on("mouseout",".result",function(){
-  if(!inSearch)
-    cancelHighlight()  
-})
-$(".cancel.icon").on("click",function(){
-  $(".ui.search").search("set value","")
-  inSearch = false
-  cancelHighlight()
-})
+
+//$("body").on("mouseout",".result",function(){
+//  cancelHighlight()  
+//})
+
+//$(".cancel.icon").on("click",function(){
+//  $(".ui.search").search("set value","")
+//  inSearch = false
+//  cancelHighlight()
+//  // $("#neighbors_list").empty()
+// })
 
 /* 
 on dropdown menu for histogram type -- ALL, gender, etc.
@@ -125,23 +144,30 @@ $('#histogram_type').change(function(event) {
 });
 
 /*
+Top pane events
+Parallel coordinates properties
+smoothness, alpha. etc.
 paracoord.js library events
 */
 $("#alpha_input").on("change",function(){
-  alpha =+ $(this).val()
+  alpha = parseFloat($(this).val())
   pc.alpha(alpha).render()
   $("#alpha_text").html(alpha)
 })
+
 $("#smoothness_input").on("change",function(){
-  smooth =+ $(this).val()
+  smooth = parseFloat($(this).val())
+  console.log("Smoothness: ", smooth)
   pc.smoothness(smooth).render()
   $("#smoothness_text").html(smooth)
 })
+
 $("#bundle_input").on("change",function(){
   bundle =+ $(this).val()
   pc.bundlingStrength(bundle).render()
   $("#bundle_text").html(bundle)
 })
+
 $("#bundle_dimension").dropdown({
   onChange: function(value){
     console.log(value)
@@ -149,27 +175,13 @@ $("#bundle_dimension").dropdown({
     // $("#bundle_text").html(bundle)
 })
 
-/*
-Bias options change events
-*/
-$("#dropdown_embedding").dropdown({
-  // onChange: function(value){
-  //   console.log(value)
-  //   pc.bundleDimension(value)}
-    // $("#bundle_text").html(bundle)
-})
-$("#quantification").dropdown({
-  // onChange: function(value){
-  //   console.log(value)
-  //   pc.bundleDimension(value)}
-    // $("#bundle_text").html(bundle)
-})
-$("#histogram_type").dropdown({})
-
+// Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){
   pc.brushReset()
 })
 
+
+// EXTRAS
 // on clicking ShowBias button
 $('#showBias').on('click', function(event) {
     var tar = document.getElementById("target").value;
@@ -183,7 +195,7 @@ $('#showBias').on('click', function(event) {
       createParallelCoord('/get_tar_csv/');
     });
     //highlight(tar);
-  });
+});
 
 function coeff_val_change(newVal){
     thresh = newVal;

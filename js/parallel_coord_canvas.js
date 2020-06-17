@@ -3,10 +3,10 @@ function createParallelCoord(data){
 	$("#parallel_coord").empty()
 	// $("#parallel_coord").css("height",4*$(window).height()/5)
 	// $("#neighbors_list").css("max-height",4*$(window).height()/5)
-	var blue_to_brown = d3.scale.linear()
-	  .domain([-1, 1])
-	  .range(["steelblue", "brown"])
-	  .interpolate(d3.interpolateLab);
+	//var blue_to_brown = d3.scale.linear()
+	//  .domain([-1, 1])
+	//  .range(["steelblue", "brown"])
+	//  .interpolate(d3.interpolateLab);
 
 	// interact with this variable from a javascript console
 	var pc1;
