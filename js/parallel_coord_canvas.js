@@ -21,6 +21,7 @@ function createParallelCoord(data){
     	dimensions[key] = {title: key}
     }
     console.log("dimensions : ", dimensions)
+    console.log("data: ",data)
 
 	// load csv file and create the chart
 	

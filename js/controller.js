@@ -63,7 +63,7 @@ $( document ).ready(function() {
     });
     // create parallel plot
     d3.json("/get_csv/", function(data) {
-      this.data = data.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})
+      this.data = data
       console.log(data.length)
       this.words = data.map(function(d){return {title:d.word}})
       $('.ui.search').search('refresh')

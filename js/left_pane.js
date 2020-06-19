@@ -129,9 +129,7 @@ function onChangeHistogram(ranges=[]) {
       type: 'POST',
       success: function(res){
           console.log(JSON.parse(res))
-          active_data = JSON.parse(res).map(function(d){
-            return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}
-          })
+          active_data = JSON.parse(res)
           active_words = active_data.map(function(d){return d.word})
           // console.log(active_data)
           if(pc){
