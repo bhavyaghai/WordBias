@@ -2,33 +2,65 @@ var thresh,
 words,active_words,selected_word ="none",
 data,active_data, neighbors,
 pc,
-attrs = ["gender","race","economic_status"],
-categories = [{"gender":"Male","race":"Caucasian","economic_status":"Rich"},
-              {"gender":"Female","race":"African American","economic_status":"Poor"}],
+//attrs = ["gender","race","economic_status"],
+categories = [{"gender":"Female","race":"Caucasian","religion":"Christanity", "sentiment":"Pleasant"},
+              {"gender":"Male","race":"African American","religion":"Islam", "sentiment":"Unpleasant"}],
 
 hideAxis=false, inSearch= false, afterHighlight=false,globalY;
 var defaultBrushExtent = [[0.45,0.65]];
 
 bias_words = {
   "gender": {
-      "Male": "he,him,boy",
-      "Female": "she,her,girl"
+      "Male": "man,boy,he,father,son,guy,male,his,himself,john",
+      "Female": "woman,girl,she,mother,daughter,gal,female,her,herself,mary"
   },
   "race": {
-      "White": "european,white",
-      "Black": "african,black"
+      "White": "emily,anne,jill,allison,laurie,sarah,meredith,carrie,kristen,todd,neil,geoffrey,brett,brendan,greg,matthew,jay,brad",
+      "Black": "aisha,keisha,tamika,lakisha,tanisha,latoya,kenya,latonya,ebony,rasheed,tremayne,kareem,darnell,tyrone,hakim,jamal,leroy,jermaine"
   },
-  "economic_status": {
-      "rich": "rich,wealthy",
-      "poor": "poor,impoverished"
+  "sentiment": {
+      "pleasant": "",
+      "unpleasant": ""
+  },
+  "religion": {
+    "Christanity": "",
+    "Islam": ""
   }
 }
+
 var last_selected_axis_name = null;
+var current_embedding = null;
 
 /* 
 called when the application is first loaded 
 */
 $( document ).ready(function() {
+    $.get( '/getFileNames/', function(res) {
+    var group = res[0];     // List of file names for group
+    console.log("groups dropdown has ", group);
+    var target = res[1];   // List of file names for target
+    //var sim_files = res[2]; // List of file names for word similarity benchmark
+    //var ana_files = res[3]; // List of file names for word analogy benchmark
+    // popoulating options for dropdown from file list drawn from backend
+    $('#gp1_dropdown').append(populateDropDownList(group));
+    $('#gp2_dropdown').append(populateDropDownList(group));
+    $('#dropdown_target').append(populateDropDownList(target));
+    //$('#word_sim_dropdown').append(populateDropDownList(sim_files));
+    //$('#word_ana_dropdown').append(populateDropDownList(ana_files));
+
+    // set current embedding
+    current_embedding = $("#dropdown_embedding").val()
+
+    // Choose default target : Profession
+    $('#dropdown_target option[value="Profession"]').attr("selected",true);
+    changeTarget("Profession");
+
+    // Choose default groups
+    //$('#gp1_dropdown option[value="Gender - Female"]').attr("selected",true);
+    //changeBiastype("gp1_dropdown"); 
+    //$('#gp2_dropdown option[value="Gender - Male"]').attr("selected",true);
+    //changeBiastype("gp2_dropdown");
+    });
     // create parallel plot
     d3.json("/get_csv/", function(data) {
       this.data = data.map(function(d){return {word:d.word,gender:d.gender,race:d.race,economic_status:d.eco}})
@@ -49,6 +81,7 @@ $( document ).ready(function() {
       plot_histogram()
     });
 });
+
 
 /* 
 events associated with word axis

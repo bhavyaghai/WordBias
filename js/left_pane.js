@@ -43,6 +43,80 @@ function plot_histogram() {
   });
 }
 
+
+// Given a list as input, populate drop down menu with each element as an option
+function populateDropDownList(data) {
+  var option = '';
+  for (var i=0;i<data.length;i++){
+   option += '<option value="'+ data[i] + '">' + data[i] + '</option>';
+  }
+  return option;
+}
+
+function changeTarget(selVal) {
+  // path = './data/wordList/target/'+selVal
+  if(current_embedding =='Hindi fastText'){
+    path = './data/wordList/target/hi/'+selVal
+  }
+  else if (current_embedding == 'French fastText'){
+    path = './data/wordList/target/fr/'+selVal
+  }
+  else {
+    path = './data/wordList/target/en/'+selVal
+  }
+  console.log("selval is: ", selVal);
+  if(selVal=='Custom') {
+    $('#target').val("");
+    return;
+  }
+  $.get("/getWords", {
+    path: path
+    }, res => {
+    console.log(res);
+    $('#target').val(res["target"].join());
+  });
+}
+
+// @input
+// id: specifies whether its gp1_dropdown, gp2_dropdown
+// function: populates gp1 textarea & gp2 textarea corresponding to dropdown value 
+function changeBiastype(id) {
+  var selectedOption = $('#'+id).val();
+  console.log("selected option is: ", selectedOption);
+  if(current_embedding =='Hindi fastText'){
+    path = './data/wordList/groups/hi/'+selectedOption;
+  }
+  else if (current_embedding == 'French fastText'){
+    path = './data/wordList/groups/fr/'+selectedOption;
+  }
+  else {
+    path = './data/wordList/groups/en/'+selectedOption;
+  }
+  
+  console.log("path for file is: ", path);
+  if(selectedOption=='Custom') {
+    if(id=="gp1_dropdown") {
+      $('#gp1').val("");
+    }
+    else if(id=="gp2_dropdown"){
+      $('#gp2').val("");
+    }
+    return;
+  }
+  $.get("/getWords", {
+    path: path
+    }, res => {
+    console.log(res);
+    if(id=="gp1_dropdown") {
+      $('#gp1').val(res["target"].join());
+    }
+    else if(id=="gp2_dropdown"){
+      $('#gp2').val(res["target"].join());
+    }
+  });
+}
+
+
 // fetch and replot parallel coordiante
 function onChangeHistogram(ranges=[]) {
   console.log(ranges)

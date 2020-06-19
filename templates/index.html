@@ -79,12 +79,16 @@
                         <!-- <label>Bias Type:</label>  -->
                         <input type="text" id="bias_type" placeholder="Bias Type" style="width: 100%;">
                     </div>
-                    <input type="text" id="gp1_label" placeholder="Group 1 name" style="width: 50%;">
-                    <select id="gp1_dropdown" style="float:right;" onchange="changeBiastype(this.id)"></select>
+                    <input type="text" id="gp1_label" placeholder="Group 1" style="width: 40%;">
+                    <select id="gp1_dropdown" style="float:right;" onchange="changeBiastype(this.id)">
+                        <option selected>Custom</option>
+                    </select>
                     <textarea class="form-control" rows="2" id="gp1" style="margin-bottom: 7px;"></textarea>
                                 
-                    <input type="text" id="gp2_label" placeholder="Group 2 name" style="width: 50%;">
-                    <select id="gp2_dropdown" style="float:right;" onchange="changeBiastype(this.id)"></select>
+                    <input type="text" id="gp2_label" placeholder="Group 2" style="width: 40%;">
+                    <select id="gp2_dropdown" style="float:right;" onchange="changeBiastype(this.id)">
+                        <option selected>Custom</option>
+                    </select>
                     <textarea class="form-control" rows="2" id="gp2"></textarea>
 
                     <div style="padding-top: 5px;">
@@ -97,12 +101,7 @@
 
                 <div class="feature">
                         <label for="target"><h4>Highlight Words</h4></label>
-                        <select style="float:right;" id="dropdown_target" onchange="load_target_words(this.value)">
-                            <option selected>Profession</option>
-                            <option>Sentiments</option>
-                            <option>Personality Traits</option>
-                            <option>Extremism</option>
-                            <option>Custom</option>
+                        <select style="float:right;" id="dropdown_target" onchange="changeTarget(this.value)">
                         </select>
                         
                         <textarea class="form-control" rows="3" id="target"></textarea>

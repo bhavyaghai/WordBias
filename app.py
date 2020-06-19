@@ -27,7 +27,7 @@ df, df_tar, model = None, None, None
 gender_bias = [("he","him","boy"),("she","her","girl")]
 eco_bias = [("rich","wealthy"),("poor","impoverished")]
 race_bias = [("african","black"),("european","white")]
-bias_words = {"gender":gender_bias, "eco":eco_bias, "race":race_bias}
+bias_words = {"gender":gender_bias, "religion":None, "race":race_bias,"sentiment":None}
 
 @app.route('/setModelBackup/<name>')
 def setModelBackup(name="Word2Vec"):
@@ -35,7 +35,8 @@ def setModelBackup(name="Word2Vec"):
     path = "./data/"
     model =  word2vec.KeyedVectors.load_word2vec_format(path+'word_embeddings/word2vec_50k.bin', binary=True)
     #df = pd.read_csv("./data/bias.csv",header=0, keep_default_na=False)
-    df = pd.read_csv(path+"all_biases_10k.csv",header=0, keep_default_na=False)
+    #df = pd.read_csv(path+"all_biases_10k.csv",header=0, keep_default_na=False)
+    df = pd.read_csv(path+"all_biases_50k.csv",header=0, keep_default_na=False)
     # print(len(df))
     df = df
     return "success"
@@ -45,12 +46,6 @@ def setModelBackup(name="Word2Vec"):
 def index():
 	setModelBackup()
 	return render_template('index.html')
-
-
-@app.route('/biasViz')
-def biasViz():
-	return render_template('old.html')
-
 
 @app.route('/setModel')
 def setModel():
@@ -94,8 +89,8 @@ def setModel():
 @app.route('/get_csv/')
 def get_csv():
     global df
-    df2 = df[["word", "race", "gender", "eco"]]
-    out = df2.to_json(orient='records')
+    #df2 = df[["word", "race", "gender", "eco"]]
+    out = df.to_json(orient='records')
     return out
 
 @app.route('/get_all_words')
@@ -141,7 +136,7 @@ def get_tar_csv():
 @app.route('/get_histogram/<type_var>')
 def get_histogram(type_var):
     global df
-    bt = ["gender", "race", "eco"]
+    bt = list(df.columns)[1:]
     val = []
     if type_var=="ALL":
         val = df[bt].abs().mean(axis=1)
@@ -247,6 +242,46 @@ def groupBias():
         print("ROW ",[t],tar_bias[t])
         df_tar.loc[len(df_tar)] = [t]+tar_bias[t]     # inserting row in df_tar
     return "success"
+
+
+# get list of filenames for group,target, word similarity & word analogy benchmark datasets folder
+@app.route('/getFileNames/')
+def getFileNames():
+    #gp_path, tar_path, word_sim, word_ana = None, None, None, None
+    gp_path, tar_path = None, None
+    if language=='hi':
+        gp_path = './data/wordList/groups/hi/'
+        tar_path = './data/wordList/target/hi/'
+        #word_sim = './data/benchmark/word_similarity/hi/'
+        #word_ana = './data/benchmark/word_analogy/hi/'
+    elif language=='fr':
+        gp_path = './data/wordList/groups/fr/'
+        tar_path = './data/wordList/target/fr/'
+        #word_sim = './data/benchmark/word_similarity/fr/'
+        #word_ana = './data/benchmark/word_analogy/fr/'
+    else:
+        gp_path = './data/wordList/groups/en/'
+        tar_path = './data/wordList/target/en/'
+        #word_sim = './data/benchmark/word_similarity/en/'
+        #word_ana = './data/benchmark/word_analogy/en/'
+    target = os.listdir(tar_path)
+    group = os.listdir(gp_path)
+    #sim_files = os.listdir(word_sim)
+    #ana_files = os.listdir(word_ana)
+    #return jsonify([group,target,sim_files,ana_files])
+    return jsonify([group,target])
+
+# populate default set of target words
+@app.route('/getWords/')
+def getWords():
+    path = request.args.get("path")
+    words = []
+    f = open(path, "r", encoding="utf8")
+    for x in f:
+        if len(x)>0:
+            x = x.strip().lower()
+            words.append(x)
+    return jsonify({"target":words})
 
 
 if __name__ == '__main__':
