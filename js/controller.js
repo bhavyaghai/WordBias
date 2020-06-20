@@ -104,7 +104,7 @@ $("body").on("mouseleave","#word_dimension .tick text",function(){
 
 $("body").on("click","#canvas_svg",function(e){
     console.log(e.target.nodeName)
-    if(e.target.nodeName == "text" && ($(e.target).parents("#word_dimension").length)){
+    if(e.target.nodeName == "text" && ($(e.target).parents(".tick").length) && ($(e.target).parents("#word_dimension").length)){
       console.log("enterr")
       inSearch = true
       searchWords($(e.target).html())
