@@ -10,18 +10,18 @@ function createParallelCoord(data){
 
 	// interact with this variable from a javascript console
 	var pc1;
-	var dimensions = {
-			'word': {title: "word",'tickValues':[]}
+	// var dimensions = {
+	// 		'word': {title: "word",'tickValues':[]}
 
-            //'gender': {title: "gender"},
-            //'race': {title: "race"},
-            //'economic_status': {'title':'economic_status'}
-        };
-    for(key in bias_words) {
-    	dimensions[key] = {title: key}
-    }
-    console.log("dimensions : ", dimensions)
-    console.log("data: ",data)
+ //            //'gender': {title: "gender"},
+ //            //'race': {title: "race"},
+ //            //'economic_status': {'title':'economic_status'}
+ //        };
+ //    for(key in bias_words) {
+ //    	dimensions[key] = {title: key}
+ //    }
+ //    console.log("dimensions : ", dimensions)
+ //    console.log("data: ",data)
 
 	// load csv file and create the chart
 	

@@ -103,11 +103,11 @@ $("body").on("mouseleave","#word_axis .tick text",function(){
 
 $("body").on("click","#canvas_svg",function(e){
     console.log(e.target.nodeName)
-    if(e.target.nodeName == "text" && ($(e.target).parents(".tick").length) && ($(e.target).parents("#word_dimension").length)){
+    if(e.target.nodeName == "text" && ($(e.target).parents(".tick").length) && ($(e.target).parents("#word_axis").length)){
       console.log("enterr")
       inSearch = true
       searchWords($(e.target).html())
-      $("#word_dimension .tick text").attr("opacity","0.0")
+      // $("#word_dimension .tick text").attr("opacity","0.0")
     }
     else if(!$(e.target).hasClass("dynamicLabel")){
       inSearch = false
@@ -149,20 +149,13 @@ Search events
 $("body").on("mouseover",".result",function(){
   inSearch = false
   word = $(this).find(".title").html()
-  $("#word_dimension .tick text").attr("opacity","0.1")
+  // $("#word_axis .tick text").attr("opacity","0.0")
   highlightWords(word)
 })
 
 //$("body").on("mouseout",".result",function(){
 //  cancelHighlight()  
 //})
-
-//$(".cancel.icon").on("click",function(){
-//  $(".ui.search").search("set value","")
-//  inSearch = false
-//  cancelHighlight()
-//  // $("#neighbors_list").empty()
-// })
 
 /* 
 on dropdown menu for histogram type -- ALL, gender, etc.
@@ -210,6 +203,7 @@ $("#bundle_dimension").dropdown({
 // Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){
   pc.brushReset() 
+  updatePC(active_data)
 })
 
 
