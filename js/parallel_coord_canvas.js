@@ -45,6 +45,6 @@ function createParallelCoord(data){
 	  var explore_count = 0;
 	  var exploring = {};
 	  var explore_start = false;
-	  
+
 	  return pc1
 }

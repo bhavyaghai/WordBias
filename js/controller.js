@@ -7,7 +7,7 @@ categories = [{"gender":"Female","race":"Caucasian","religion":"Christanity", "s
               {"gender":"Male","race":"African American","religion":"Islam", "sentiment":"Unpleasant"}],
 
 hideAxis=false, inSearch= false, afterHighlight=false,globalY;
-var defaultBrushExtent = [[0.45,0.65]];
+var defaultBrushExtent = [[0.4,0.45]];
 
 bias_words = {
   "gender": {
@@ -210,7 +210,11 @@ $("#bundle_dimension").dropdown({
 
 // Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){
+  // pc.brushExtents({'gender':[[0.2,0.5]]})
+  // pc.data(active_data)
   pc.brushReset()
+  updatePC(active_words)
+  // pc.data(active_data).render()
 })
 
 

@@ -1,23 +1,64 @@
-/*
-Create zero divider
-*/
-// function createZeroLine(){
-//     d = "M "
-//     for(i=0;i<attrs.length;i++){
-//       // console.log(x,y)
-//       x = pc.position(attrs[i])
-//       y = pc.dimensions()[attrs[i]].yscale(0)
-//       d = d+x.toString()+" "+y.toString()
-//       if(i < attrs.length-1)
-//         d = d+" L "
-//     }
-//     console.log(d)
-//     d3.select("#canvas_svg>g")
-//       .append('path')
-//       .attr("d", d)
-//       .attr( "stroke","grey")
-//       .attr( "stroke-width","3")
-// }
+var isBrus = false,extent,brushedData;
+function initializePC(){
+  pc = createParallelCoord(active_data);
+  pc.render()
+  //on brush event 
+  pc.on("brushend",function(d){
+    extent = null
+    if(!isBrus){
+      extent = pc.brushExtents()
+      brushedData = d
+      pc.data(d)
+      updatePC(d.map(function(d){return d.word}))
+      pc.data(active_data)
+    }
+    // pc.data(active_data).renderBrushed()
+  });
+}
+
+// function createBrush()
+function updatePC(active_words){
+  if(active_words.length <70){
+    if(hideAxis){
+      pc.hideAxis([])
+      hideAxis = false
+    }
+    pc.dimensions()["word"].yscale.domain( active_words)
+    pc.dimensions()['word'].tickValues = active_words
+    pc.updateAxes()
+  }
+  else if(!hideAxis){
+    // pc.updateAxes()
+    pc.hideAxis(["word"])
+    hideAxis = true
+  }
+}
+// fetch and replot parallel coordiante
+function onChangeHistogram(ranges=[]) {
+  console.log(ranges)
+  hist_type = $("#histogram_type").val();
+  // create parallel plot
+  $.ajax({
+      url: '/fetch_data',
+      data: JSON.stringify({hist_type : hist_type,slider_sel : ranges}),
+      type: 'POST',
+      success: function(res){
+          // console.log(JSON.parse(res))
+          active_data = JSON.parse(res)
+          active_words = active_data.map(function(d){return d.word})
+          if(pc){
+            updatePC(active_words)
+            pc.data(active_data).render()
+          }
+          else{
+            initializePC()
+          }         
+      },
+      error: function(error){
+          console.log("error !!!!");
+      }
+  });
+}
 
 function drawLine(ctx,x1,y1,x2,y2){
 	ctx.beginPath();

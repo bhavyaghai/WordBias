@@ -47,7 +47,7 @@ var pc = function(selection) {
   selection = pc.selection = d3.select(selection);
 
   __.width = selection[0][0].clientWidth;
-  __.height = selection[0][0].clientHeight-20;
+  __.height = selection[0][0].clientHeight;
 
   // canvas data layers
   ["marks", "foreground", "brushed", "highlight","after_highlight"].forEach(function(layer) {
@@ -111,10 +111,12 @@ var side_effects = d3.dispatch.apply(this,d3.keys(__))
     foregroundQueue.rate(d.value);
   })
   .on("dimensions", function(d) {
+    console.log("called")
     __.dimensions = pc.applyDimensionDefaults(d3.keys(d.value));
     xscale.domain(pc.getOrderedDimensionKeys());
     pc.sortDimensions();
-    if (flags.interactive){pc.render().updateAxes();}
+    if (flags.interactive)pc.render().updateAxes()
+        
   })
   .on("bundleDimension", function(d) {
       if (!d3.keys(__.dimensions).length) pc.detectDimensions();
@@ -133,6 +135,7 @@ var side_effects = d3.dispatch.apply(this,d3.keys(__))
     if (flags.interactive){pc.render();}
   })
   .on("hideAxis", function(d) {
+    console.log("hideaxis")
     pc.dimensions(pc.applyDimensionDefaults());
     pc.dimensions(without(__.dimensions, d.value));
   })
@@ -957,11 +960,22 @@ pc.updateAxes = function(animationTime) {
   // Exit
   g_data.exit().remove();
 
+  n=0
   g = pc.svg.selectAll(".dimension");
   g.transition().duration(animationTime)
     .attr("transform", function(p) { return "translate(" + position(p) + ")"; })
     .attr("id",function(p){ return p+"_dimension"})
-    .style("opacity", 1);
+    .style("opacity", 1)
+    .each("end",function(){
+      n += 1
+      if(n=1 && extent && !hideAxis){
+        console.log("updateddddddd")
+        isBrus = true
+        pc.brushExtents(extent)
+        isBrus = false
+        
+      }
+    })
 
   // g.selectAll(".polarity2")
   //   .transition()
@@ -1891,6 +1905,7 @@ pc.brushMode = function(mode) {
     	// to avoid unnecessary computation.
     	brushUpdated(selected());
         events.brushend.call(pc, __.brushed);
+        // d3.event.sourceEvent.stopPropagation();
       })
       .extentAdaption(function(selection) {
     	  selection
