@@ -754,11 +754,18 @@ function rotateLabels() {
 }
 
 function dimensionLabels(d) {
-  return __.dimensions[d].title ? __.dimensions[d].title : d;  // dimension display names
+  //console.log("Dimenension label: ", capitalize(d));
+  return capitalize(d);
+  //return __.dimensions[d].title ? __.dimensions[d].title : d;  // dimension display names
 }
 
 function dimensionPolarity(d,i){
-  return categories[i][d]
+  //return categories[i][d]
+  d = d.toLowerCase()
+  if(d=="word") {
+    return
+  }
+  return Object.keys(bias_words[d])[i]
 }
 
 pc.createAxes = function() {
@@ -812,7 +819,6 @@ pc.createAxes = function() {
       .on("dblclick", flipAxisAndUpdatePCP)
       .on("wheel", rotateLabels);
 
-    // console.log(categories[0]["gender"],dimensionLabels)
     ax.append("svg:text")
       .attr({
         "text-anchor": "left",
@@ -821,7 +827,15 @@ pc.createAxes = function() {
         "x": 0,
         "class": "polarity1"
       })
-      .text(function(d){ return categories[0][d]})
+      .text(function(d){ 
+        //return categories[0][d]
+        console.log("svg:text d ", d);
+        d = d.toLowerCase()
+        if(d=="word") {
+          return
+        }
+        return Object.keys(bias_words[d])[0]
+      })
 
     ax.append("svg:text")
       .attr({
@@ -831,7 +845,15 @@ pc.createAxes = function() {
         "x": 0,
         "class": "polarity2"
       })
-      .text(function(d){ return categories[1][d]})
+      .text(function(d){
+        //return categories[1][d]
+        console.log("svg:text d ", d);
+        d = d.toLowerCase()
+        if(d=="word") {
+          return
+        }
+        return Object.keys(bias_words[d])[1]
+     })
 
   if (__.nullValueSeparator=="top") {
     pc.svg.append("line")
@@ -918,7 +940,11 @@ pc.updateAxes = function(animationTime) {
         "x": 0,
         "class": "polarity1"
       })
-      .text(function(d){ return categories[0][d]})
+      .text(function(d){ 
+        //return categories[0][d]
+        d = d.toLowerCase()
+        return Object.keys(bias_words[d])[0]
+      })
 
     ax.append("svg:text")
       .attr({
@@ -928,7 +954,11 @@ pc.updateAxes = function(animationTime) {
         "x": 0,
         "class": "polarity2"
       })
-      .text(function(d){ return categories[1][d]})
+      .text(function(d){ 
+        //return categories[1][d]
+        d = d.toLowerCase()
+        return Object.keys(bias_words[d])[1]
+      })
 
   // Update
   g_data.attr("opacity", 0);

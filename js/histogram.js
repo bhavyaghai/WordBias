@@ -1,5 +1,5 @@
 /* code adopted from: http://bl.ocks.org/nnattawat/8916402 */
-function createHistogram(values) {
+function createHistogram(values, defaultBrushExtent) {
     var color = "steelblue";
 
     // A formatter for counts.
@@ -14,7 +14,8 @@ function createHistogram(values) {
     var min = d3.min(values);
 
     var x = d3.scale.linear()
-        .domain([0, 1])
+        //.domain([0, 1])
+        .domain([min, max])
         .range([0, width]);
 
     var brush = d3.svg.multibrush()
@@ -119,16 +120,16 @@ function createHistogram(values) {
     //     });    
     // svg.call(tip);
     function brushMove(){
-        // console.log("brushMoved")
-        // console.log(brush.extent())
+        console.log("brushMoved")
+        console.log(brush.extent())
         onChangeHistogram(brush.extent())
     }
+    /*
     $("#reset_hist_brush").on("click",function(){
       d3.select(".brush").call(brush.clear().extent([[0.45,0.65]]));
       onChangeHistogram([[0.45,0.65]])
-
     })
-
+    */
     function resetBrush() {
       brush
         .clear()

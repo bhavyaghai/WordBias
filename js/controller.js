@@ -1,13 +1,13 @@
 var thresh,
 words,active_words,selected_word ="none",
-data,active_data, neighbors,
+data,active_data, neighbors,tmp,
 pc,
 //attrs = ["gender","race","economic_status"],
-categories = [{"gender":"Female","race":"Caucasian","religion":"Christanity", "sentiment":"Pleasant"},
-              {"gender":"Male","race":"African American","religion":"Islam", "sentiment":"Unpleasant"}],
+//categories = [{"gender":"Female","race":"Caucasian","religion":"Islam", "sentiment":"Unpleasant"},
+//              {"gender":"Male","race":"African American","religion":"Christanity", "sentiment":"Pleasant"}],
 
 hideAxis=false, inSearch= false, afterHighlight=false,globalY;
-var defaultBrushExtent = [[0.45,0.65]];
+//var defaultBrushExtent = [];
 
 bias_words = {
   "gender": {
@@ -19,16 +19,20 @@ bias_words = {
       "Black": "aisha,keisha,tamika,lakisha,tanisha,latoya,kenya,latonya,ebony,rasheed,tremayne,kareem,darnell,tyrone,hakim,jamal,leroy,jermaine"
   },
   "sentiment": {
-      "pleasant": "",
-      "unpleasant": ""
+      "pleasant": "caress, freedom, health, love, peace, cheer, friend, heaven, loyal, pleasure, diamond, gentle, honest, lucky, rainbow, diploma, gift, honor, miracle, sunrise, family, happy, laughter, paradise, vacation",
+      "unpleasant": "abuse, crash, filth, murder, sickness, accident, death, grief, poison, stink, assault, disaster, hatred, pollute, tragedy, divorce, jail, poverty, ugly, cancer, kill, rotten, vomit, agony, prison"
   },
   "religion": {
-    "Christanity": "",
-    "Islam": ""
+    "Christanity": "baptism, messiah, catholicism, resurrection, christianity, salvation, protestant, gospel, trinity, jesus, christ, christian, cross, catholic, church",
+    "Islam": "allah, ramadan, turban, emir, salaam, sunni, koran, imam, sultan, prophet, veil, ayatollah, shiite, mosque, islam, sheik, muslim, muhammad"
+  },
+  "age": {
+  	"Young": "tiffany,michelle,cindy,kristy,brad,eric,joey,billy",
+  	"Old": "ethel,bernice,gertrude,agnes,cecil,wilbert,mortimer,edgar"
   }
 }
 
-var last_selected_axis_name = null;
+var last_selected_axis_name = null;   // required for updating axis
 var current_embedding = null;
 
 /* 
@@ -79,6 +83,8 @@ $( document ).ready(function() {
         });
       // this.pc = createParallelCoord(this.data);
       plot_histogram()
+      // populate histogram bias types
+      populate_histogram_bias_type(data[0])
     });
 });
 
@@ -165,6 +171,19 @@ $("body").on("mouseover",".result",function(){
 //  // $("#neighbors_list").empty()
 // })
 
+
+function populate_histogram_bias_type(row) {
+	bias_types = []
+	for(key in row) {
+		if(key=="word") {
+			continue;
+		}
+		bias_types.push(key)
+		//console.log(key);
+	}
+	$('#histogram_type').append(populateDropDownList(bias_types));
+}
+
 /* 
 on dropdown menu for histogram type -- ALL, gender, etc.
 */
@@ -236,9 +255,11 @@ function coeff_val_change(newVal){
     change_threshold();
 }
 
+/*
 function load_default_words() {
     $.get("/get_tar_words/", res => {
         console.log(res);
         $('#target').val(res.join());
       });
 }
+*/

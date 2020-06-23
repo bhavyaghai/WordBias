@@ -120,3 +120,13 @@ function searchWords(word){
     highlightWords(word,res)
   })
 }
+
+// compare two string without comparing cases
+function IgnoreCaseCompare(str1, str2) {
+  return str1.toLowerCase()==str2.toLowerCase()
+}
+
+// capitalize string; word => Word
+function capitalize(s)  {
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}

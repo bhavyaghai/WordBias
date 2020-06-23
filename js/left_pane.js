@@ -19,10 +19,10 @@ on dropdown menu for histogram type -- ALL, gender, etc.
 */
 $('#histogram_type').change(function(event) {
     console.log("Change dropdown menu - histogram_type")
-    if($('#slider').text().length != 0) { // If slider for histogram exist
+    //if($('#slider').text().length != 0) { // If slider for histogram exist
         console.log("slider exist");
         plot_histogram(); 
-    } 
+    //} 
 });
 
 /*
@@ -38,8 +38,61 @@ function plot_histogram() {
         max_val = res["max"]
         values = res["values"]
         $("#histogram").empty();
-        createHistogram(values)
-        onChangeHistogram([[0.45,0.65]]);
+        console.log("min max histogram ", min_val, max_val);
+        hist_type = $("#histogram_type").val();
+        ranges = []
+        if(hist_type=="ALL") {
+            ranges = [[max_val-0.075, max_val]]
+        }
+        else {
+            ranges = [[min_val, min_val+0.1],[max_val-0.1, max_val]]
+        }
+        createHistogram(values, ranges)
+        onChangeHistogram(ranges);
+  });
+}
+
+
+// fetch and replot parallel coordiante
+function onChangeHistogram(ranges) {
+  console.log(ranges)
+  hist_type = $("#histogram_type").val();
+  // var slider_ranges = slider.noUiSlider.get();
+  // create parallel plot
+  $.ajax({
+      url: '/fetch_data',
+      data: JSON.stringify({hist_type : hist_type, slider_sel : ranges}),
+      type: 'POST',
+      success: function(res){
+          console.log(JSON.parse(res))
+          active_data = JSON.parse(res)
+          active_words = active_data.map(function(d){return d.word})
+          // console.log(active_data)
+          if(pc){
+            if(active_words.length <70){
+              if(hideAxis){
+                pc.hideAxis([])
+                hideAxis = false
+              }
+              pc.dimensions()["word"].yscale.domain( active_words)
+              pc.dimensions()['word'].tickValues = active_words
+              pc.updateAxes()
+            }
+            else if(!hideAxis){
+              pc.hideAxis(["word"])
+              hideAxis = true
+            }
+            pc.data(active_data).render()
+          }
+          else{
+            pc = createParallelCoord(active_data);
+            pc.render()
+            // cloneCanvas()
+          }          
+      },
+      error: function(error){
+          console.log("error !!!!");
+      }
   });
 }
 
@@ -116,56 +169,12 @@ function changeBiastype(id) {
   });
 }
 
-
-// fetch and replot parallel coordiante
-function onChangeHistogram(ranges=[]) {
-  console.log(ranges)
-  hist_type = $("#histogram_type").val();
-  // var slider_ranges = slider.noUiSlider.get();
-  // create parallel plot
-  $.ajax({
-      url: '/fetch_data',
-      data: JSON.stringify({hist_type : hist_type,slider_sel : ranges}),
-      type: 'POST',
-      success: function(res){
-          console.log(JSON.parse(res))
-          active_data = JSON.parse(res)
-          active_words = active_data.map(function(d){return d.word})
-          // console.log(active_data)
-          if(pc){
-            if(active_words.length <70){
-              if(hideAxis){
-                pc.hideAxis([])
-                hideAxis = false
-              }
-              pc.dimensions()["word"].yscale.domain( active_words)
-              pc.dimensions()['word'].tickValues = active_words
-              pc.updateAxes()
-            }
-            else if(!hideAxis){
-              pc.hideAxis(["word"])
-              hideAxis = true
-            }
-            pc.data(active_data).render()
-          }
-          else{
-            pc = createParallelCoord(active_data);
-            pc.render()
-            // cloneCanvas()
-          }         
-      },
-      error: function(error){
-          console.log("error !!!!");
-      }
-  });
-}
-
-function rerender(axis_name) {
+function rerender(axis_name, res_all, res_active) {
   for(i=0;i<data.length;i++) {
-    data[i][axis_name] = Math.random()
+    data[i][axis_name] = res_all[i]
   }
   for(i=0;i<active_data.length;i++) {
-    active_data[i][axis_name] = Math.random()
+    active_data[i][axis_name] = res_active[i]
   }
   pc.data(active_data)
   dim = pc.dimensions()
@@ -179,6 +188,12 @@ function deleteAxis(axis_name) {
     dim = pc.dimensions()
     delete dim[axis_name]
     pc.dimensions(dim).updateAxes().render()
+    for(i=0;i<data.length;i++) {
+      delete data[i][axis_name]
+    } 
+    for(i=0;i<active_data.length;i++) {
+      delete active_data[i][axis_name]
+    }
 }
 
 $("#delete_axis").click(function() {
@@ -189,19 +204,31 @@ $("#delete_axis").click(function() {
 
 $("#add_axis").click(function() {
     console.log("Add button clicked");
-    axis_name = $("#bias_type").val()
-    gp1_name = $("#gp1_label").val()
-    gp2_name = $("#gp2_label").val()
+    axis_name = $("#bias_type").val().toLowerCase()
+    gp1_name = $("#gp1_label").val().toLowerCase()
+    gp2_name = $("#gp2_label").val().toLowerCase()
     console.log(axis_name, gp1_name, gp2_name)
     if(axis_name=="" || gp1_name=="" || gp2_name=="" || $("#gp1").val()=="" || $("#gp2").val()=="") {
       return
     }
     bias_words[axis_name] = {
-      gp1_name: $("#gp1").val(),
-      gp2_name: $("#gp2").val()
+      [gp1_name]: $("#gp1").val(),
+      [gp2_name]: $("#gp2").val()
     }
-    rerender(axis_name)
-    //pc.dimensions(dim).updateAxes().render()
+
+    $.get("/compute_new_bias", {
+        axis_name: axis_name,
+        gp1_words: $("#gp1").val().toLowerCase(),
+        gp2_words: $("#gp2").val().toLowerCase(),
+        active_words: JSON.stringify(active_words)
+    }, res => {
+      console.log(res);
+      rerender(axis_name, res["all_data"], res["active_data"])
+
+      // update bias type histogram options
+      new_html = $("#histogram_type").html() + "<option value='"+axis_name+"'>"+axis_name+"</option>"
+      $("#histogram_type").html(new_html)
+    });
 });
 
 $("#update_axis").click(function() {
@@ -248,7 +275,7 @@ $("body").on("click","svg",function(e){
     }
     // clicking on title of axis like "gender", "race", etc.
     else if($(".tick").has(ele).length==0 && e.target.nodeName == "text") {
-        axis_name = ele.html();
+        axis_name = ele.html().toLowerCase();
         last_selected_axis_name = axis_name;
         console.log("clicking on the title of axis "+axis_name)
         if(axis_name!="word") {

@@ -23,12 +23,14 @@ from py_thesaurus import Thesaurus
 app = Flask(__name__, template_folder='templates', static_folder='', static_url_path="/static")
 
 language = "en"
-df, df_tar, model = None, None, None
-gender_bias = [("he","him","boy"),("she","her","girl")]
-eco_bias = [("rich","wealthy"),("poor","impoverished")]
-race_bias = [("african","black"),("european","white")]
-bias_words = {"gender":gender_bias, "religion":None, "race":race_bias,"sentiment":None}
+df, model = None, None
+#df_tar = None
+#gender_bias = [("he","him","boy"),("she","her","girl")]
+#eco_bias = [("rich","wealthy"),("poor","impoverished")]
+#race_bias = [("african","black"),("european","white")]
+#bias_words = {"gender":gender_bias, "religion":None, "race":race_bias,"sentiment":None}
 
+'''
 @app.route('/setModelBackup/<name>')
 def setModelBackup(name="Word2Vec"):
     global model, df
@@ -40,11 +42,12 @@ def setModelBackup(name="Word2Vec"):
     # print(len(df))
     df = df
     return "success"
-
+'''
 
 @app.route('/')
 def index():
-	setModelBackup()
+	#setModelBackup()
+	setModel()
 	return render_template('index.html')
 
 @app.route('/setModel')
@@ -59,6 +62,8 @@ def setModel():
         language = 'en'
         #model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/GoogleNews-vectors-negative300.bin', binary=True, limit=50000) 
         model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True, limit=50000) 
+        df = pd.read_csv("./data/all_biases_50k.csv",header=0, keep_default_na=False)
+
     elif name=="Glove (wiki 300d)":
         # print("Glove word embedding backend")
         language = 'en'
@@ -79,9 +84,7 @@ def setModel():
         language = 'en'
         model = KeyedVectors.load_word2vec_format('./data/word_embeddings/glove.debiased.gender.race.bin', binary=True, limit=50000)
     #g,g1,g2 = None,None,None
-    #deb_high = {}
-    #df = pd.read_csv("./data/mutliple_biases_norm.csv",header=0, keep_default_na=False)
-    df = pd.read_csv("./data/all_biases_10k.csv",header=0, keep_default_na=False)
+    #df = pd.read_csv("./data/all_biases_10k.csv",header=0, keep_default_na=False)
     #df = df[["word", "race", "gender", "eco"]].head(n=100)
     return "success"
 
@@ -99,12 +102,14 @@ def get_all_words():
         setModel()
     return jsonify(list(model.vocab.keys()))
 
+
 @app.route('/fetch_data',methods=['POST'])
 def fetch_data():
     json_data = request.get_json(force=True);       
     slider_sel = json_data['slider_sel']
     hist_type = json_data["hist_type"]
-    col_list = list(bias_words.keys())
+    #col_list = list(bias_words.keys())
+    col_list = [c for c in df.columns if c!="word"]
     # histogram type - ALL, gender, race, eco
     
     filter_column = None
@@ -127,11 +132,13 @@ def fetch_data():
     out = df.loc[ind, col_list].to_json(orient='records')
     return jsonify(out)
 
+'''
 @app.route('/get_tar_csv/')
 def get_tar_csv():
     global df_tar
     out = df_tar.to_json(orient='records')
     return out
+'''
 
 @app.route('/get_histogram/<type_var>')
 def get_histogram(type_var):
@@ -143,21 +150,9 @@ def get_histogram(type_var):
     else:
         val = df[type_var.lower()]
     out = {"values":val.tolist(), "min":np.min(val), "max":np.max(val)}
+    #print("************************************** Histogram ****************************")
+    #print(df.columns)
     return jsonify(out)
-
-
-@app.route('/get_tar_words/<selVal>')
-def get_target_words(selVal):
-    #selVal = request.args.get("selVal")
-    path = './data/wordList/target/{0}/'.format(language) + selVal
-    print("path:  ", path)
-    words = []
-    f = open(path, "r", encoding="utf8")
-    for x in f:
-        if len(x)>0:
-            x = x.strip().lower()
-            words.append(x)
-    return jsonify(words)
 
 
 # First search for the given word in thesaurus
@@ -188,6 +183,43 @@ def search(name):
     return jsonify(neigh)
 
 
+# compute and return new type of bias
+@app.route('/compute_new_bias')
+def compute_new_bias():
+    global df
+    gp1_words = request.args.get("gp1_words").split(",")
+    gp2_words = request.args.get("gp2_words").split(",")
+    axis_name = request.args.get("axis_name")
+    #active_words = request.args.getlist("active_words", type=str)
+    active_words = json.loads(request.args.get("active_words"))
+    
+    print("gp1 words: ", gp1_words)
+    print("gp2 words: ", gp2_words)
+    print("active words: ", active_words)
+    g1, g2 = groupBiasDirection(gp1_words, gp2_words)
+
+    bias_score = []
+    for index, row in df.iterrows():
+        w = row["word"]
+        # assuming group bias "Quantification algo"
+        bias_score.append(round(cosine(g1,model[w])-cosine(g2,model[w]),4))
+
+    bias_score = np.array(bias_score)
+    bias_min, bias_max = np.min(bias_score), np.max(bias_score)
+    print("bias_min bias_max ", bias_min, bias_max)
+    
+    norm_bias_score = []
+    for b in bias_score:
+        if b<0:
+            norm_bias_score.append(-1*b/bias_min)
+        else:
+            norm_bias_score.append(b/bias_max)
+
+    df[axis_name] = norm_bias_score
+    active_data = df[df['word'].isin(active_words)][axis_name]
+
+    return jsonify({"all_data": norm_bias_score, "active_data": active_data.tolist()})
+
 # calculate bias direction when we have group of words not pairs
 def groupBiasDirection(gp1, gp2):
     print(gp1,gp2)
@@ -212,6 +244,7 @@ def groupBiasDirection(gp1, gp2):
 
 
 # calculate Group bias for 'Group' bias identification type (National Academy of Sciences)
+'''
 @app.route('/groupBias/')
 def groupBias():
     global df_tar
@@ -242,7 +275,7 @@ def groupBias():
         print("ROW ",[t],tar_bias[t])
         df_tar.loc[len(df_tar)] = [t]+tar_bias[t]     # inserting row in df_tar
     return "success"
-
+'''
 
 # get list of filenames for group,target, word similarity & word analogy benchmark datasets folder
 @app.route('/getFileNames/')
@@ -270,6 +303,21 @@ def getFileNames():
     #ana_files = os.listdir(word_ana)
     #return jsonify([group,target,sim_files,ana_files])
     return jsonify([group,target])
+
+'''
+@app.route('/get_tar_words/<selVal>')
+def get_target_words(selVal):
+    #selVal = request.args.get("selVal")
+    path = './data/wordList/target/{0}/'.format(language) + selVal
+    print("path:  ", path)
+    words = []
+    f = open(path, "r", encoding="utf8")
+    for x in f:
+        if len(x)>0:
+            x = x.strip().lower()
+            words.append(x)
+    return jsonify(words)
+'''
 
 # populate default set of target words
 @app.route('/getWords/')

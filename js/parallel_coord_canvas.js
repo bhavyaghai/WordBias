@@ -42,6 +42,7 @@ function createParallelCoord(data){
 	    .interactive()  // command line mode
 	    .reorderable()
 
+	  /*???? Do we need these variables */
 	  var explore_count = 0;
 	  var exploring = {};
 	  var explore_start = false;
