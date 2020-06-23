@@ -32,7 +32,7 @@ function createParallelCoord(data){
 	    .bundlingStrength(0) // set bundling strength
 		.smoothness(0)
 		.bundleDimension("gender")
-		// .hideAxis(['word'])
+		.hideAxis(['word'])
 	    .composite("darken")
 	    .color("steelblue")  // quantitative color scale
 	    .alpha(0.5)

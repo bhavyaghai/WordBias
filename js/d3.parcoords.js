@@ -269,7 +269,10 @@ pc.autoscale = function() {
   });
 
   // xscale
-  xscale.rangePoints([0, w()], 1);
+  // var st_point = Math.floor(w()/(pc.getOrderedDimensionKeys().length+1))
+  // console.log(st_point)
+  //set to a constant, must be changed later
+  xscale.rangePoints([220, w()], 1);
 
   // Retina display, etc.
   var devicePixelRatio = window.devicePixelRatio || 1;
@@ -960,22 +963,21 @@ pc.updateAxes = function(animationTime) {
   // Exit
   g_data.exit().remove();
 
-  n=0
+  // n=0
   g = pc.svg.selectAll(".dimension");
   g.transition().duration(animationTime)
     .attr("transform", function(p) { return "translate(" + position(p) + ")"; })
     .attr("id",function(p){ return p+"_dimension"})
     .style("opacity", 1)
-    .each("end",function(){
-      n += 1
-      if(n=1 && extent && !hideAxis){
-        console.log("updateddddddd")
-        isBrus = true
-        pc.brushExtents(extent)
-        isBrus = false
-        
-      }
-    })
+    // .each("end",function(){
+    //   n += 1
+    //   if(n=1 && selectedExtent){
+    //     // console.log("updateddddddd")
+    //     isBrus = true
+    //     pc.brushExtents(selectedExtent)
+    //     isBrus = false 
+    //   }
+    // })
 
   // g.selectAll(".polarity2")
   //   .transition()
@@ -2459,6 +2461,7 @@ pc.interactive = function() {
 pc.xscale = xscale;
 pc.ctx = ctx;
 pc.canvas = canvas;
+pc.h = h;
 pc.g = function() { return g; };
 
 // rescale for height, width and margins

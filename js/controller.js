@@ -1,5 +1,5 @@
 var thresh,
-words,active_words,selected_word ="none",
+words,active_words,selected_word ="none",wordAxis,
 data,active_data, neighbors,
 pc,
 //attrs = ["gender","race","economic_status"],
@@ -86,20 +86,19 @@ $( document ).ready(function() {
 /* 
 events associated with word axis
 */
-$("body").on("mouseenter","#word_dimension .tick text",function(e){
+$("body").on("mouseenter","#word_axis .tick text",function(e){
   if(!inSearch){
     $(this).addClass("focused")
     $(this).attr("fill","#43a2ca")
-    $("#word_dimension .tick text").attr("opacity","0.1")
+    // $(".labels").attr("opacity","0.1")
     highlightWords($(this).html())
   }
   
 })
 
-$("body").on("mouseleave","#word_dimension .tick text",function(){
+$("body").on("mouseleave","#word_axis .tick text",function(){
   if(!inSearch)
-    cancelHighlight()
-  
+    cancelHighlight() 
 })
 
 $("body").on("click","#canvas_svg",function(e){
@@ -210,11 +209,7 @@ $("#bundle_dimension").dropdown({
 
 // Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){
-  // pc.brushExtents({'gender':[[0.2,0.5]]})
-  // pc.data(active_data)
-  pc.brushReset()
-  updatePC(active_words)
-  // pc.data(active_data).render()
+  pc.brushReset() 
 })
 
 

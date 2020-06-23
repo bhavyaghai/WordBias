@@ -1,36 +1,77 @@
-var isBrus = false,extent,brushedData;
+
 function initializePC(){
   pc = createParallelCoord(active_data);
   pc.render()
-  //on brush event 
-  pc.on("brushend",function(d){
-    extent = null
-    if(!isBrus){
-      extent = pc.brushExtents()
-      brushedData = d
-      pc.data(d)
-      updatePC(d.map(function(d){return d.word}))
-      pc.data(active_data)
-    }
-    // pc.data(active_data).renderBrushed()
-  });
+  wordAxis = d3.scale.ordinal()
+            .domain(active_words)
+            .rangePoints([pc.h(), 1]);
+  d3.select("#canvas_svg>g").append("g")
+      .attr("id", "word_axis")
+      .attr("class","y axis")
+      .attr("transform", "translate(105,0)")
+  addWords(active_data)
+}
+function addWords(active_data){
+  
+  $("#word_axis").empty()
+  var yAxis = d3.svg.axis()
+    .scale(wordAxis)
+    .tickValues(active_words)
+    .orient("left");
+
+  d3.select("#word_axis").call(yAxis);
+  drawWordLines(active_data,"foreground")
 }
 
-// function createBrush()
+function drawWordLines(data_rows,canvas_layer){
+  ctx = pc.ctx[canvas_layer]
+  x=100,y=2
+  data_rows.forEach(function(row){
+    row['x'] = x
+    row['y'] = y 
+    drawLine(ctx, x+5, wordAxis(row['word']), pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
+    y += 15
+  })
+}
+
+function drawLine(ctx,x1,y1,x2,y2){
+  ctx.beginPath();
+  ctx.moveTo(x1, y1) 
+  ctx.lineTo(x2, y2) 
+  ctx.stroke();
+}
+function addLabels(data_rows,cls="labels"){
+  d3.select("#word_axis")
+    .selectAll(cls)
+      .data(data_rows).enter()
+        .append("text")
+        .attr("class",cls)
+        .attr("x",d => d.x)
+        .attr("y",d => d.y)
+        .attr("fill",d => d.color)
+        .attr("text-anchor","end")
+        .style("z-index","-4")
+        .text(d => d.word)
+}
+
 function updatePC(active_words){
-  if(active_words.length <70){
-    if(hideAxis){
-      pc.hideAxis([])
-      hideAxis = false
-    }
-    pc.dimensions()["word"].yscale.domain( active_words)
-    pc.dimensions()['word'].tickValues = active_words
-    pc.updateAxes()
+  if(active_words.length <75){
+    wordAxis.domain(active_words) 
+    addWords(active_data)
   }
-  else if(!hideAxis){
-    // pc.updateAxes()
-    pc.hideAxis(["word"])
-    hideAxis = true
+  else{
+    $("#word_axis").empty();
+    
+    d3.select("#word_axis").append("foreignObject")
+                    .attr("width",250)
+                    .attr("height",200)
+                    .attr("y",pc.h()/2)
+                    .attr("x",-100)
+                    // .style("width","100px")
+                    .append("xhtml")
+                    .html("<h4>Word axis is currently not available</h4>"+
+                      "<p> as number of words > 100. "+
+                      "Use brushing, hover, search bar, or histogram on the left to select words.</p>")
   }
 }
 // fetch and replot parallel coordiante
@@ -47,8 +88,9 @@ function onChangeHistogram(ranges=[]) {
           active_data = JSON.parse(res)
           active_words = active_data.map(function(d){return d.word})
           if(pc){
-            updatePC(active_words)
+            
             pc.data(active_data).render()
+            updatePC(active_words)
           }
           else{
             initializePC()
@@ -60,34 +102,13 @@ function onChangeHistogram(ranges=[]) {
   });
 }
 
-function drawLine(ctx,x1,y1,x2,y2){
-	ctx.beginPath();
-	ctx.moveTo(x1, y1) 
-	ctx.lineTo(x2, y2) 
-	ctx.stroke();
-}
-function addLabels(data_rows){
-	d3.select("#canvas_svg>g")
-    .selectAll(".dynamicLabel")
-      .data(data_rows).enter()
-        .append("text")
-        .attr("class","dynamicLabel")
-        .attr("x",d => d.x)
-        .attr("y",d => d.y)
-        .attr("fill",d => d.color)
-        .attr("text-anchor","end")
-        .style("z-index","-4")
-        .text(d => d.word)
-}
-
-/*
-Word search and highlight functions
+/*Word search and highlight functions
 */
 function showText(data_rows, word){
-  attr = hideAxis ? "gender": "word"
+  attr = "gender" 
   ctx = afterHighlight ? pc.ctx['after_highlight']:pc.ctx['highlight']
   x = pc.position(attr)
-  y1 = 10
+  y1 = 2
   data_rows.forEach(function(row){
     color = (row['word'] == word) ? "#43a2ca" : "orange"
     y = pc.dimensions()[attr].yscale(row[attr]) 
@@ -96,12 +117,12 @@ function showText(data_rows, word){
       row["color"] = color
       row["y"] = y1+3
       if(!afterHighlight){
-      	ctx.strokeStyle = color
-      	drawLine(ctx, x, y1, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
+        ctx.strokeStyle = color
+        drawLine(ctx, x, y1, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
       }
       else{
-      	ctx.strokeStyle = "orange"
-      	drawLine(ctx, x, globalY, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
+        ctx.strokeStyle = "orange"
+        drawLine(ctx, x, globalY, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
       }
       y1 += 20
     }
@@ -112,16 +133,17 @@ function showText(data_rows, word){
     }
   })
   if(!afterHighlight)
-  	addLabels(data_rows)
+    addLabels(data_rows,"dynamicLabel")
 }
+
 function highlightWords(word,neighbors=[]){
   this.neighbors = neighbors
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
   if(!afterHighlight){
     selected_word = word
-    // $("#word_dimension .tick text").attr("opacity","0.1")
     pc.highlight(data_rows)
-    showText(data_rows,word)
+    drawWordLines(data_rows,"highlight")
+    // showText(data_rows,word)
     $("#neighbors_list").empty()
     neighbors.forEach(function(neighbor,i){
         // if(i<)
