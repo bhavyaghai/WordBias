@@ -19,12 +19,12 @@ bias_words = {
       "Black": "aisha,keisha,tamika,lakisha,tanisha,latoya,kenya,latonya,ebony,rasheed,tremayne,kareem,darnell,tyrone,hakim,jamal,leroy,jermaine"
   },
   "sentiment": {
-      "pleasant": "caress, freedom, health, love, peace, cheer, friend, heaven, loyal, pleasure, diamond, gentle, honest, lucky, rainbow, diploma, gift, honor, miracle, sunrise, family, happy, laughter, paradise, vacation",
-      "unpleasant": "abuse, crash, filth, murder, sickness, accident, death, grief, poison, stink, assault, disaster, hatred, pollute, tragedy, divorce, jail, poverty, ugly, cancer, kill, rotten, vomit, agony, prison"
+      "unpleasant": "abuse, crash, filth, murder, sickness, accident, death, grief, poison, stink, assault, disaster, hatred, pollute, tragedy, divorce, jail, poverty, ugly, cancer, kill, rotten, vomit, agony, prison",
+      "pleasant": "caress, freedom, health, love, peace, cheer, friend, heaven, loyal, pleasure, diamond, gentle, honest, lucky, rainbow, diploma, gift, honor, miracle, sunrise, family, happy, laughter, paradise, vacation"
   },
   "religion": {
-    "Christanity": "baptism, messiah, catholicism, resurrection, christianity, salvation, protestant, gospel, trinity, jesus, christ, christian, cross, catholic, church",
-    "Islam": "allah, ramadan, turban, emir, salaam, sunni, koran, imam, sultan, prophet, veil, ayatollah, shiite, mosque, islam, sheik, muslim, muhammad"
+    "Islam": "allah, ramadan, turban, emir, salaam, sunni, koran, imam, sultan, prophet, veil, ayatollah, shiite, mosque, islam, sheik, muslim, muhammad",
+    "Christanity": "baptism, messiah, catholicism, resurrection, christianity, salvation, protestant, gospel, trinity, jesus, christ, christian, cross, catholic, church"
   },
   "age": {
   	"Young": "tiffany,michelle,cindy,kristy,brad,eric,joey,billy",
@@ -102,14 +102,15 @@ $("body").on("mouseenter","#word_dimension .tick text",function(e){
   
 })
 
+/*
 $("body").on("mouseleave","#word_dimension .tick text",function(){
   if(!inSearch)
     cancelHighlight()
   
-})
+})*/
 
 $("body").on("click","#canvas_svg",function(e){
-    console.log(e.target.nodeName)
+    //console.log(e.target.nodeName)
     if(e.target.nodeName == "text" && ($(e.target).parents("#word_dimension").length)){
       console.log("enterr")
       inSearch = true
@@ -118,7 +119,7 @@ $("body").on("click","#canvas_svg",function(e){
     }
     else if(!$(e.target).hasClass("dynamicLabel")){
       inSearch = false
-      cancelHighlight()
+      //cancelHighlight()
     }
 })
 
@@ -263,3 +264,20 @@ function load_default_words() {
       });
 }
 */
+
+function populate_brushed_words() {
+	brushed_data = pc.brushed() //.map(function(d){return d.word});
+	$("#neighbors_list").empty();
+	//console.log("brushed words -- ",brushed_words);
+	tmp = ""
+    brushed_data.forEach(function(neighbor,i){
+    	//console.log("neighbor  ",neighbor)
+    	tmp = tmp + '<li class="list-group-item">'+neighbor["word"]+'</li>';
+        //$("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
+    }) 
+    setTimeout(function() { 
+    	$("#neighbors_list").html(tmp);
+    }, 100);
+    //$("#neighbors_list").html(tmp);
+    //highlightWords(null,neighbors=brushed_words)
+}

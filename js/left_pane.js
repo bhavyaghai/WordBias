@@ -194,11 +194,13 @@ function deleteAxis(axis_name) {
     for(i=0;i<active_data.length;i++) {
       delete active_data[i][axis_name]
     }
+    clear_bias_words_section()
 }
 
 $("#delete_axis").click(function() {
     console.log("Delete button clicked");
     axis_name = $("#bias_type").val()
+    $("option[value='"+axis_name+"']").remove();
     deleteAxis(axis_name)
 });
 
@@ -231,6 +233,7 @@ $("#add_axis").click(function() {
     });
 });
 
+/*
 $("#update_axis").click(function() {
     console.log("Update button clicked");
     deleteAxis(last_selected_axis_name)
@@ -248,7 +251,7 @@ $("#update_axis").click(function() {
     rerender(axis_name)
     //pc.dimensions(dim).updateAxes().render()
 });
-
+*/
 
 function clear_bias_words_section() {
   $("#gp1_label").val("")
@@ -295,7 +298,7 @@ $("body").on("click","svg",function(e){
     }
     // clicking anywhere else -> cancelHighlight
     else{
-      console.log("clicking eleswhere") 
+      //console.log("clicking eleswhere") 
       inSearch = false
       $(".ui.search").search("set value","")
       cancelHighlight()

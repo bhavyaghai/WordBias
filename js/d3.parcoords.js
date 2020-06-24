@@ -829,7 +829,7 @@ pc.createAxes = function() {
       })
       .text(function(d){ 
         //return categories[0][d]
-        console.log("svg:text d ", d);
+        //console.log("svg:text d ", d);
         d = d.toLowerCase()
         if(d=="word") {
           return
@@ -847,7 +847,7 @@ pc.createAxes = function() {
       })
       .text(function(d){
         //return categories[1][d]
-        console.log("svg:text d ", d);
+        //console.log("svg:text d ", d);
         d = d.toLowerCase()
         if(d=="word") {
           return
@@ -1362,10 +1362,10 @@ pc.brushMode = function(mode) {
 				}
 			})
 			.on("brush", function() {
-				brushUpdated(selected());
+        brushUpdated(selected());
 			})
 			.on("brushend", function() {
-				events.brushend.call(pc, __.brushed);
+        events.brushend.call(pc, __.brushed);
 			});
 
 		brushes[axis] = brush;
@@ -1920,7 +1920,8 @@ pc.brushMode = function(mode) {
     	// This fixes issue #103 for now, but should be changed in d3.svg.multibrush
     	// to avoid unnecessary computation.
     	brushUpdated(selected());
-        events.brushend.call(pc, __.brushed);
+      events.brushend.call(pc, __.brushed);
+      populate_brushed_words()
       })
       .extentAdaption(function(selection) {
     	  selection

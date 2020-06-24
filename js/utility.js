@@ -94,6 +94,7 @@ function highlightWords(word,neighbors=[]){
   }
   
 }
+
 function cancelHighlight(){
   if(afterHighlight){
     afterHighlight = false
@@ -103,7 +104,7 @@ function cancelHighlight(){
   	$("text").removeClass("focused")
   	$("text").removeAttr("fill")
     if(active_words.length<70){
-      console.log("mouseout")
+      //console.log("mouseout")
       $("#word_dimension .tick text").attr("opacity","1")
       // pc.updateAxes()
     }
@@ -111,9 +112,9 @@ function cancelHighlight(){
     $(".dynamicLabel").remove()
     // $("text").removeClass("dynamicLabel")
     pc.unhighlight()
-
   }  
 }
+
 function searchWords(word){
   $.get("/search/"+word, {
   }, res=>{
