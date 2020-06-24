@@ -1,12 +1,7 @@
 
-function addWords(data_rows,neighbors) {
-  if(!neighbors.length){  /// case of single data
-    w = data_rows[0].word
-    if(wordAxis(w)) drawWordLines(data_rows,"highlight")  /// word exists in the axis
-    else drawWords(data_rows,"highlight")
-  }
-
-}
+// function addWords(data_rows,neighbors) {
+  
+// }
 
 /*
 Word axis update functions
@@ -58,7 +53,14 @@ function highlightWords(word,neighbors=[]){
   if(!afterHighlight){
     selected_word = word
     pc.highlight(data_rows)
-    addWords(data_rows,neighbors)
+    if(!neighbors.length){  /// case of single data
+
+      if(!hideAxis) drawWordLines(data_rows,"highlight") // need to draw the lines
+
+      if(!wordAxis(word) || hideAxis)   /// word does not exists in the axis or axis is hidden
+        drawWords(data_rows,"highlight")
+    }
+    // addWords(data_rows,neighbors)
     $("#neighbors_list").empty()
     neighbors.forEach(function(neighbor,i){
         $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
@@ -100,18 +102,20 @@ function drawText(ctx,text,x,y){  // draw a single text
 
 function drawWordLines(data_rows,canvas_layer){
   ctx = pc.ctx[canvas_layer]
-  x1=100,y1=2, x2= pc.position("gender")
+  x1=105, x2= pc.position("gender")
   data_rows.forEach(function(row){
-    drawLine(ctx, x1+5, wordAxis(row['word']), x2, pc.dimensions()["gender"].yscale(row["gender"]))
+    y2 = pc.dimensions()["gender"].yscale(row["gender"])
+    y1 = wordAxis(row['word']) ? wordAxis(row['word']): y2
+    drawLine(ctx, x1, y1, x2, y2 )
     // y1 += 15
   })
 }
 function drawWords(data_rows, canvas_layer) {
+  $("#word_axis .tick text").attr("opacity","0.1")
   ctx = pc.ctx[canvas_layer]
   ctx.textAlign = "end";
   ctx.font = "14px Sans Sarif";
-  x = (hidAxis) ? pc.position("gender")-5 : 100
-    
+  x = (hideAxis) ? pc.position("gender")-5 : 100
   data_rows.forEach(function(row){
     drawText(ctx,row['word'], x, pc.dimensions()["gender"].yscale(row["gender"]))
   }) 
@@ -137,7 +141,7 @@ function addSVGLabels(data_rows,cls="dynamicLabels"){ //dynamically add labels o
 /* 
 events associated with word axis
 */
-$("body").on("mouseenter","#word_axis .tick text",function(e){
+$("body").on("mouseenter","#word_axis .tick text",function(e){ // mousein
   if(!inSearch){
     $(this).addClass("focused")
     $(this).attr("fill","#43a2ca")
@@ -147,12 +151,12 @@ $("body").on("mouseenter","#word_axis .tick text",function(e){
   
 })
 
-$("body").on("mouseleave","#word_axis .tick text",function(){
+$("body").on("mouseleave","#word_axis .tick text",function(){ //mouseout
   if(!inSearch)
     cancelHighlight() 
 })
 
-$("body").on("click","#canvas_svg",function(e){
+$("body").on("click","#canvas_svg",function(e){ // click
     console.log(e.target.nodeName)
     if(e.target.nodeName == "text" && ($(e.target).parents(".tick").length) && ($(e.target).parents("#word_axis").length)){
       console.log("enterr")
@@ -164,6 +168,15 @@ $("body").on("click","#canvas_svg",function(e){
       inSearch = false
       cancelHighlight()
     }
+})
+
+/*
+Search events
+*/
+$("body").on("mouseover",".result",function(){
+  inSearch = false
+  word = $(this).find(".title").html()
+  highlightWords(word)
 })
 
 $("body").on("mouseenter",".dynamicLabel",function(){
@@ -194,15 +207,7 @@ $("body").on("mouseleave",".list-group-item",function(e){
   $(".dynamicLabel").attr("opacity","1")
 })
 
-/*
-Search events
-*/
-$("body").on("mouseover",".result",function(){
-  inSearch = false
-  word = $(this).find(".title").html()
-  // $("#word_axis .tick text").attr("opacity","0.0")
-  highlightWords(word)
-})
+
 
 //$("body").on("mouseout",".result",function(){
 //  cancelHighlight()  
