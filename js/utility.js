@@ -9,7 +9,7 @@ function initializePC(){
       .attr("id", "word_axis")
       .attr("class","y axis")
       .attr("transform", "translate(105,0)")
-  updateWordAxis(active_data)
+  updatePC(active_data)
   pc.on("brushend",function (d) {
     updatePC(d,"brushed")
   })
@@ -41,41 +41,6 @@ function onChangeHistogram(ranges=[]) {
       }
   });
 }
-
-/*Word search and highlight functions
-*/
-// function showText(data_rows, word){
-//   attr = "gender" 
-//   ctx = afterHighlight ? pc.ctx['after_highlight']:pc.ctx['highlight']
-//   x = pc.position(attr)
-//   y1 = 2
-//   data_rows.forEach(function(row){
-//     color = (row['word'] == word) ? "#43a2ca" : "orange"
-//     y = pc.dimensions()[attr].yscale(row[attr]) 
-//     if (typeof y == 'undefined' & !hideAxis){
-//       row["x"] = x-10
-//       row["color"] = color
-//       row["y"] = y1+3
-//       if(!afterHighlight){
-//         ctx.strokeStyle = color
-//         drawLine(ctx, x, y1, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
-//       }
-//       else{
-//         ctx.strokeStyle = "orange"
-//         drawLine(ctx, x, globalY, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
-//       }
-//       y1 += 20
-//     }
-//     else if((row['word'] != word)  || hideAxis){
-//       row["x"] = x-10
-//       row["color"] = color
-//       row["y"] = y+3 
-//     }
-//   })
-//   if(!afterHighlight)
-//     addLabels(data_rows,"dynamicLabel")
-// }
-
 
 function searchWords(word){
   $.get("/search/"+word, {

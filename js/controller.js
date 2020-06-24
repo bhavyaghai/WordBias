@@ -71,10 +71,7 @@ $( document ).ready(function() {
         .search({
           source: words,
           onSelect: function(d){
-            inSearch = true
-            // console.log(d)
-            $("#word_dimension .tick text").attr("opacity","0.0")
-            searchWords(d.title)
+            onClick(d.title)
           }
         });
       // this.pc = createParallelCoord(this.data);
@@ -128,7 +125,7 @@ $("#bundle_dimension").dropdown({
 // Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){
   pc.brushReset() 
-  updatePC(active_data)
+  updatePC(active_data,"foreground",false)
 })
 
 

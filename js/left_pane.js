@@ -189,47 +189,47 @@ function clear_bias_words_section() {
   $("#bias_type").val("")
 }
 
-$("body").on("click","svg",function(e){
-  // if ($("#word_dimension .tick text").contains(e.target)){
-    // target = $(e.target)
-    ele = $(e.target);
-    // clicking on word in the word axis
-    if($("#word_dimension .tick").has(ele).length==1 && e.target.nodeName == "text"){
-      // console.log(target)
-      console.log("clicking on a tick") 
-      inSearch = true
-      word_selected = ele.html();
-      $(".ui.search").search("set value",word_selected)
-      searchWords(word_selected)
-    }
-    // clicking on title of axis like "gender", "race", etc.
-    else if($(".tick").has(ele).length==0 && e.target.nodeName == "text") {
-        axis_name = ele.html();
-        last_selected_axis_name = axis_name;
-        console.log("clicking on the title of axis "+axis_name)
-        if(axis_name!="word") {
-          clear_bias_words_section()
-          // populate corresponding bias words in the textarea
-          group_words = bias_words[axis_name]
-          group_names = Object.keys(group_words);
+// $("body").on("click","svg",function(e){
+//   // if ($("#word_dimension .tick text").contains(e.target)){
+//     // target = $(e.target)
+//     ele = $(e.target);
+//     // clicking on word in the word axis
+//     if($("#word_dimension .tick").has(ele).length==1 && e.target.nodeName == "text"){
+//       // console.log(target)
+//       console.log("clicking on a tick") 
+//       inSearch = true
+//       word_selected = ele.html();
+//       $(".ui.search").search("set value",word_selected)
+//       searchWords(word_selected)
+//     }
+//     // clicking on title of axis like "gender", "race", etc.
+//     else if($(".tick").has(ele).length==0 && e.target.nodeName == "text") {
+//         axis_name = ele.html();
+//         last_selected_axis_name = axis_name;
+//         console.log("clicking on the title of axis "+axis_name)
+//         if(axis_name!="word") {
+//           clear_bias_words_section()
+//           // populate corresponding bias words in the textarea
+//           group_words = bias_words[axis_name]
+//           group_names = Object.keys(group_words);
 
-          $("#bias_type").val(axis_name)         
+//           $("#bias_type").val(axis_name)         
 
-          $("#gp1_label").val(group_names[0])
-          $("#gp2_label").val(group_names[1])
+//           $("#gp1_label").val(group_names[0])
+//           $("#gp2_label").val(group_names[1])
 
-          $("#gp1").val(group_words[group_names[0]])
-          $("#gp2").val(group_words[group_names[1]])
-        }
-    }
-    // clicking anywhere else -> cancelHighlight
-    else{
-      console.log("clicking eleswhere") 
-      inSearch = false
-      $(".ui.search").search("set value","")
-      cancelHighlight()
-      clear_bias_words_section()
-    }
+//           $("#gp1").val(group_words[group_names[0]])
+//           $("#gp2").val(group_words[group_names[1]])
+//         }
+//     }
+//     // clicking anywhere else -> cancelHighlight
+//     else{
+//       console.log("clicking eleswhere") 
+//       inSearch = false
+//       $(".ui.search").search("set value","")
+//       cancelHighlight()
+//       clear_bias_words_section()
+//     }
 
-  // } 
-})
+//   // } 
+// })

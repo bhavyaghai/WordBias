@@ -1,8 +1,4 @@
 
-// function addWords(data_rows,neighbors) {
-  
-// }
-
 /*
 Word axis update functions
 */
@@ -10,7 +6,7 @@ function updateWordAxisDomain(data){ // set word axis domain
   wordAxis.domain(words) 
 }
 
-function updateWordAxis(data,canvas_layer="foreground"){  // word axis update
+function updateWordAxis(data,canvas_layer="foreground",drawLns=true){  // word axis update
   words = data.map(function (d) {return d.word})
   updateWordAxisDomain(words)
   $("#word_axis").empty()
@@ -20,13 +16,15 @@ function updateWordAxis(data,canvas_layer="foreground"){  // word axis update
     .orient("left");
 
   d3.select("#word_axis").call(yAxis);
-  drawWordLines(data,canvas_layer)
+  // $("#word_axis .tick").attr("fill","orange")
+  if(drawLns) 
+    drawWordLines(data,canvas_layer)
 }
 
-function updatePC(data,canvas_layer){
+function updatePC(data,canvas_layer="foreground",drawLns=true){
   if(data.length <75){
     hideAxis = false
-    updateWordAxis(data,canvas_layer)
+    updateWordAxis(data,canvas_layer,drawLns) 
   }
   else{
     hideAxis =  true
@@ -50,17 +48,20 @@ Highlight and unhighlight functions
 function highlightWords(word,neighbors=[]){
   this.neighbors = neighbors
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
+  
   if(!afterHighlight){
     selected_word = word
     pc.highlight(data_rows)
     if(!neighbors.length){  /// case of single data
-
       if(!hideAxis) drawWordLines(data_rows,"highlight") // need to draw the lines
-
-      if(!wordAxis(word) || hideAxis)   /// word does not exists in the axis or axis is hidden
+      if(!wordAxis(word) || hideAxis || inSearch)   /// word does not exists in the axis or axis is hidden
         drawWords(data_rows,"highlight")
     }
-    // addWords(data_rows,neighbors)
+    else{
+      $(".dynamicLabel").remove()
+      updatePC(data_rows,"highlight")
+
+    }
     $("#neighbors_list").empty()
     neighbors.forEach(function(neighbor,i){
         $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
@@ -68,20 +69,21 @@ function highlightWords(word,neighbors=[]){
   }
   else{
     pc.afterHighlight(data_rows)
-    showText(data_rows,word)
+    drawWordLines(data_rows,"after_highlight")
   }
   
 }
 function cancelHighlight(){
+  // $("text").removeClass("focused")
+  // $("text").removeAttr("fill")
+  $(".dynamicLabel").remove()
+  $("#word_axis .tick text").attr("opacity","1")
   if(afterHighlight){
     afterHighlight = false
     pc.unAfterHighlight()
   }
   else{
-    $("text").removeClass("focused")
-    $("text").removeAttr("fill")
     $("#neighbors_list").empty()
-    $("#word_axis .tick text").attr("opacity","1")
     pc.unhighlight()
   }  
 }
@@ -96,36 +98,38 @@ function drawLine(ctx,x1,y1,x2,y2){ //draw a single line
   ctx.stroke();
 }
 
-function drawText(ctx,text,x,y){  // draw a single text
-  ctx.fillText(text,x,y)
-}
-
 function drawWordLines(data_rows,canvas_layer){
   ctx = pc.ctx[canvas_layer]
   x1=105, x2= pc.position("gender")
   data_rows.forEach(function(row){
     y2 = pc.dimensions()["gender"].yscale(row["gender"])
     y1 = wordAxis(row['word']) ? wordAxis(row['word']): y2
+    if(inSearch && !afterHighlight)
+      ctx.strokeStyle = (row['word'] == selected_word) ? "steelblue": "orange"
     drawLine(ctx, x1, y1, x2, y2 )
     // y1 += 15
   })
 }
 function drawWords(data_rows, canvas_layer) {
   $("#word_axis .tick text").attr("opacity","0.1")
-  ctx = pc.ctx[canvas_layer]
-  ctx.textAlign = "end";
-  ctx.font = "14px Sans Sarif";
-  x = (hideAxis) ? pc.position("gender")-5 : 100
+  x = pc.position("gender")-5
+  if(!hideAxis || inSearch) x=100 
+  y = 2
+  step = Math.floor((pc.h()+1)/data_rows.length)
   data_rows.forEach(function(row){
-    drawText(ctx,row['word'], x, pc.dimensions()["gender"].yscale(row["gender"]))
+    row['x'] = x
+    row['y'] = (inSearch)? y: pc.dimensions()["gender"].yscale(row["gender"])
+    row['color'] = "black"
+    y += step
   }) 
+  addSVGLabels(data_rows)
 }
 
 /*
 SVG Manipulations
 */
-function addSVGLabels(data_rows,cls="dynamicLabels"){ //dynamically add labels on the word axis
-  d3.select("#word_axis")
+function addSVGLabels(data_rows,cls="dynamicLabel"){ //dynamically add labels on the word axis
+  d3.select("#canvas_svg>g")
     .selectAll(cls)
       .data(data_rows).enter()
         .append("text")
@@ -141,32 +145,47 @@ function addSVGLabels(data_rows,cls="dynamicLabels"){ //dynamically add labels o
 /* 
 events associated with word axis
 */
-$("body").on("mouseenter","#word_axis .tick text",function(e){ // mousein
-  if(!inSearch){
-    $(this).addClass("focused")
-    $(this).attr("fill","#43a2ca")
-    // $(".labels").attr("opacity","0.1")
-    highlightWords($(this).html())
-  }
+function mouseenter(word){
+  if(inSearch) {
+    afterHighlight = true
+  } 
+  highlightWords(word)
+  // else highlightWords(word)
   
-})
-
-$("body").on("mouseleave","#word_axis .tick text",function(){ //mouseout
-  if(!inSearch)
+  // else highlightWords($(this).html())
+}
+function mouseleave(){
+  // if(!inSearch) 
     cancelHighlight() 
+    // if(!inSearch)
+    $(this).removeAttr("fill")
+    // $()
+
+}
+function onClick(word){
+  console.log("enterr")
+  inSearch = true
+  searchWords(word)
+  selected_word = word
+  // setTimeout(function(){ wordLabel.attr("fill","steelblue") }, 500);
+
+}
+$("body").on("mouseenter","#word_axis .tick text", function(){ 
+  if(!inSearch)
+    $(this).attr("fill","steelblue") ;
+  mouseenter($(this).html())
 })
+$("body").on("mouseleave","#word_axis .tick text", mouseleave)
 
 $("body").on("click","#canvas_svg",function(e){ // click
-    console.log(e.target.nodeName)
-    if(e.target.nodeName == "text" && ($(e.target).parents(".tick").length) && ($(e.target).parents("#word_axis").length)){
-      console.log("enterr")
-      inSearch = true
-      searchWords($(e.target).html())
-      // $("#word_dimension .tick text").attr("opacity","0.0")
+    if(!inSearch && e.target.nodeName == "text" && ($(e.target).parents(".tick").length) && ($(e.target).parents("#word_axis").length)){
+      onClick($(e.target).html())
     }
-    else if(!$(e.target).hasClass("dynamicLabel")){
+    else if(inSearch && !(e.target.nodeName == "text")){
+      updatePC(active_data,"foreground",false)
       inSearch = false
-      cancelHighlight()
+      afterHighlight = false
+      cancelHighlight()  
     }
 })
 
@@ -178,37 +197,21 @@ $("body").on("mouseover",".result",function(){
   word = $(this).find(".title").html()
   highlightWords(word)
 })
+$("body").on("mouseout",".result",function(){
+  if(!inSearch)
+    cancelHighlight()  
+})
 
-$("body").on("mouseenter",".dynamicLabel",function(){
-  $(".dynamicLabel").not(this).attr("opacity","0.5")
-  afterHighlight = true
-  globalY = parseFloat($(this).attr("y"))
-  highlightWords($(this).html())
-})
-$("body").on("mouseleave",".dynamicLabel",function(){
-  $(".dynamicLabel").attr("opacity","1")
-  cancelHighlight()
-})
 $("body").on("mouseenter",".list-group-item",function(e){
   $(this).css("color","orange")
-  word = $(this).html()
-  wordLabel = $(".dynamicLabel").filter(function(){
-    // console.log(d)
-    return $(this).html() == word
-  })
-  // console.log(wordLabel)
-  $(".dynamicLabel").not(wordLabel).attr("opacity","0.5")
-  afterHighlight = true
-  globalY = parseFloat(wordLabel.attr("y"))
-  highlightWords(word)
+  mouseenter($(this).html())
+  
+  // afterHighlight = true
+  // globalY = parseFloat(wordLabel.attr("y"))
+  // highlightWords(word)
 })
 $("body").on("mouseleave",".list-group-item",function(e){
   $(this).css("color","black")
-  $(".dynamicLabel").attr("opacity","1")
+  mouseleave()
 })
 
-
-
-//$("body").on("mouseout",".result",function(){
-//  cancelHighlight()  
-//})
