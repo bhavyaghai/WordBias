@@ -1,47 +1,54 @@
 
+function updateWordAxis(data){
+  words = data.map(d => d.word )
+  if(data.length <70){
+    if(hideAxis){
+      pc.hideAxis([])
+      hideAxis = false
+    }
+    pc.dimensions()["word"].yscale.domain( words)
+    pc.dimensions()['word'].tickValues = words
+    pc.updateAxes()
+  }
+  else if(!hideAxis){
+    pc.hideAxis(["word"])
+    hideAxis = true
+  }
+}
 /*
-Word axis update functions
+Word search and highlight functions
 */
-function updateWordAxisDomain(data){ // set word axis domain
-  wordAxis.domain(words) 
+function showText(data_rows, word){
+  attr = hideAxis ? "gender": "word"
+  ctx = afterHighlight ? pc.ctx['after_highlight']:pc.ctx['highlight']
+  x = pc.position(attr)
+  y1 = 10
+  data_rows.forEach(function(row){
+    color = (row['word'] == word) ? "#43a2ca" : "orange"
+    y = pc.dimensions()[attr].yscale(row[attr]) 
+    if (typeof y == 'undefined' & !hideAxis){
+      row["x"] = x-10
+      row["color"] = color
+      row["y"] = y1+3
+      if(!afterHighlight){
+        ctx.strokeStyle = color
+        drawLine(ctx, x, y1, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
+      }
+      else{
+        ctx.strokeStyle = "orange"
+        drawLine(ctx, x, globalY, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
+      }
+      y1 += 20
+    }
+    else if((row['word'] != word)  || hideAxis){
+      row["x"] = x-10
+      row["color"] = color
+      row["y"] = y+3 
+    }
+  })
+  if(!afterHighlight)
+    addSVGLabels(data_rows)
 }
-
-function updateWordAxis(data,canvas_layer="foreground",drawLns=true){  // word axis update
-  words = data.map(function (d) {return d.word})
-  updateWordAxisDomain(words)
-  $("#word_axis").empty()
-  var yAxis = d3.svg.axis()
-    .scale(wordAxis)
-    .tickValues(words)
-    .orient("left");
-
-  d3.select("#word_axis").call(yAxis);
-  // $("#word_axis .tick").attr("fill","orange")
-  if(drawLns) 
-    drawWordLines(data,canvas_layer)
-}
-
-function updatePC(data,canvas_layer="foreground",drawLns=true){
-  if(data.length <75){
-    hideAxis = false
-    updateWordAxis(data,canvas_layer,drawLns) 
-  }
-  else{
-    hideAxis =  true
-    $("#word_axis").empty();
-    d3.select("#word_axis")
-      .append("foreignObject")
-      .attr("width",200)
-      .attr("height",200)
-      .attr("y",pc.h()/2)
-      .attr("x",-100)
-      .append("xhtml")
-      .html("<h4>Word axis is currently not available</h4>"+
-        "<p> as number of words > 100. "+
-        "Use brushing, hover, search bar, or histogram on the left to select words.</p>")
-  }
-}
-
 /*
 Highlight and unhighlight functions
 */
@@ -52,16 +59,7 @@ function highlightWords(word,neighbors=[]){
   if(!afterHighlight){
     selected_word = word
     pc.highlight(data_rows)
-    if(!neighbors.length){  /// case of single data
-      if(!hideAxis) drawWordLines(data_rows,"highlight") // need to draw the lines
-      if(!wordAxis(word) || hideAxis || inSearch)   /// word does not exists in the axis or axis is hidden
-        drawWords(data_rows,"highlight")
-    }
-    else{
-      $(".dynamicLabel").remove()
-      updatePC(data_rows,"highlight")
-
-    }
+    showText(data_rows,word)
     $("#neighbors_list").empty()
     neighbors.forEach(function(neighbor,i){
         $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
@@ -69,7 +67,7 @@ function highlightWords(word,neighbors=[]){
   }
   else{
     pc.afterHighlight(data_rows)
-    drawWordLines(data_rows,"after_highlight")
+    // drawWordLines(data_rows,"after_highlight")
   }
   
 }
@@ -103,7 +101,7 @@ function drawWordLines(data_rows,canvas_layer){
   x1=105, x2= pc.position("gender")
   data_rows.forEach(function(row){
     y2 = pc.dimensions()["gender"].yscale(row["gender"])
-    y1 = wordAxis(row['word']) ? wordAxis(row['word']): y2
+    y1 = pc.dimensions()["word"].yscale.domain(row['word']) ? pc.dimensions()["word"].yscale.domain(row['word']) : y2
     if(inSearch && !afterHighlight)
       ctx.strokeStyle = (row['word'] == selected_word) ? "steelblue": "orange"
     drawLine(ctx, x1, y1, x2, y2 )
@@ -111,9 +109,8 @@ function drawWordLines(data_rows,canvas_layer){
   })
 }
 function drawWords(data_rows, canvas_layer) {
-  $("#word_axis .tick text").attr("opacity","0.1")
-  x = pc.position("gender")-5
-  if(!hideAxis || inSearch) x=100 
+  $("#word_dimension .tick text").attr("opacity","0.1")
+  x = (hideAxis) ? pc.position("gender")-5: pc.position("word")-5
   y = 2
   step = Math.floor((pc.h()+1)/data_rows.length)
   data_rows.forEach(function(row){
@@ -155,7 +152,7 @@ function mouseenter(word){
   // else highlightWords($(this).html())
 }
 function mouseleave(){
-  // if(!inSearch) 
+  if(!inSearch) 
     cancelHighlight() 
     // if(!inSearch)
     $(this).removeAttr("fill")
@@ -170,15 +167,15 @@ function onClick(word){
   // setTimeout(function(){ wordLabel.attr("fill","steelblue") }, 500);
 
 }
-$("body").on("mouseenter","#word_axis .tick text", function(){ 
+$("body").on("mouseenter","#word_dimension .tick text", function(){ 
   if(!inSearch)
     $(this).attr("fill","steelblue") ;
   mouseenter($(this).html())
 })
-$("body").on("mouseleave","#word_axis .tick text", mouseleave)
+$("body").on("mouseleave","#word_dimension .tick text", mouseleave)
 
 $("body").on("click","#canvas_svg",function(e){ // click
-    if(!inSearch && e.target.nodeName == "text" && ($(e.target).parents(".tick").length) && ($(e.target).parents("#word_axis").length)){
+    if(!inSearch && e.target.nodeName == "text" && ($(e.target).parents(".tick").length) && ($(e.target).parents("#word_dimension").length)){
       onClick($(e.target).html())
     }
     else if(inSearch && !(e.target.nodeName == "text")){
@@ -205,10 +202,6 @@ $("body").on("mouseout",".result",function(){
 $("body").on("mouseenter",".list-group-item",function(e){
   $(this).css("color","orange")
   mouseenter($(this).html())
-  
-  // afterHighlight = true
-  // globalY = parseFloat(wordLabel.attr("y"))
-  // highlightWords(word)
 })
 $("body").on("mouseleave",".list-group-item",function(e){
   $(this).css("color","black")

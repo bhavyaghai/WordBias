@@ -6,7 +6,7 @@ pc,
 categories = [{"gender":"Female","race":"Caucasian","religion":"Christanity", "sentiment":"Pleasant"},
               {"gender":"Male","race":"African American","religion":"Islam", "sentiment":"Unpleasant"}],
 
-hideAxis=false, inSearch= false, afterHighlight=false,globalY;
+hideAxis=true, inSearch= false, afterHighlight=false,globalY;
 var defaultBrushExtent = [[0.4,0.45]];
 
 bias_words = {
@@ -74,10 +74,41 @@ $( document ).ready(function() {
             onClick(d.title)
           }
         });
-      // this.pc = createParallelCoord(this.data);
+      pc = createParallelCoord(this.data);
+      pc.on("brushend",function (d) {
+        updatePC(d,"brushed")
+      })
       plot_histogram()
     });
 });
+
+// fetch and replot parallel coordiante
+function onChangeHistogram(ranges=[]) {
+  hist_type = $("#histogram_type").val();
+  // create parallel plot
+  $.ajax({
+      url: '/fetch_data',
+      data: JSON.stringify({hist_type : hist_type,slider_sel : ranges}),
+      type: 'POST',
+      success: function(res){
+          active_data = JSON.parse(res)
+          active_words = active_data.map(function(d){return d.word}) 
+          pc.brushReset()
+          pc.data(active_data).render()
+          updateWordAxis(active_data)        
+      },
+      error: function(error){
+          console.log("error !!!!");
+      }
+  });
+}
+
+function searchWords(word){
+  $.get("/search/"+word, {
+  }, res=>{
+    highlightWords(word,res)
+  })
+}
 
 /* 
 on dropdown menu for histogram type -- ALL, gender, etc.
@@ -104,14 +135,12 @@ $("#alpha_input").on("change",function(){
 
 $("#smoothness_input").on("change",function(){
   smooth = parseFloat($(this).val())
-  console.log("Smoothness: ", smooth)
   pc.smoothness(smooth).render()
   $("#smoothness_text").html(smooth)
 })
 
 $("#bundle_input").on("change",function(){
   bundle =+ $(this).val()
-  console.log(bundle)
   pc.bundlingStrength(bundle).render()
   $("#bundle_text").html(bundle)
 })
@@ -120,7 +149,6 @@ $("#bundle_dimension").dropdown({
   onChange: function(value){
     console.log(value)
     pc.bundleDimension(value)}
-    // $("#bundle_text").html(bundle)
 })
 
 // Reset brush button -- removes all brushes

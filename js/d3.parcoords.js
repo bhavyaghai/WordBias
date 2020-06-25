@@ -111,7 +111,7 @@ var side_effects = d3.dispatch.apply(this,d3.keys(__))
     foregroundQueue.rate(d.value);
   })
   .on("dimensions", function(d) {
-    console.log("called")
+    // console.log("called")
     __.dimensions = pc.applyDimensionDefaults(d3.keys(d.value));
     xscale.domain(pc.getOrderedDimensionKeys());
     pc.sortDimensions();
@@ -135,7 +135,7 @@ var side_effects = d3.dispatch.apply(this,d3.keys(__))
     if (flags.interactive){pc.render();}
   })
   .on("hideAxis", function(d) {
-    console.log("hideaxis")
+    // console.log("hideaxis")
     pc.dimensions(pc.applyDimensionDefaults());
     pc.dimensions(without(__.dimensions, d.value));
   })
@@ -543,11 +543,13 @@ function compute_centroids(row) {
 			var cx = x + a * (position(p[i+1]) - x);
 			var cy = y + a * (__.dimensions[p[i+1]].yscale(row[p[i+1]]) - y);
 			if (__.bundleDimension !== null) {
-				var leftCentroid = __.clusterCentroids.get(__.dimensions[__.bundleDimension].yscale(row[__.bundleDimension])).get(p[i]);
-				var rightCentroid = __.clusterCentroids.get(__.dimensions[__.bundleDimension].yscale(row[__.bundleDimension])).get(p[i+1]);
-				var centroid = 0.5 * (leftCentroid + rightCentroid);
-				cy = centroid + (1 - __.bundlingStrength) * (cy - centroid);
-			}
+        // try{
+  				var leftCentroid = __.clusterCentroids.get(__.dimensions[__.bundleDimension].yscale(row[__.bundleDimension])).get(p[i]);
+  				var rightCentroid = __.clusterCentroids.get(__.dimensions[__.bundleDimension].yscale(row[__.bundleDimension])).get(p[i+1]);
+  				var centroid = 0.5 * (leftCentroid + rightCentroid);
+  				cy = centroid + (1 - __.bundlingStrength) * (cy - centroid);
+  			}
+        // cat
 			centroids.push($V([cx, cy]));
 		}
 	}

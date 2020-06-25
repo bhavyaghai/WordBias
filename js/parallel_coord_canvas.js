@@ -1,52 +1,21 @@
 function createParallelCoord(data){
 	// linear color scale
 	$("#parallel_coord").empty()
-	// $("#parallel_coord").css("height",4*$(window).height()/5)
-	// $("#neighbors_list").css("max-height",4*$(window).height()/5)
-	//var blue_to_brown = d3.scale.linear()
-	//  .domain([-1, 1])
-	//  .range(["steelblue", "brown"])
-	//  .interpolate(d3.interpolateLab);
-
-	// interact with this variable from a javascript console
-	var pc1;
-	// var dimensions = {
-	// 		'word': {title: "word",'tickValues':[]}
-
- //            //'gender': {title: "gender"},
- //            //'race': {title: "race"},
- //            //'economic_status': {'title':'economic_status'}
- //        };
- //    for(key in bias_words) {
- //    	dimensions[key] = {title: key}
- //    }
- //    console.log("dimensions : ", dimensions)
- //    console.log("data: ",data)
-
-	// load csv file and create the chart
 	
-	  
-	  data = data.map(function(d){ delete d.word; return d  })
-	  console.log(data)
-	  pc1 = d3.parcoords()("#parallel_coord")
+	var pc = d3.parcoords()("#parallel_coord")
 	    .data(data)
-	    // .hideAxis(['word'])
-	    // .bundleDimension("gender")
 	    .bundlingStrength(0) // set bundling strength
-		.smoothness(0) 
+		.smoothness(0)
 		.bundleDimension("gender")
-		.showControlPoints(false)
+	    .hideAxis(["word"])
 	    .composite("darken")
 	    .color("steelblue")  // quantitative color scale
-	    .alpha(0.5)
+	    .alpha(0.35)
 	    .mode("queue")
+	    .render()
 	    .brushMode("1D-axes-multi")  // enable brushing
 	    .interactive()  // command line mode
 	    .reorderable()
 
-	  var explore_count = 0;
-	  var exploring = {};
-	  var explore_start = false;
-
-	  return pc1
+	return pc
 }
