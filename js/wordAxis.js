@@ -16,43 +16,9 @@ function updateWordAxis(data){
     hideAxis = true
   }
 }
-/*
-Word search and highlight functions
-*/
-// function showText(data_rows, word){
-//   attr = hideAxis ? "gender": "word"
-//   ctx = afterHighlight ? pc.ctx['after_highlight']:pc.ctx['highlight']
-//   x = pc.position(attr)
-//   y1 = 10
-//   data_rows.forEach(function(row){
-//     color = (row['word'] == word) ? "#43a2ca" : "orange"
-//     y = pc.dimensions()[attr].yscale(row[attr]) 
-//     if (typeof y == 'undefined' & !hideAxis){
-//       row["x"] = x-10
-//       row["color"] = color
-//       row["y"] = y1+3
-//       if(!afterHighlight){
-//         ctx.strokeStyle = color
-//         drawLine(ctx, x, y1, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
-//       }
-//       else{
-//         ctx.strokeStyle = "orange"
-//         drawLine(ctx, x, globalY, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
-//       }
-//       y1 += 20
-//     }
-//     else if((row['word'] != word)  || hideAxis){
-//       row["x"] = x-10
-//       row["color"] = color
-//       row["y"] = y+3 
-//     }
-//   })
-//   if(!afterHighlight)
-//     addSVGLabels(data_rows)
-// }
-/*
-Highlight and unhighlight functions
-*/
+
+//Highlight and unhighlight functions
+// */
 function highlightWords(word,neighbors=[]){
   console.log("highlight words!!")
   $(".dynamicLabel").remove()
@@ -67,12 +33,12 @@ function highlightWords(word,neighbors=[]){
     }
     else{
       updateWordAxis(data_rows)
+      $("#neighbors_list").empty()
+      neighbors.forEach(function(neighbor,i){
+          $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
+      })
     }
     pc.highlight(data_rows)
-    $("#neighbors_list").empty()
-    neighbors.forEach(function(neighbor,i){
-        $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
-    })
   }
   else{
     pc.afterHighlight(data_rows)
@@ -80,16 +46,15 @@ function highlightWords(word,neighbors=[]){
   }
   
 }
-function cancelHighlight(){
+function cancelHighlight(updateAxes=true,updateNeighbor=true){
   console.log("cancelled called")
+  pc.unhighlight()
   // $("text").removeClass("focused")
   $("text").removeAttr("fill")
   $(".dynamicLabel").remove()
   $("#word_dimension .tick text").attr("opacity","1")
-  updateWordAxis(active_data)
-  $("#neighbors_list").empty()
-  pc.unhighlight()
-   
+  if(updateNeighbor) $("#neighbors_list").empty()
+  if(!pc.isBrushed()) updateWordAxis(active_data)  
 }
 
 function drawWords(data_rows, canvas_layer) {
@@ -127,7 +92,6 @@ function addSVGLabels(data_rows,cls="dynamicLabel"){ //dynamically add labels on
 events associated with word axis
 */
 function mouseenter(word){
-  // console.log("bbbbb")
   if(inSearch) {
     afterHighlight = true
   } 
@@ -135,7 +99,7 @@ function mouseenter(word){
 }
 function mouseleave(){
   if(!inSearch) 
-    cancelHighlight() 
+    cancelHighlight(true,false) 
     
   else if(afterHighlight){
     afterHighlight = false
@@ -161,14 +125,11 @@ $("body").on("mouseenter","#word_dimension .tick text", function(){
 $("body").on("mouseleave","#word_dimension .tick text", mouseleave)
 
 $("body").on("click","#canvas_svg",function(e){ // click
-  console.log(e.target.id, e.target.classList, e.target.nodeName)
-    if(!(e.target.nodeName == "text") && inSearch){
+  // console.log(e.target.id, e.target.classList, $e.target.nodeName)
+    if(!(e.target.nodeName == "text") && !pc.isBrushed()){
       console.log("evvngbg")
-      // updateWordAxis(active_data)
-      
       inSearch = false
       afterHighlight = false
-      
       cancelHighlight()  
     }
 

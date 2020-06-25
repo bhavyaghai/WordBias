@@ -448,6 +448,7 @@ function isBrushed() {
   }
   return false;
 };
+pc.isBrushed = isBrushed
 
 pc.render.default = function() {
   pc.clear('foreground');

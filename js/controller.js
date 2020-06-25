@@ -6,7 +6,7 @@ pc,
 categories = [{"gender":"Female","race":"Caucasian","religion":"Christanity", "sentiment":"Pleasant"},
               {"gender":"Male","race":"African American","religion":"Islam", "sentiment":"Unpleasant"}],
 
-hideAxis=true, inSearch= false, afterHighlight=false,globalY;
+hideAxis=true, inSearch= false, afterHighlight=false;
 var defaultBrushExtent = [[0.4,0.45]];
 
 bias_words = {
@@ -75,7 +75,7 @@ $( document ).ready(function() {
           }
         });
       pc = createParallelCoord(this.data);
-      pc.on("brushend",function (d) {if(hideAxis) populate_brushed_words(d)})
+      pc.on("brushend",function (d) { populate_brushed_words(d)})
       plot_histogram()
     });
 });
