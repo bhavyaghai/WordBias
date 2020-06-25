@@ -1,7 +1,7 @@
 
 function updateWordAxis(data){
   words = data.map(d => d.word )
-  if(data.length <70){
+  if(data.length <75){
     if(hideAxis){
       pc.hideAxis([])
       hideAxis = false
@@ -18,48 +18,55 @@ function updateWordAxis(data){
 /*
 Word search and highlight functions
 */
-function showText(data_rows, word){
-  attr = hideAxis ? "gender": "word"
-  ctx = afterHighlight ? pc.ctx['after_highlight']:pc.ctx['highlight']
-  x = pc.position(attr)
-  y1 = 10
-  data_rows.forEach(function(row){
-    color = (row['word'] == word) ? "#43a2ca" : "orange"
-    y = pc.dimensions()[attr].yscale(row[attr]) 
-    if (typeof y == 'undefined' & !hideAxis){
-      row["x"] = x-10
-      row["color"] = color
-      row["y"] = y1+3
-      if(!afterHighlight){
-        ctx.strokeStyle = color
-        drawLine(ctx, x, y1, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
-      }
-      else{
-        ctx.strokeStyle = "orange"
-        drawLine(ctx, x, globalY, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
-      }
-      y1 += 20
-    }
-    else if((row['word'] != word)  || hideAxis){
-      row["x"] = x-10
-      row["color"] = color
-      row["y"] = y+3 
-    }
-  })
-  if(!afterHighlight)
-    addSVGLabels(data_rows)
-}
+// function showText(data_rows, word){
+//   attr = hideAxis ? "gender": "word"
+//   ctx = afterHighlight ? pc.ctx['after_highlight']:pc.ctx['highlight']
+//   x = pc.position(attr)
+//   y1 = 10
+//   data_rows.forEach(function(row){
+//     color = (row['word'] == word) ? "#43a2ca" : "orange"
+//     y = pc.dimensions()[attr].yscale(row[attr]) 
+//     if (typeof y == 'undefined' & !hideAxis){
+//       row["x"] = x-10
+//       row["color"] = color
+//       row["y"] = y1+3
+//       if(!afterHighlight){
+//         ctx.strokeStyle = color
+//         drawLine(ctx, x, y1, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
+//       }
+//       else{
+//         ctx.strokeStyle = "orange"
+//         drawLine(ctx, x, globalY, pc.position("gender"), pc.dimensions()["gender"].yscale(row["gender"]))
+//       }
+//       y1 += 20
+//     }
+//     else if((row['word'] != word)  || hideAxis){
+//       row["x"] = x-10
+//       row["color"] = color
+//       row["y"] = y+3 
+//     }
+//   })
+//   if(!afterHighlight)
+//     addSVGLabels(data_rows)
+// }
 /*
 Highlight and unhighlight functions
 */
 function highlightWords(word,neighbors=[]){
-  this.neighbors = neighbors
+  $(".dynamicLabel").remove()
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
   
   if(!afterHighlight){
     selected_word = word
+    if(!neighbors.length){
+      if(!hideAxis && !pc.dimensions()['word'].yscale(word))
+        updateWordAxis($.merge( $.merge( [], active_data ), data_rows ))
+      if(hideAxis) drawWords(data_rows,"highlight")
+    }
+    else{
+      updateWordAxis(data_rows)
+    }
     pc.highlight(data_rows)
-    showText(data_rows,word)
     $("#neighbors_list").empty()
     neighbors.forEach(function(neighbor,i){
         $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
@@ -72,42 +79,18 @@ function highlightWords(word,neighbors=[]){
   
 }
 function cancelHighlight(){
+  console.log("cancelled called")
   // $("text").removeClass("focused")
-  // $("text").removeAttr("fill")
+  $("text").removeAttr("fill")
   $(".dynamicLabel").remove()
-  $("#word_axis .tick text").attr("opacity","1")
-  if(afterHighlight){
-    afterHighlight = false
-    pc.unAfterHighlight()
-  }
-  else{
-    $("#neighbors_list").empty()
-    pc.unhighlight()
-  }  
+  $("#word_dimension .tick text").attr("opacity","1")
+  
+  updateWordAxis(active_data)
+  $("#neighbors_list").empty()
+  pc.unhighlight()
+   
 }
 
-/*
-canvas drawing utility functions
-*/
-function drawLine(ctx,x1,y1,x2,y2){ //draw a single line
-  ctx.beginPath();
-  ctx.moveTo(x1, y1) 
-  ctx.lineTo(x2, y2) 
-  ctx.stroke();
-}
-
-function drawWordLines(data_rows,canvas_layer){
-  ctx = pc.ctx[canvas_layer]
-  x1=105, x2= pc.position("gender")
-  data_rows.forEach(function(row){
-    y2 = pc.dimensions()["gender"].yscale(row["gender"])
-    y1 = pc.dimensions()["word"].yscale.domain(row['word']) ? pc.dimensions()["word"].yscale.domain(row['word']) : y2
-    if(inSearch && !afterHighlight)
-      ctx.strokeStyle = (row['word'] == selected_word) ? "steelblue": "orange"
-    drawLine(ctx, x1, y1, x2, y2 )
-    // y1 += 15
-  })
-}
 function drawWords(data_rows, canvas_layer) {
   $("#word_dimension .tick text").attr("opacity","0.1")
   x = (hideAxis) ? pc.position("gender")-5: pc.position("word")-5
@@ -147,24 +130,21 @@ function mouseenter(word){
     afterHighlight = true
   } 
   highlightWords(word)
-  // else highlightWords(word)
-  
-  // else highlightWords($(this).html())
 }
 function mouseleave(){
   if(!inSearch) 
     cancelHighlight() 
-    // if(!inSearch)
-    $(this).removeAttr("fill")
-    // $()
-
+    
+  else if(afterHighlight){
+    afterHighlight = false
+    pc.unAfterHighlight()
+  }
 }
 function onClick(word){
   console.log("enterr")
   inSearch = true
   searchWords(word)
   selected_word = word
-  // setTimeout(function(){ wordLabel.attr("fill","steelblue") }, 500);
 
 }
 $("body").on("mouseenter","#word_dimension .tick text", function(){ 
@@ -179,7 +159,7 @@ $("body").on("click","#canvas_svg",function(e){ // click
       onClick($(e.target).html())
     }
     else if(inSearch && !(e.target.nodeName == "text")){
-      updatePC(active_data,"foreground",false)
+      // updateWordAxis(active_data)
       inSearch = false
       afterHighlight = false
       cancelHighlight()  
@@ -194,17 +174,17 @@ $("body").on("mouseover",".result",function(){
   word = $(this).find(".title").html()
   highlightWords(word)
 })
-$("body").on("mouseout",".result",function(){
-  if(!inSearch)
-    cancelHighlight()  
-})
+// $("body").on("mouseout",".result",function(){
+//   if(!inSearch)
+//     cancelHighlight()  
+// })
 
-$("body").on("mouseenter",".list-group-item",function(e){
-  $(this).css("color","orange")
-  mouseenter($(this).html())
-})
-$("body").on("mouseleave",".list-group-item",function(e){
-  $(this).css("color","black")
-  mouseleave()
-})
+// $("body").on("mouseenter",".list-group-item",function(e){
+//   $(this).css("color","orange")
+//   mouseenter($(this).html())
+// })
+// $("body").on("mouseleave",".list-group-item",function(e){
+//   $(this).css("color","black")
+//   mouseleave()
+// })
 

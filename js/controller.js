@@ -75,9 +75,7 @@ $( document ).ready(function() {
           }
         });
       pc = createParallelCoord(this.data);
-      pc.on("brushend",function (d) {
-        updatePC(d,"brushed")
-      })
+      pc.on("brushend",function (d) {if(hideAxis) populate_brushed_words(d)})
       plot_histogram()
     });
 });
@@ -108,6 +106,15 @@ function searchWords(word){
   }, res=>{
     highlightWords(word,res)
   })
+}
+
+function populate_brushed_words(brushed_data) {
+  $("#neighbors_list").empty();
+  brushed_data.forEach(function(neighbor,i){
+      $("#neighbors_list").append('<li class="list-group-item">'+neighbor['word']+'</li>')
+  })
+  // if(!hideAxis)
+  //   updateWordAxis(brushed_data)
 }
 
 /* 
@@ -153,8 +160,9 @@ $("#bundle_dimension").dropdown({
 
 // Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){
-  pc.brushReset() 
-  updatePC(active_data,"foreground",false)
+  pc.brushReset()
+  $("#neighbors_list").empty() 
+  updateWordAxis(d)
 })
 
 
