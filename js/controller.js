@@ -142,6 +142,7 @@ $("#alpha_input").on("change",function(){
 
 $("#smoothness_input").on("change",function(){
   smooth = parseFloat($(this).val())
+  // updateWordAxis(active_data)
   pc.smoothness(smooth).render()
   $("#smoothness_text").html(smooth)
 })
@@ -162,7 +163,7 @@ $("#bundle_dimension").dropdown({
 $("#reset_brush").on("click",function(){
   pc.brushReset()
   $("#neighbors_list").empty() 
-  updateWordAxis(d)
+  updateWordAxis(active_data)
 })
 
 

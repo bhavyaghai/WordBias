@@ -714,18 +714,21 @@ function path_highlight(d, i) {
   return color_path(d, ctx.after_highlight);
 };
 pc.clear = function(layer) {
-  ctx[layer].clearRect(0, 0, w() + 2, h() + 2);
+  // console.log("clear called", layer)
+  // if(!inSearch && (layer != "highlight")){
+    ctx[layer].clearRect(0, 0, w() + 2, h() + 2);
 
-  // This will make sure that the foreground items are transparent
-  // without the need for changing the opacity style of the foreground canvas
-  // as this would stop the css styling from working
-  if(layer === "brushed" && isBrushed()) {
-    ctx.brushed.fillStyle = pc.selection.style("background-color");
-    ctx.brushed.globalAlpha = 1 - __.alphaOnBrushed;
-    ctx.brushed.fillRect(0, 0, w() + 2, h() + 2);
-    ctx.brushed.globalAlpha = __.alpha;
-  }
-  return this;
+    // This will make sure that the foreground items are transparent
+    // without the need for changing the opacity style of the foreground canvas
+    // as this would stop the css styling from working
+    if(layer === "brushed" && isBrushed()) {
+      ctx.brushed.fillStyle = pc.selection.style("background-color");
+      ctx.brushed.globalAlpha = 1 - __.alphaOnBrushed;
+      ctx.brushed.fillRect(0, 0, w() + 2, h() + 2);
+      ctx.brushed.globalAlpha = __.alpha;
+    }
+    return this;
+  // }
 };
 d3.rebind(pc, axis, "ticks", "orient", "tickValues", "tickSubdivide", "tickSize", "tickPadding", "tickFormat");
 
@@ -1023,52 +1026,60 @@ pc.reorderable = function() {
   g.style("cursor", "move")
     .call(d3.behavior.drag()
       .on("dragstart", function(d) {
-        dragging[d] = this.__origin__ = xscale(d);
+        // console.log("dragstart")
+        if(!inSearch)
+          dragging[d] = this.__origin__ = xscale(d);
       })
       .on("drag", function(d) {
-        dragging[d] = Math.min(w(), Math.max(0, this.__origin__ += d3.event.dx));
-        pc.sortDimensions();
-        xscale.domain(pc.getOrderedDimensionKeys());
-        pc.render();
-        g.attr("transform", function(d) {
-          return "translate(" + position(d) + ")";
-        });
+        // console.log("drag")
+        if(!inSearch){
+          dragging[d] = Math.min(w(), Math.max(0, this.__origin__ += d3.event.dx));
+          pc.sortDimensions();
+          xscale.domain(pc.getOrderedDimensionKeys());
+          pc.render();
+          g.attr("transform", function(d) {
+            return "translate(" + position(d) + ")";
+          });
+        }
       })
       .on("dragend", function(d) {
+        // console.log("dragend")
         // Let's see if the order has changed and send out an event if so.
-        var i = 0,
-            j = __.dimensions[d].index,
-            elem = this,
-            parent = this.parentElement;
+        if(!inSearch){
+          var i = 0,
+              j = __.dimensions[d].index,
+              elem = this,
+              parent = this.parentElement;
 
-        while((elem = elem.previousElementSibling) != null) ++i;
-        if (i !== j) {
-          events.axesreorder.call(pc, pc.getOrderedDimensionKeys());
-          // We now also want to reorder the actual dom elements that represent
-          // the axes. That is, the g.dimension elements. If we don't do this,
-          // we get a weird and confusing transition when updateAxes is called.
-          // This is due to the fact that, initially the nth g.dimension element
-          // represents the nth axis. However, after a manual reordering,
-          // without reordering the dom elements, the nth dom elements no longer
-          // necessarily represents the nth axis.
-          //
-          // i is the original index of the dom element
-          // j is the new index of the dom element
-          if (i > j) { // Element moved left
-            parent.insertBefore(this, parent.children[j - 1]);
-          } else {     // Element moved right
-            if ((j + 1) < parent.children.length) {
-              parent.insertBefore(this, parent.children[j + 1]);
-            } else {
-              parent.appendChild(this);
+          while((elem = elem.previousElementSibling) != null) ++i;
+          if (i !== j) {
+            events.axesreorder.call(pc, pc.getOrderedDimensionKeys());
+            // We now also want to reorder the actual dom elements that represent
+            // the axes. That is, the g.dimension elements. If we don't do this,
+            // we get a weird and confusing transition when updateAxes is called.
+            // This is due to the fact that, initially the nth g.dimension element
+            // represents the nth axis. However, after a manual reordering,
+            // without reordering the dom elements, the nth dom elements no longer
+            // necessarily represents the nth axis.
+            //
+            // i is the original index of the dom element
+            // j is the new index of the dom element
+            if (i > j) { // Element moved left
+              parent.insertBefore(this, parent.children[j - 1]);
+            } else {     // Element moved right
+              if ((j + 1) < parent.children.length) {
+                parent.insertBefore(this, parent.children[j + 1]);
+              } else {
+                parent.appendChild(this);
+              }
             }
           }
-        }
 
-        delete this.__origin__;
-        delete dragging[d];
-        d3.select(this).transition().attr("transform", "translate(" + xscale(d) + ")");
-        pc.render();
+          delete this.__origin__;
+          delete dragging[d];
+          d3.select(this).transition().attr("transform", "translate(" + xscale(d) + ")");
+          pc.render();
+        }
       }));
   flags.reorderable = true;
   return this;
@@ -1645,7 +1656,7 @@ pc.brushMode = function(mode) {
       if (strum && strum.p1[0] === strum.p2[0] && strum.p1[1] === strum.p2[1]) {
         removeStrum(strums);
       }
-
+      // console.log("firing hereee!")
       brushed = selected(strums);
       strums.active = undefined;
       __.brushed = brushed;
@@ -2520,8 +2531,8 @@ pc.afterHighlight = function(data) {
 
   __.highlighted = data;
   pc.clear("after_highlight");
-  d3.selectAll([canvas.highlight]).classed("faded", true);
-  d3.selectAll([canvas.foreground, canvas.brushed]).classed("invisible", true);
+  // d3.selectAll([canvas.highlight]).classed("faded", true);
+  d3.selectAll([canvas.foreground, canvas.brushed, canvas.highlight]).classed("invisible", true);
   data.forEach(path_highlight);
   events.highlight.call(this, data);
   return this;
@@ -2531,8 +2542,8 @@ pc.afterHighlight = function(data) {
 pc.unAfterHighlight = function() {
   __.highlighted = [];
   pc.clear("after_highlight");
-  d3.selectAll([canvas.highlight]).classed("faded", false);
-  d3.selectAll([canvas.foreground, canvas.brushed]).classed("invisible", false);
+  // d3.selectAll([canvas.highlight]).classed("faded", false);
+  d3.selectAll([canvas.foreground, canvas.brushed,canvas.highlight ]).classed("invisible", false);
   return this;
 };
 

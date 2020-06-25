@@ -9,6 +9,7 @@ function updateWordAxis(data){
     pc.dimensions()["word"].yscale.domain( words)
     pc.dimensions()['word'].tickValues = words
     pc.updateAxes()
+    d3.selectAll("#word_dimension .tick text").on("click",labelClick)
   }
   else if(!hideAxis){
     pc.hideAxis(["word"])
@@ -53,6 +54,7 @@ Word search and highlight functions
 Highlight and unhighlight functions
 */
 function highlightWords(word,neighbors=[]){
+  console.log("highlight words!!")
   $(".dynamicLabel").remove()
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
   
@@ -84,7 +86,6 @@ function cancelHighlight(){
   $("text").removeAttr("fill")
   $(".dynamicLabel").remove()
   $("#word_dimension .tick text").attr("opacity","1")
-  
   updateWordAxis(active_data)
   $("#neighbors_list").empty()
   pc.unhighlight()
@@ -126,6 +127,7 @@ function addSVGLabels(data_rows,cls="dynamicLabel"){ //dynamically add labels on
 events associated with word axis
 */
 function mouseenter(word){
+  // console.log("bbbbb")
   if(inSearch) {
     afterHighlight = true
   } 
@@ -141,11 +143,15 @@ function mouseleave(){
   }
 }
 function onClick(word){
-  console.log("enterr")
+  // console.log("enterr")
   inSearch = true
   searchWords(word)
   selected_word = word
 
+}
+function labelClick(d,i){
+  if(!inSearch) onClick($(this).html())
+  
 }
 $("body").on("mouseenter","#word_dimension .tick text", function(){ 
   if(!inSearch)
@@ -155,15 +161,17 @@ $("body").on("mouseenter","#word_dimension .tick text", function(){
 $("body").on("mouseleave","#word_dimension .tick text", mouseleave)
 
 $("body").on("click","#canvas_svg",function(e){ // click
-    if(!inSearch && e.target.nodeName == "text" && ($(e.target).parents(".tick").length) && ($(e.target).parents("#word_dimension").length)){
-      onClick($(e.target).html())
-    }
-    else if(inSearch && !(e.target.nodeName == "text")){
+  console.log(e.target.id, e.target.classList, e.target.nodeName)
+    if(!(e.target.nodeName == "text") && inSearch){
+      console.log("evvngbg")
       // updateWordAxis(active_data)
+      
       inSearch = false
       afterHighlight = false
+      
       cancelHighlight()  
     }
+
 })
 
 /*
@@ -179,12 +187,12 @@ $("body").on("mouseover",".result",function(){
 //     cancelHighlight()  
 // })
 
-// $("body").on("mouseenter",".list-group-item",function(e){
-//   $(this).css("color","orange")
-//   mouseenter($(this).html())
-// })
-// $("body").on("mouseleave",".list-group-item",function(e){
-//   $(this).css("color","black")
-//   mouseleave()
-// })
+$("body").on("mouseenter",".list-group-item",function(e){
+  $(this).css("color","orange")
+  mouseenter($(this).html())
+})
+$("body").on("mouseleave",".list-group-item",function(e){
+  $(this).css("color","black")
+  mouseleave()
+})
 
