@@ -2,14 +2,14 @@
 function initializePC(){
   pc = createParallelCoord(active_data);
   pc.render()
-  wordAxis = d3.scale.ordinal()
-            .domain(active_words)
-            .rangePoints([pc.h(), 1]);
-  d3.select("#canvas_svg>g").append("g")
-      .attr("id", "word_axis")
-      .attr("class","y axis")
-      .attr("transform", "translate(105,0)")
-  updatePC(active_data)
+  // wordAxis = d3.scale.ordinal()
+  //           .domain(active_words)
+  //           .rangePoints([pc.h(), 1]);
+  // d3.select("#canvas_svg>g").append("g")
+  //     .attr("id", "word_axis")
+  //     .attr("class","y axis")
+  //     .attr("transform", "translate(105,0)")
+  // updatePC(active_data)
   pc.on("brushend",function (d) {
     updatePC(d,"brushed")
   })
@@ -30,7 +30,7 @@ function onChangeHistogram(ranges=[]) {
           if(pc){
             pc.brushReset()
             pc.data(active_data).render()
-            updatePC(active_data)
+            // updatePC(active_data)
           }
           else{
             initializePC()

@@ -111,6 +111,7 @@ $("#smoothness_input").on("change",function(){
 
 $("#bundle_input").on("change",function(){
   bundle =+ $(this).val()
+  console.log(bundle)
   pc.bundlingStrength(bundle).render()
   $("#bundle_text").html(bundle)
 })

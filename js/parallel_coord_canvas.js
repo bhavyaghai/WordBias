@@ -25,19 +25,21 @@ function createParallelCoord(data){
 
 	// load csv file and create the chart
 	
-	  console.log(data.length)
+	  
+	  data = data.map(function(d){ delete d.word; return d  })
+	  console.log(data)
 	  pc1 = d3.parcoords()("#parallel_coord")
 	    .data(data)
-	    // .dimensions(dimensions)
+	    // .hideAxis(['word'])
+	    // .bundleDimension("gender")
 	    .bundlingStrength(0) // set bundling strength
-		.smoothness(0)
+		.smoothness(0) 
 		.bundleDimension("gender")
-		.hideAxis(['word'])
+		.showControlPoints(false)
 	    .composite("darken")
 	    .color("steelblue")  // quantitative color scale
 	    .alpha(0.5)
 	    .mode("queue")
-	    // .render()
 	    .brushMode("1D-axes-multi")  // enable brushing
 	    .interactive()  // command line mode
 	    .reorderable()

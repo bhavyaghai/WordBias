@@ -272,7 +272,7 @@ pc.autoscale = function() {
   // var st_point = Math.floor(w()/(pc.getOrderedDimensionKeys().length+1))
   // console.log(st_point)
   //set to a constant, must be changed later
-  xscale.rangePoints([220, w()], 1);
+  xscale.rangePoints([0, w()], 1);
 
   // Retina display, etc.
   var devicePixelRatio = window.devicePixelRatio || 1;
