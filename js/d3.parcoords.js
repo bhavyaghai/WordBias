@@ -722,8 +722,9 @@ pc.clear = function(layer) {
 d3.rebind(pc, axis, "ticks", "orient", "tickValues", "tickSubdivide", "tickSize", "tickPadding", "tickFormat");
 
 function flipAxisAndUpdatePCP(dimension) {
-  var g = pc.svg.selectAll(".dimension");
+  console.log("Flip axes: ", dimension);
 
+  var g = pc.svg.selectAll(".dimension");
   pc.flip(dimension);
 
   d3.select(this.parentElement)
@@ -828,8 +829,6 @@ pc.createAxes = function() {
         "class": "polarity1"
       })
       .text(function(d){ 
-        //return categories[0][d]
-        //console.log("svg:text d ", d);
         d = d.toLowerCase()
         if(d=="word") {
           return
@@ -846,8 +845,6 @@ pc.createAxes = function() {
         "class": "polarity2"
       })
       .text(function(d){
-        //return categories[1][d]
-        //console.log("svg:text d ", d);
         d = d.toLowerCase()
         if(d=="word") {
           return
