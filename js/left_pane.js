@@ -39,7 +39,7 @@ function plot_histogram() {
         values = res["values"]
         $("#histogram").empty();
         createHistogram(values)
-        onChangeHistogram([[0.45,0.65]]);
+        onChangeHistogram(defaultBrushExtent);
   });
 }
 
@@ -119,9 +119,7 @@ function changeBiastype(id) {
 
 // fetch and replot parallel coordiante
 function onChangeHistogram(ranges=[]) {
-  console.log(ranges)
   hist_type = $("#histogram_type").val();
-  // var slider_ranges = slider.noUiSlider.get();
   // create parallel plot
   $.ajax({
       url: '/fetch_data',
@@ -131,28 +129,9 @@ function onChangeHistogram(ranges=[]) {
           console.log(JSON.parse(res))
           active_data = JSON.parse(res)
           active_words = active_data.map(function(d){return d.word})
-          // console.log(active_data)
-          if(pc){
-            if(active_words.length <70){
-              if(hideAxis){
-                pc.hideAxis([])
-                hideAxis = false
-              }
-              pc.dimensions()["word"].yscale.domain( active_words)
-              pc.dimensions()['word'].tickValues = active_words
-              pc.updateAxes()
-            }
-            else if(!hideAxis){
-              pc.hideAxis(["word"])
-              hideAxis = true
-            }
-            pc.data(active_data).render()
-          }
-          else{
-            pc = createParallelCoord(active_data);
-            pc.render()
-            // cloneCanvas()
-          }         
+          pc.brushReset()
+          pc.data(active_data).render()
+          updateWordAxis(active_data)         
       },
       error: function(error){
           console.log("error !!!!");

@@ -6,8 +6,8 @@ pc,
 categories = [{"gender":"Female","race":"Caucasian","religion":"Christanity", "sentiment":"Pleasant"},
               {"gender":"Male","race":"African American","religion":"Islam", "sentiment":"Unpleasant"}],
 
-hideAxis=false, inSearch= false, afterHighlight=false,globalY;
-var defaultBrushExtent = [[0.45,0.65]];
+hideAxis=true, inSearch= false, afterHighlight=false,globalY;
+var defaultBrushExtent = [[0.4,0.45]];
 
 bias_words = {
   "gender": {
@@ -77,7 +77,7 @@ $( document ).ready(function() {
             searchWords(d.title)
           }
         });
-      // this.pc = createParallelCoord(this.data);
+      pc = createParallelCoord(this.data);
       plot_histogram()
     });
 });
@@ -88,9 +88,9 @@ events associated with word axis
 */
 $("body").on("mouseenter","#word_dimension .tick text",function(e){
   if(!inSearch){
-    $(this).addClass("focused")
+    // $(this).addClass("focused")
     $(this).attr("fill","#43a2ca")
-    $("#word_dimension .tick text").attr("opacity","0.1")
+    // $("#word_dimension .tick text").attr("opacity","0.1")
     highlightWords($(this).html())
   }
   

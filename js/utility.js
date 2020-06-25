@@ -1,23 +1,3 @@
-/*
-Create zero divider
-*/
-// function createZeroLine(){
-//     d = "M "
-//     for(i=0;i<attrs.length;i++){
-//       // console.log(x,y)
-//       x = pc.position(attrs[i])
-//       y = pc.dimensions()[attrs[i]].yscale(0)
-//       d = d+x.toString()+" "+y.toString()
-//       if(i < attrs.length-1)
-//         d = d+" L "
-//     }
-//     console.log(d)
-//     d3.select("#canvas_svg>g")
-//       .append('path')
-//       .attr("d", d)
-//       .attr( "stroke","grey")
-//       .attr( "stroke-width","3")
-// }
 
 function drawLine(ctx,x1,y1,x2,y2){
 	ctx.beginPath();
@@ -37,6 +17,23 @@ function addLabels(data_rows){
         .attr("text-anchor","end")
         .style("z-index","-4")
         .text(d => d.word)
+}
+
+function updateWordAxis(data){
+  words = data.map(d => d.word )
+  if(data.length <70){
+    if(hideAxis){
+      pc.hideAxis([])
+      hideAxis = false
+    }
+    pc.dimensions()["word"].yscale.domain( words)
+    pc.dimensions()['word'].tickValues = words
+    pc.updateAxes()
+  }
+  else if(!hideAxis){
+    pc.hideAxis(["word"])
+    hideAxis = true
+  }
 }
 
 /*
@@ -83,7 +80,6 @@ function highlightWords(word,neighbors=[]){
     showText(data_rows,word)
     $("#neighbors_list").empty()
     neighbors.forEach(function(neighbor,i){
-        // if(i<)
         $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
     })
 
@@ -100,13 +96,13 @@ function cancelHighlight(){
     pc.unAfterHighlight()
   }
   else{
-  	$("text").removeClass("focused")
+  	// $("text").removeClass("focused")
   	$("text").removeAttr("fill")
-    if(active_words.length<70){
-      console.log("mouseout")
-      $("#word_dimension .tick text").attr("opacity","1")
-      // pc.updateAxes()
-    }
+    // if(active_words.length<70){
+    //   console.log("mouseout")
+    //   $("#word_dimension .tick text").attr("opacity","1")
+    //   // pc.updateAxes()
+    // }
     $("#neighbors_list").empty()
     $(".dynamicLabel").remove()
     // $("text").removeClass("dynamicLabel")
