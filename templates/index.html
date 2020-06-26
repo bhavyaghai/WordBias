@@ -10,7 +10,6 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/semantic/semantic.min.css') }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.5.0/nouislider.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/d3.parcoords.css') }}">
 
     <title>WordBias</title>
@@ -37,7 +36,7 @@
         <div class="row">
         <div class="col-lg-2 greyed">
                 <div class="feature">
-                    <label><h4>Word Embeddings</h4></label>
+                    <label><h4>Word Embedding</h4></label>
                     <select id="dropdown_embedding">
                         <option selected>Word2Vec</option>
                         <option>Word2Vec debiased</option>
@@ -48,11 +47,11 @@
                         <option disabled>German fastText</option>
                         <option disabled>Chinese fastText</option>
                         <option disabled>Spanish fastText</option>
-                    </select>   
+                    </select>  
                 </div>
                 <div class="feature">
                     <label><h4>Bias Measuring Method</h4></label>
-                    <select id="quantification">
+                    <select class="ui dropdown" id="quantification">
                         <option>Subspace Projection</option>
                         <option>Group Difference</option>
                     </select>
@@ -145,7 +144,7 @@
                     </select>  
                 </div>
                 <div class="control">
-                    <button id="reset_brush" class="ui button">Reset Brush</button>
+                    <button id="reset_brush" class="ui mini button">Reset Brush</button>
                 </div>    
             </div>   
             <div id="parallel_coord" class="parcoords" style="height: 80%"></div>     
@@ -161,12 +160,12 @@
               <div class="results"></div>
               -->
             </div>
-            <div style="height: 85%">
+            <!-- <div style="height: 85%"> -->
                 <!-- 
                 <h4>Neighbours in High Dimensions</h4>
                 -->
-                <ul id="neighbors_list" class="list-group list-group-flush"></ul>
-            </div>  
+                <ul id="neighbors_list" class="list-group list-group-flush" style="height: 800px;overflow: scroll;"></ul>
+            <!-- </div>   -->
         </div>
         
     </div>
@@ -196,10 +195,6 @@
     <script src="{{ url_for('static', filename='js/utility.js') }}"></script>
     <script src="{{ url_for('static', filename='js/controller.js') }}"></script>
     <script src="{{ url_for('static', filename='js/left_pane.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.5.0/nouislider.js"></script>
-    <script src="{{ url_for('static', filename='js/slider.js') }}"></script>
-
-    
 
 </body>
 </html>

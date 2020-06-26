@@ -49,8 +49,8 @@ path{
   background: #F8F8F8 !important;
 }
 .focused{
-  /*color: "#43a2ca" !important;*/
-  opacity: 1;
+  color: "#43a2ca" !important;
+  /*opacity: 1;*/
 }
 
 .bar rect {

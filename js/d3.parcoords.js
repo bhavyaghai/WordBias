@@ -47,7 +47,7 @@ var pc = function(selection) {
   selection = pc.selection = d3.select(selection);
 
   __.width = selection[0][0].clientWidth;
-  __.height = selection[0][0].clientHeight-20;
+  __.height = selection[0][0].clientHeight;
 
   // canvas data layers
   ["marks", "foreground", "brushed", "highlight","after_highlight"].forEach(function(layer) {
@@ -111,10 +111,12 @@ var side_effects = d3.dispatch.apply(this,d3.keys(__))
     foregroundQueue.rate(d.value);
   })
   .on("dimensions", function(d) {
+    // console.log("called")
     __.dimensions = pc.applyDimensionDefaults(d3.keys(d.value));
     xscale.domain(pc.getOrderedDimensionKeys());
     pc.sortDimensions();
-    if (flags.interactive){pc.render().updateAxes();}
+    if (flags.interactive)pc.render().updateAxes()
+        
   })
   .on("bundleDimension", function(d) {
       if (!d3.keys(__.dimensions).length) pc.detectDimensions();
@@ -133,6 +135,7 @@ var side_effects = d3.dispatch.apply(this,d3.keys(__))
     if (flags.interactive){pc.render();}
   })
   .on("hideAxis", function(d) {
+    // console.log("hideaxis")
     pc.dimensions(pc.applyDimensionDefaults());
     pc.dimensions(without(__.dimensions, d.value));
   })
@@ -266,6 +269,9 @@ pc.autoscale = function() {
   });
 
   // xscale
+  // var st_point = Math.floor(w()/(pc.getOrderedDimensionKeys().length+1))
+  // console.log(st_point)
+  //set to a constant, must be changed later
   xscale.rangePoints([0, w()], 1);
 
   // Retina display, etc.
@@ -291,9 +297,9 @@ pc.autoscale = function() {
   ctx.brushed.globalCompositeOperation = __.composite;
   ctx.brushed.globalAlpha = __.alpha;
   ctx.brushed.scale(devicePixelRatio, devicePixelRatio);
-  ctx.highlight.lineWidth = 3;
+  ctx.highlight.lineWidth = 1.4;
   ctx.highlight.scale(devicePixelRatio, devicePixelRatio);
-  ctx.after_highlight.lineWidth = 3;
+  ctx.after_highlight.lineWidth = 1.4;
   ctx.after_highlight.scale(devicePixelRatio, devicePixelRatio);
 
   return this;
@@ -442,6 +448,7 @@ function isBrushed() {
   }
   return false;
 };
+pc.isBrushed = isBrushed
 
 pc.render.default = function() {
   pc.clear('foreground');
@@ -537,11 +544,13 @@ function compute_centroids(row) {
 			var cx = x + a * (position(p[i+1]) - x);
 			var cy = y + a * (__.dimensions[p[i+1]].yscale(row[p[i+1]]) - y);
 			if (__.bundleDimension !== null) {
-				var leftCentroid = __.clusterCentroids.get(__.dimensions[__.bundleDimension].yscale(row[__.bundleDimension])).get(p[i]);
-				var rightCentroid = __.clusterCentroids.get(__.dimensions[__.bundleDimension].yscale(row[__.bundleDimension])).get(p[i+1]);
-				var centroid = 0.5 * (leftCentroid + rightCentroid);
-				cy = centroid + (1 - __.bundlingStrength) * (cy - centroid);
-			}
+        // try{
+  				var leftCentroid = __.clusterCentroids.get(__.dimensions[__.bundleDimension].yscale(row[__.bundleDimension])).get(p[i]);
+  				var rightCentroid = __.clusterCentroids.get(__.dimensions[__.bundleDimension].yscale(row[__.bundleDimension])).get(p[i+1]);
+  				var centroid = 0.5 * (leftCentroid + rightCentroid);
+  				cy = centroid + (1 - __.bundlingStrength) * (cy - centroid);
+  			}
+        // cat
 			centroids.push($V([cx, cy]));
 		}
 	}
@@ -706,18 +715,21 @@ function path_highlight(d, i) {
   return color_path(d, ctx.after_highlight);
 };
 pc.clear = function(layer) {
-  ctx[layer].clearRect(0, 0, w() + 2, h() + 2);
+  // console.log("clear called", layer)
+  // if(!inSearch && (layer != "highlight")){
+    ctx[layer].clearRect(0, 0, w() + 2, h() + 2);
 
-  // This will make sure that the foreground items are transparent
-  // without the need for changing the opacity style of the foreground canvas
-  // as this would stop the css styling from working
-  if(layer === "brushed" && isBrushed()) {
-    ctx.brushed.fillStyle = pc.selection.style("background-color");
-    ctx.brushed.globalAlpha = 1 - __.alphaOnBrushed;
-    ctx.brushed.fillRect(0, 0, w() + 2, h() + 2);
-    ctx.brushed.globalAlpha = __.alpha;
-  }
-  return this;
+    // This will make sure that the foreground items are transparent
+    // without the need for changing the opacity style of the foreground canvas
+    // as this would stop the css styling from working
+    if(layer === "brushed" && isBrushed()) {
+      ctx.brushed.fillStyle = pc.selection.style("background-color");
+      ctx.brushed.globalAlpha = 1 - __.alphaOnBrushed;
+      ctx.brushed.fillRect(0, 0, w() + 2, h() + 2);
+      ctx.brushed.globalAlpha = __.alpha;
+    }
+    return this;
+  // }
 };
 d3.rebind(pc, axis, "ticks", "orient", "tickValues", "tickSubdivide", "tickSize", "tickPadding", "tickFormat");
 
@@ -984,11 +996,21 @@ pc.updateAxes = function(animationTime) {
   // Exit
   g_data.exit().remove();
 
+  // n=0
   g = pc.svg.selectAll(".dimension");
   g.transition().duration(animationTime)
     .attr("transform", function(p) { return "translate(" + position(p) + ")"; })
     .attr("id",function(p){ return p+"_dimension"})
-    .style("opacity", 1);
+    .style("opacity", 1)
+    // .each("end",function(){
+    //   n += 1
+    //   if(n=1 && selectedExtent){
+    //     // console.log("updateddddddd")
+    //     isBrus = true
+    //     pc.brushExtents(selectedExtent)
+    //     isBrus = false 
+    //   }
+    // })
 
   // g.selectAll(".polarity2")
   //   .transition()
@@ -1032,52 +1054,60 @@ pc.reorderable = function() {
   g.style("cursor", "move")
     .call(d3.behavior.drag()
       .on("dragstart", function(d) {
-        dragging[d] = this.__origin__ = xscale(d);
+        // console.log("dragstart")
+        if(!inSearch)
+          dragging[d] = this.__origin__ = xscale(d);
       })
       .on("drag", function(d) {
-        dragging[d] = Math.min(w(), Math.max(0, this.__origin__ += d3.event.dx));
-        pc.sortDimensions();
-        xscale.domain(pc.getOrderedDimensionKeys());
-        pc.render();
-        g.attr("transform", function(d) {
-          return "translate(" + position(d) + ")";
-        });
+        // console.log("drag")
+        if(!inSearch){
+          dragging[d] = Math.min(w(), Math.max(0, this.__origin__ += d3.event.dx));
+          pc.sortDimensions();
+          xscale.domain(pc.getOrderedDimensionKeys());
+          pc.render();
+          g.attr("transform", function(d) {
+            return "translate(" + position(d) + ")";
+          });
+        }
       })
       .on("dragend", function(d) {
+        // console.log("dragend")
         // Let's see if the order has changed and send out an event if so.
-        var i = 0,
-            j = __.dimensions[d].index,
-            elem = this,
-            parent = this.parentElement;
+        if(!inSearch){
+          var i = 0,
+              j = __.dimensions[d].index,
+              elem = this,
+              parent = this.parentElement;
 
-        while((elem = elem.previousElementSibling) != null) ++i;
-        if (i !== j) {
-          events.axesreorder.call(pc, pc.getOrderedDimensionKeys());
-          // We now also want to reorder the actual dom elements that represent
-          // the axes. That is, the g.dimension elements. If we don't do this,
-          // we get a weird and confusing transition when updateAxes is called.
-          // This is due to the fact that, initially the nth g.dimension element
-          // represents the nth axis. However, after a manual reordering,
-          // without reordering the dom elements, the nth dom elements no longer
-          // necessarily represents the nth axis.
-          //
-          // i is the original index of the dom element
-          // j is the new index of the dom element
-          if (i > j) { // Element moved left
-            parent.insertBefore(this, parent.children[j - 1]);
-          } else {     // Element moved right
-            if ((j + 1) < parent.children.length) {
-              parent.insertBefore(this, parent.children[j + 1]);
-            } else {
-              parent.appendChild(this);
+          while((elem = elem.previousElementSibling) != null) ++i;
+          if (i !== j) {
+            events.axesreorder.call(pc, pc.getOrderedDimensionKeys());
+            // We now also want to reorder the actual dom elements that represent
+            // the axes. That is, the g.dimension elements. If we don't do this,
+            // we get a weird and confusing transition when updateAxes is called.
+            // This is due to the fact that, initially the nth g.dimension element
+            // represents the nth axis. However, after a manual reordering,
+            // without reordering the dom elements, the nth dom elements no longer
+            // necessarily represents the nth axis.
+            //
+            // i is the original index of the dom element
+            // j is the new index of the dom element
+            if (i > j) { // Element moved left
+              parent.insertBefore(this, parent.children[j - 1]);
+            } else {     // Element moved right
+              if ((j + 1) < parent.children.length) {
+                parent.insertBefore(this, parent.children[j + 1]);
+              } else {
+                parent.appendChild(this);
+              }
             }
           }
-        }
 
-        delete this.__origin__;
-        delete dragging[d];
-        d3.select(this).transition().attr("transform", "translate(" + xscale(d) + ")");
-        pc.render();
+          delete this.__origin__;
+          delete dragging[d];
+          d3.select(this).transition().attr("transform", "translate(" + xscale(d) + ")");
+          pc.render();
+        }
       }));
   flags.reorderable = true;
   return this;
@@ -1654,7 +1684,7 @@ pc.brushMode = function(mode) {
       if (strum && strum.p1[0] === strum.p2[0] && strum.p1[1] === strum.p2[1]) {
         removeStrum(strums);
       }
-
+      // console.log("firing hereee!")
       brushed = selected(strums);
       strums.active = undefined;
       __.brushed = brushed;
@@ -1917,8 +1947,8 @@ pc.brushMode = function(mode) {
     	// This fixes issue #103 for now, but should be changed in d3.svg.multibrush
     	// to avoid unnecessary computation.
     	brushUpdated(selected());
-      events.brushend.call(pc, __.brushed);
-      populate_brushed_words()
+        events.brushend.call(pc, __.brushed);
+        // d3.event.sourceEvent.stopPropagation();
       })
       .extentAdaption(function(selection) {
     	  selection
@@ -2472,6 +2502,7 @@ pc.interactive = function() {
 pc.xscale = xscale;
 pc.ctx = ctx;
 pc.canvas = canvas;
+pc.h = h;
 pc.g = function() { return g; };
 
 // rescale for height, width and margins
@@ -2528,8 +2559,8 @@ pc.afterHighlight = function(data) {
 
   __.highlighted = data;
   pc.clear("after_highlight");
-  d3.selectAll([canvas.highlight]).classed("faded", true);
-  d3.selectAll([canvas.foreground, canvas.brushed]).classed("invisible", true);
+  // d3.selectAll([canvas.highlight]).classed("faded", true);
+  d3.selectAll([canvas.foreground, canvas.brushed, canvas.highlight]).classed("invisible", true);
   data.forEach(path_highlight);
   events.highlight.call(this, data);
   return this;
@@ -2539,8 +2570,8 @@ pc.afterHighlight = function(data) {
 pc.unAfterHighlight = function() {
   __.highlighted = [];
   pc.clear("after_highlight");
-  d3.selectAll([canvas.highlight]).classed("faded", false);
-  d3.selectAll([canvas.foreground, canvas.brushed]).classed("invisible", false);
+  // d3.selectAll([canvas.highlight]).classed("faded", false);
+  d3.selectAll([canvas.foreground, canvas.brushed,canvas.highlight ]).classed("invisible", false);
   return this;
 };
 

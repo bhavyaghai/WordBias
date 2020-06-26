@@ -14,7 +14,6 @@ function createHistogram(values, defaultBrushExtent) {
     var min = d3.min(values);
 
     var x = d3.scale.linear()
-        //.domain([0, 1])
         .domain([min, max])
         .range([0, width]);
 

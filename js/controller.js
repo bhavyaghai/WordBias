@@ -1,13 +1,13 @@
 var thresh,
-words,active_words,selected_word ="none",
-data,active_data, neighbors,tmp,
+words,active_words,selected_word ="none",wordAxis,
+data,active_data, neighbors,
 pc,
 //attrs = ["gender","race","economic_status"],
 //categories = [{"gender":"Female","race":"Caucasian","religion":"Islam", "sentiment":"Unpleasant"},
 //              {"gender":"Male","race":"African American","religion":"Christanity", "sentiment":"Pleasant"}],
 
-hideAxis=false, inSearch= false, afterHighlight=false,globalY;
-//var defaultBrushExtent = [];
+hideAxis=true, inSearch= false, afterHighlight=false;
+//var defaultBrushExtent = [[0.4,0.45]];
 
 bias_words = {
   "gender": {
@@ -75,102 +75,50 @@ $( document ).ready(function() {
         .search({
           source: words,
           onSelect: function(d){
-            inSearch = true
-            // console.log(d)
-            $("#word_dimension .tick text").attr("opacity","0.0")
-            searchWords(d.title)
+            onClick(d.title)
           }
         });
-      // this.pc = createParallelCoord(this.data);
+      pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
+      pc.on("brushend",function (d) { populate_neighbors(d)})
       plot_histogram()
       // populate histogram bias types
       populate_histogram_bias_type(data[0])
     });
 });
 
+// fetch and replot parallel coordiante
+function onChangeHistogram(ranges=[]) {
+  hist_type = $("#histogram_type").val();
+  $.ajax({
+      url: '/fetch_data',
+      data: JSON.stringify({hist_type : hist_type,slider_sel : ranges}),
+      type: 'POST',
+      success: function(res){
+          active_data = JSON.parse(res)
+          active_words = active_data.map(function(d){return d.word}) 
+          pc.brushReset()
+          pc.data(active_data).render()
+          updateWordAxis(active_data)        
+      },
+      error: function(error){
+          console.log("error !!!!");
+      }
+  });
+}
 
-/* 
-events associated with word axis
-*/
-$("body").on("mouseenter","#word_dimension .tick text",function(e){
-  if(!inSearch){
-    $(this).addClass("focused")
-    $(this).attr("fill","#43a2ca")
-    $("#word_dimension .tick text").attr("opacity","0.1")
-    highlightWords($(this).html())
-  }
-  
-})
-
-/*
-$("body").on("mouseleave","#word_dimension .tick text",function(){
-  if(!inSearch)
-    cancelHighlight()
-  
-})*/
-
-$("body").on("click","#canvas_svg",function(e){
-    //console.log(e.target.nodeName)
-    if(e.target.nodeName == "text" && ($(e.target).parents("#word_dimension").length)){
-      console.log("enterr")
-      inSearch = true
-      searchWords($(e.target).html())
-      $("#word_dimension .tick text").attr("opacity","0.0")
-    }
-    else if(!$(e.target).hasClass("dynamicLabel")){
-      inSearch = false
-      //cancelHighlight()
-    }
-})
-
-$("body").on("mouseenter",".dynamicLabel",function(){
-  $(".dynamicLabel").not(this).attr("opacity","0.5")
-  afterHighlight = true
-  globalY = parseFloat($(this).attr("y"))
-  highlightWords($(this).html())
-})
-$("body").on("mouseleave",".dynamicLabel",function(){
-  $(".dynamicLabel").attr("opacity","1")
-  cancelHighlight()
-})
-$("body").on("mouseenter",".list-group-item",function(e){
-  $(this).css("color","orange")
-  word = $(this).html()
-  wordLabel = $(".dynamicLabel").filter(function(){
-    // console.log(d)
-    return $(this).html() == word
+function searchWords(word){
+  $.get("/search/"+word, {
+  }, res=>{
+    highlightWords(word,res)
   })
-  // console.log(wordLabel)
-  $(".dynamicLabel").not(wordLabel).attr("opacity","0.5")
-  afterHighlight = true
-  globalY = parseFloat(wordLabel.attr("y"))
-  highlightWords(word)
-})
-$("body").on("mouseleave",".list-group-item",function(e){
-  $(this).css("color","black")
-  $(".dynamicLabel").attr("opacity","1")
-})
+}
 
-/*
-Search events
-*/
-$("body").on("mouseover",".result",function(){
-  inSearch = false
-  word = $(this).find(".title").html()
-  $("#word_dimension .tick text").attr("opacity","0.1")
-  highlightWords(word)
-})
-
-//$("body").on("mouseout",".result",function(){
-//  cancelHighlight()  
-//})
-
-//$(".cancel.icon").on("click",function(){
-//  $(".ui.search").search("set value","")
-//  inSearch = false
-//  cancelHighlight()
-//  // $("#neighbors_list").empty()
-// })
+function populate_neighbors(brushed_data) {
+  $("#neighbors_list").empty();
+  brushed_data.forEach(function(neighbor,i){
+      $("#neighbors_list").append('<li class="list-group-item">'+neighbor['word']+'</li>')
+  })
+}
 
 
 function populate_histogram_bias_type(row) {
@@ -210,7 +158,6 @@ $("#alpha_input").on("change",function(){
 
 $("#smoothness_input").on("change",function(){
   smooth = parseFloat($(this).val())
-  console.log("Smoothness: ", smooth)
   pc.smoothness(smooth).render()
   $("#smoothness_text").html(smooth)
 })
@@ -225,12 +172,13 @@ $("#bundle_dimension").dropdown({
   onChange: function(value){
     console.log(value)
     pc.bundleDimension(value)}
-    // $("#bundle_text").html(bundle)
 })
 
 // Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){
   pc.brushReset()
+  $("#neighbors_list").empty() 
+  updateWordAxis(active_data)
 })
 
 

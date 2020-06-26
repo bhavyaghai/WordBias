@@ -38,61 +38,8 @@ function plot_histogram() {
         max_val = res["max"]
         values = res["values"]
         $("#histogram").empty();
-        console.log("min max histogram ", min_val, max_val);
-        hist_type = $("#histogram_type").val();
-        ranges = []
-        if(hist_type=="ALL") {
-            ranges = [[max_val-0.075, max_val]]
-        }
-        else {
-            ranges = [[min_val, min_val+0.1],[max_val-0.1, max_val]]
-        }
-        createHistogram(values, ranges)
-        onChangeHistogram(ranges);
-  });
-}
-
-
-// fetch and replot parallel coordiante
-function onChangeHistogram(ranges) {
-  console.log(ranges)
-  hist_type = $("#histogram_type").val();
-  // var slider_ranges = slider.noUiSlider.get();
-  // create parallel plot
-  $.ajax({
-      url: '/fetch_data',
-      data: JSON.stringify({hist_type : hist_type, slider_sel : ranges}),
-      type: 'POST',
-      success: function(res){
-          console.log(JSON.parse(res))
-          active_data = JSON.parse(res)
-          active_words = active_data.map(function(d){return d.word})
-          // console.log(active_data)
-          if(pc){
-            if(active_words.length <70){
-              if(hideAxis){
-                pc.hideAxis([])
-                hideAxis = false
-              }
-              pc.dimensions()["word"].yscale.domain( active_words)
-              pc.dimensions()['word'].tickValues = active_words
-              pc.updateAxes()
-            }
-            else if(!hideAxis){
-              pc.hideAxis(["word"])
-              hideAxis = true
-            }
-            pc.data(active_data).render()
-          }
-          else{
-            pc = createParallelCoord(active_data);
-            pc.render()
-            // cloneCanvas()
-          }          
-      },
-      error: function(error){
-          console.log("error !!!!");
-      }
+        createHistogram(values)
+        onChangeHistogram(defaultBrushExtent);
   });
 }
 
@@ -169,6 +116,7 @@ function changeBiastype(id) {
   });
 }
 
+//function rerender(axis_name) {
 function rerender(axis_name, res_all, res_active) {
   for(i=0;i<data.length;i++) {
     data[i][axis_name] = res_all[i]
@@ -262,48 +210,3 @@ function clear_bias_words_section() {
 
   $("#bias_type").val("")
 }
-
-$("body").on("click","svg",function(e){
-  // if ($("#word_dimension .tick text").contains(e.target)){
-    // target = $(e.target)
-    ele = $(e.target);
-    // clicking on word in the word axis
-    if($("#word_dimension .tick").has(ele).length==1 && e.target.nodeName == "text"){
-      // console.log(target)
-      console.log("clicking on a tick") 
-      inSearch = true
-      word_selected = ele.html();
-      $(".ui.search").search("set value",word_selected)
-      searchWords(word_selected)
-    }
-    // clicking on title of axis like "gender", "race", etc.
-    else if($(".tick").has(ele).length==0 && e.target.nodeName == "text") {
-        axis_name = ele.html().toLowerCase();
-        last_selected_axis_name = axis_name;
-        console.log("clicking on the title of axis "+axis_name)
-        if(axis_name!="word") {
-          clear_bias_words_section()
-          // populate corresponding bias words in the textarea
-          group_words = bias_words[axis_name]
-          group_names = Object.keys(group_words);
-
-          $("#bias_type").val(axis_name)         
-
-          $("#gp1_label").val(group_names[0])
-          $("#gp2_label").val(group_names[1])
-
-          $("#gp1").val(group_words[group_names[0]])
-          $("#gp2").val(group_words[group_names[1]])
-        }
-    }
-    // clicking anywhere else -> cancelHighlight
-    else{
-      //console.log("clicking eleswhere") 
-      inSearch = false
-      $(".ui.search").search("set value","")
-      cancelHighlight()
-      clear_bias_words_section()
-    }
-
-  // } 
-})
