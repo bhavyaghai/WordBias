@@ -16,6 +16,5 @@ function createParallelCoord(data){
 	    .brushMode("1D-axes-multi")  // enable brushing
 	    .interactive()  // command line mode
 	    .reorderable()
-
+  
 	return pc
-}

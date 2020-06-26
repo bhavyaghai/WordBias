@@ -91,6 +91,7 @@ function mouseenter(word){
   } 
   highlightWords(word)
 }
+
 function mouseleave(){
   if(!inSearch) 
     cancelHighlight(false) 
@@ -140,5 +141,3 @@ $("body").on("mouseleave",".list-group-item",function(e){
   $(this).css("color","black")
   mouseleave()
 })
-
-

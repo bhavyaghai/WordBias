@@ -1,5 +1,5 @@
 /* code adopted from: http://bl.ocks.org/nnattawat/8916402 */
-function createHistogram(values) {
+function createHistogram(values, defaultBrushExtent) {
     var color = "steelblue";
 
     // A formatter for counts.
@@ -24,10 +24,12 @@ function createHistogram(values) {
                 .extentAdaption(function(selection) {
                       selection
                       .style("visibility", null)
-                      .attr("y", -10)
-                      .attr("height", 20)
-                      .style("fill", "rgba(255,255,255,0.25)")
-                      .style("stroke", "rgba(0,0,0,0.6)");
+                      .attr("y", -height)   // -10
+                      .attr("height", height)    // 20
+                      //.style("fill", "rgba(255,255,255,0)")
+                      .style("fill", "rgba(125,125,125,0.50)")
+                      //.style("fill", "transperant")
+                      //.style("stroke", "rgba(0,0,0,1)");
                   })
                   .resizeAdaption(function(selection) {
                      selection
@@ -35,8 +37,11 @@ function createHistogram(values) {
                        .attr("y", -10)
                        .attr("height", 20)
                      .style("visibility", null)
-                     .style("fill", "rgba(0,0,0,0.1)");
-                  });;
+                     //.style("fill", "rgba(125,125,125,0.50)")
+                     .style("fill", "transparent")
+                     //.style("fill", "rgba(0,0,0,0.1)");
+                  });
+               
     // .on("brushend", brushend);
 
     // Number of bins: Sturge's formula
@@ -78,8 +83,9 @@ function createHistogram(values) {
         .attr("x", 1)
         .attr("width", (x(data[0].dx) - x(0)) - 1)
         .attr("height", function(d) { return height - y(d.y); })
-        .attr("fill", "#43a2ca")
+        .attr("fill", "steelblue")  // #43a2ca
         
+
     var dimension = svg.append("g")
                     .attr("transform", "translate(0," + height + ")");
 
@@ -93,42 +99,46 @@ function createHistogram(values) {
 
     brushg.selectAll("rect")
             .style("visibility", null)
-            .attr("y", -10)
-            .attr("height", 20);
+            .attr("y", -height)   // -10
+            .attr("height", height);
 
     brushg.selectAll("rect.background")
             .style("fill", "transparent");
-
+            //.style("fill", "rgba(248,248,248,0.50)");
+   
     brushg.selectAll("rect.extent")
-            .style("fill", "rgba(255,255,255,0.25)")
-            .style("stroke", "rgba(0,0,0,0.6)");
+            .style("fill", "rgba(125,125,125,0.50)")
+            //.style("stroke", "rgba(0,0,0,0.6)");
 
     brushg.selectAll(".resize rect")
-            .style("fill", "rgba(0,0,0,0.1)");
+            //.style("fill", "rgba(0,0,0,0.1)");
+            .style("fill", "transparent");
 
     // svg.append("g")
     //     .attr("class", "y axis")
     //     .attr("transform", "translate(0,0)")
     //     .call(yAxis);
 
-    // var tip = d3.tip()
-    //     .attr('class', 'd3-tip')
-    //     .offset([-10, 0])
-    //     .html(function(d,i) {
-    //         return "<strong>range: </strong><span>"+(d.x.toFixed(3))+" - "+(d.x+d.dx).toFixed(3)+"</span><br><strong>count: </strong><span style='color:steelblue'>" + d.length + "</span>";
-    //     });    
-    // svg.call(tip);
+    var tip = d3.tip()
+         .attr('class', 'd3-tip')
+         .offset([-10, 0])
+         .html(function(d,i) {
+             return "<strong>range: </strong><span>"+(d.x.toFixed(3))+" - "+(d.x+d.dx).toFixed(3)+"</span><br><strong>count: </strong><span style='color:darkblue'>" + d.length + "</span>";
+         });    
+
+    svg.call(tip);
+
     function brushMove(){
-        // console.log("brushMoved")
-        // console.log(brush.extent())
+        console.log("brushMoved")
+        console.log(brush.extent())
         onChangeHistogram(brush.extent())
     }
+    /*
     $("#reset_hist_brush").on("click",function(){
       d3.select(".brush").call(brush.clear().extent([[0.45,0.65]]));
       onChangeHistogram([[0.45,0.65]])
-
     })
-
+    */
     function resetBrush() {
       brush
         .clear()

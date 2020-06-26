@@ -19,10 +19,10 @@ on dropdown menu for histogram type -- ALL, gender, etc.
 */
 $('#histogram_type').change(function(event) {
     console.log("Change dropdown menu - histogram_type")
-    if($('#slider').text().length != 0) { // If slider for histogram exist
+    //if($('#slider').text().length != 0) { // If slider for histogram exist
         console.log("slider exist");
         plot_histogram(); 
-    } 
+    //} 
 });
 
 /*
@@ -116,12 +116,13 @@ function changeBiastype(id) {
   });
 }
 
-function rerender(axis_name) {
+//function rerender(axis_name) {
+function rerender(axis_name, res_all, res_active) {
   for(i=0;i<data.length;i++) {
-    data[i][axis_name] = Math.random()
+    data[i][axis_name] = res_all[i]
   }
   for(i=0;i<active_data.length;i++) {
-    active_data[i][axis_name] = Math.random()
+    active_data[i][axis_name] = res_active[i]
   }
   pc.data(active_data)
   dim = pc.dimensions()
@@ -135,31 +136,52 @@ function deleteAxis(axis_name) {
     dim = pc.dimensions()
     delete dim[axis_name]
     pc.dimensions(dim).updateAxes().render()
+    for(i=0;i<data.length;i++) {
+      delete data[i][axis_name]
+    } 
+    for(i=0;i<active_data.length;i++) {
+      delete active_data[i][axis_name]
+    }
+    clear_bias_words_section()
 }
 
 $("#delete_axis").click(function() {
     console.log("Delete button clicked");
     axis_name = $("#bias_type").val()
+    $("option[value='"+axis_name+"']").remove();
     deleteAxis(axis_name)
 });
 
 $("#add_axis").click(function() {
     console.log("Add button clicked");
-    axis_name = $("#bias_type").val()
-    gp1_name = $("#gp1_label").val()
-    gp2_name = $("#gp2_label").val()
+    axis_name = $("#bias_type").val().toLowerCase()
+    gp1_name = $("#gp1_label").val().toLowerCase()
+    gp2_name = $("#gp2_label").val().toLowerCase()
     console.log(axis_name, gp1_name, gp2_name)
     if(axis_name=="" || gp1_name=="" || gp2_name=="" || $("#gp1").val()=="" || $("#gp2").val()=="") {
       return
     }
     bias_words[axis_name] = {
-      gp1_name: $("#gp1").val(),
-      gp2_name: $("#gp2").val()
+      [gp1_name]: $("#gp1").val(),
+      [gp2_name]: $("#gp2").val()
     }
-    rerender(axis_name)
-    //pc.dimensions(dim).updateAxes().render()
+
+    $.get("/compute_new_bias", {
+        axis_name: axis_name,
+        gp1_words: $("#gp1").val().toLowerCase(),
+        gp2_words: $("#gp2").val().toLowerCase(),
+        active_words: JSON.stringify(active_words)
+    }, res => {
+      console.log(res);
+      rerender(axis_name, res["all_data"], res["active_data"])
+
+      // update bias type histogram options
+      new_html = $("#histogram_type").html() + "<option value='"+axis_name+"'>"+axis_name+"</option>"
+      $("#histogram_type").html(new_html)
+    });
 });
 
+/*
 $("#update_axis").click(function() {
     console.log("Update button clicked");
     deleteAxis(last_selected_axis_name)
@@ -177,7 +199,7 @@ $("#update_axis").click(function() {
     rerender(axis_name)
     //pc.dimensions(dim).updateAxes().render()
 });
-
+*/
 
 function clear_bias_words_section() {
   $("#gp1_label").val("")
@@ -188,48 +210,3 @@ function clear_bias_words_section() {
 
   $("#bias_type").val("")
 }
-
-// $("body").on("click","svg",function(e){
-//   // if ($("#word_dimension .tick text").contains(e.target)){
-//     // target = $(e.target)
-//     ele = $(e.target);
-//     // clicking on word in the word axis
-//     if($("#word_dimension .tick").has(ele).length==1 && e.target.nodeName == "text"){
-//       // console.log(target)
-//       console.log("clicking on a tick") 
-//       inSearch = true
-//       word_selected = ele.html();
-//       $(".ui.search").search("set value",word_selected)
-//       searchWords(word_selected)
-//     }
-//     // clicking on title of axis like "gender", "race", etc.
-//     else if($(".tick").has(ele).length==0 && e.target.nodeName == "text") {
-//         axis_name = ele.html();
-//         last_selected_axis_name = axis_name;
-//         console.log("clicking on the title of axis "+axis_name)
-//         if(axis_name!="word") {
-//           clear_bias_words_section()
-//           // populate corresponding bias words in the textarea
-//           group_words = bias_words[axis_name]
-//           group_names = Object.keys(group_words);
-
-//           $("#bias_type").val(axis_name)         
-
-//           $("#gp1_label").val(group_names[0])
-//           $("#gp2_label").val(group_names[1])
-
-//           $("#gp1").val(group_words[group_names[0]])
-//           $("#gp2").val(group_words[group_names[1]])
-//         }
-//     }
-//     // clicking anywhere else -> cancelHighlight
-//     else{
-//       console.log("clicking eleswhere") 
-//       inSearch = false
-//       $(".ui.search").search("set value","")
-//       cancelHighlight()
-//       clear_bias_words_section()
-//     }
-
-//   // } 
-// })

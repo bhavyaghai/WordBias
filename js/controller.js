@@ -3,11 +3,11 @@ words,active_words,selected_word ="none",wordAxis,
 data,active_data, neighbors,
 pc,
 //attrs = ["gender","race","economic_status"],
-categories = [{"gender":"Female","race":"Caucasian","religion":"Christanity", "sentiment":"Pleasant"},
-              {"gender":"Male","race":"African American","religion":"Islam", "sentiment":"Unpleasant"}],
+//categories = [{"gender":"Female","race":"Caucasian","religion":"Islam", "sentiment":"Unpleasant"},
+//              {"gender":"Male","race":"African American","religion":"Christanity", "sentiment":"Pleasant"}],
 
 hideAxis=true, inSearch= false, afterHighlight=false;
-var defaultBrushExtent = [[0.4,0.45]];
+//var defaultBrushExtent = [[0.4,0.45]];
 
 bias_words = {
   "gender": {
@@ -19,16 +19,20 @@ bias_words = {
       "Black": "aisha,keisha,tamika,lakisha,tanisha,latoya,kenya,latonya,ebony,rasheed,tremayne,kareem,darnell,tyrone,hakim,jamal,leroy,jermaine"
   },
   "sentiment": {
-      "pleasant": "",
-      "unpleasant": ""
+      "unpleasant": "abuse, crash, filth, murder, sickness, accident, death, grief, poison, stink, assault, disaster, hatred, pollute, tragedy, divorce, jail, poverty, ugly, cancer, kill, rotten, vomit, agony, prison",
+      "pleasant": "caress, freedom, health, love, peace, cheer, friend, heaven, loyal, pleasure, diamond, gentle, honest, lucky, rainbow, diploma, gift, honor, miracle, sunrise, family, happy, laughter, paradise, vacation"
   },
   "religion": {
-    "Christanity": "",
-    "Islam": ""
+    "Islam": "allah, ramadan, turban, emir, salaam, sunni, koran, imam, sultan, prophet, veil, ayatollah, shiite, mosque, islam, sheik, muslim, muhammad",
+    "Christanity": "baptism, messiah, catholicism, resurrection, christianity, salvation, protestant, gospel, trinity, jesus, christ, christian, cross, catholic, church"
+  },
+  "age": {
+  	"Young": "tiffany,michelle,cindy,kristy,brad,eric,joey,billy",
+  	"Old": "ethel,bernice,gertrude,agnes,cecil,wilbert,mortimer,edgar"
   }
 }
 
-var last_selected_axis_name = null;
+var last_selected_axis_name = null;   // required for updating axis
 var current_embedding = null;
 
 /* 
@@ -77,6 +81,8 @@ $( document ).ready(function() {
       pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
       pc.on("brushend",function (d) { populate_neighbors(d)})
       plot_histogram()
+      // populate histogram bias types
+      populate_histogram_bias_type(data[0])
     });
 });
 
@@ -112,6 +118,19 @@ function populate_neighbors(brushed_data) {
   brushed_data.forEach(function(neighbor,i){
       $("#neighbors_list").append('<li class="list-group-item">'+neighbor['word']+'</li>')
   })
+}
+
+
+function populate_histogram_bias_type(row) {
+	bias_types = []
+	for(key in row) {
+		if(key=="word") {
+			continue;
+		}
+		bias_types.push(key)
+		//console.log(key);
+	}
+	$('#histogram_type').append(populateDropDownList(bias_types));
 }
 
 /* 
@@ -185,9 +204,28 @@ function coeff_val_change(newVal){
     change_threshold();
 }
 
+/*
 function load_default_words() {
     $.get("/get_tar_words/", res => {
         console.log(res);
         $('#target').val(res.join());
       });
+}
+*/
+
+function populate_brushed_words() {
+	brushed_data = pc.brushed() //.map(function(d){return d.word});
+	$("#neighbors_list").empty();
+	//console.log("brushed words -- ",brushed_words);
+	tmp = ""
+    brushed_data.forEach(function(neighbor,i){
+    	//console.log("neighbor  ",neighbor)
+    	tmp = tmp + '<li class="list-group-item">'+neighbor["word"]+'</li>';
+        //$("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
+    }) 
+    setTimeout(function() { 
+    	$("#neighbors_list").html(tmp);
+    }, 100);
+    //$("#neighbors_list").html(tmp);
+    //highlightWords(null,neighbors=brushed_words)
 }
