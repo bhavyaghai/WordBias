@@ -74,8 +74,8 @@ $( document ).ready(function() {
             onClick(d.title)
           }
         });
-      pc = createParallelCoord(this.data);
-      pc.on("brushend",function (d) { populate_brushed_words(d)})
+      pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
+      pc.on("brushend",function (d) { populate_neighbors(d)})
       plot_histogram()
     });
 });
@@ -83,7 +83,6 @@ $( document ).ready(function() {
 // fetch and replot parallel coordiante
 function onChangeHistogram(ranges=[]) {
   hist_type = $("#histogram_type").val();
-  // create parallel plot
   $.ajax({
       url: '/fetch_data',
       data: JSON.stringify({hist_type : hist_type,slider_sel : ranges}),
@@ -108,13 +107,11 @@ function searchWords(word){
   })
 }
 
-function populate_brushed_words(brushed_data) {
+function populate_neighbors(brushed_data) {
   $("#neighbors_list").empty();
   brushed_data.forEach(function(neighbor,i){
       $("#neighbors_list").append('<li class="list-group-item">'+neighbor['word']+'</li>')
   })
-  // if(!hideAxis)
-  //   updateWordAxis(brushed_data)
 }
 
 /* 
@@ -142,7 +139,6 @@ $("#alpha_input").on("change",function(){
 
 $("#smoothness_input").on("change",function(){
   smooth = parseFloat($(this).val())
-  // updateWordAxis(active_data)
   pc.smoothness(smooth).render()
   $("#smoothness_text").html(smooth)
 })

@@ -1,4 +1,5 @@
 
+// show, hide word axis
 function updateWordAxis(data){
   words = data.map(d => d.word )
   if(data.length <75){
@@ -17,39 +18,33 @@ function updateWordAxis(data){
   }
 }
 
-//Highlight and unhighlight functions
-// */
+//Highlight words using highlight or after_highlight canvas
 function highlightWords(word,neighbors=[]){
-  console.log("highlight words!!")
   $(".dynamicLabel").remove()
   data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
   
   if(!afterHighlight){
     selected_word = word
-    if(!neighbors.length){
-      if(!hideAxis && !pc.dimensions()['word'].yscale(word))
-        updateWordAxis($.merge( $.merge( [], active_data ), data_rows ))
-      if(hideAxis) drawWords(data_rows,"highlight")
+    if(!neighbors.length){ // case of single data
+      if(!hideAxis && !pc.dimensions()['word'].yscale(word))  // update word axis if the axis is visible, 
+        updateWordAxis($.merge( $.merge( [], active_data ), data_rows ))  // but the word is not the domain
+      if(hideAxis) drawWords(data_rows,"highlight")  // if word axis is hidden, draw the word label
     }
-    else{
+    else{  // update word axis with the neighbors and populate neighbors list
       updateWordAxis(data_rows)
-      $("#neighbors_list").empty()
-      neighbors.forEach(function(neighbor,i){
-          $("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
-      })
+      populate_neighbors(data_rows)
     }
-    pc.highlight(data_rows)
+    pc.highlight(data_rows)  // highlight the selected words
   }
-  else{
+  else{ // highlight neighbors, using the extra canvas layer
     pc.afterHighlight(data_rows)
-    // drawWordLines(data_rows,"after_highlight")
   }
   
 }
-function cancelHighlight(updateAxes=true,updateNeighbor=true){
-  console.log("cancelled called")
+
+// cancel highlight 
+function cancelHighlight(updateNeighbor=true){
   pc.unhighlight()
-  // $("text").removeClass("focused")
   $("text").removeAttr("fill")
   $(".dynamicLabel").remove()
   $("#word_dimension .tick text").attr("opacity","1")
@@ -57,6 +52,7 @@ function cancelHighlight(updateAxes=true,updateNeighbor=true){
   if(!pc.isBrushed()) updateWordAxis(active_data)  
 }
 
+// manually draw word labels
 function drawWords(data_rows, canvas_layer) {
   $("#word_dimension .tick text").attr("opacity","0.1")
   x = (hideAxis) ? pc.position("gender")-5: pc.position("word")-5
@@ -71,9 +67,7 @@ function drawWords(data_rows, canvas_layer) {
   addSVGLabels(data_rows)
 }
 
-/*
-SVG Manipulations
-*/
+// add svg texts
 function addSVGLabels(data_rows,cls="dynamicLabel"){ //dynamically add labels on the word axis
   d3.select("#canvas_svg>g")
     .selectAll(cls)
@@ -99,7 +93,7 @@ function mouseenter(word){
 }
 function mouseleave(){
   if(!inSearch) 
-    cancelHighlight(true,false) 
+    cancelHighlight(false) 
     
   else if(afterHighlight){
     afterHighlight = false
@@ -107,15 +101,12 @@ function mouseleave(){
   }
 }
 function onClick(word){
-  // console.log("enterr")
   inSearch = true
   searchWords(word)
   selected_word = word
-
 }
 function labelClick(d,i){
-  if(!inSearch) onClick($(this).html())
-  
+  if(!inSearch) onClick($(this).html()) 
 }
 $("body").on("mouseenter","#word_dimension .tick text", function(){ 
   if(!inSearch)
@@ -125,29 +116,22 @@ $("body").on("mouseenter","#word_dimension .tick text", function(){
 $("body").on("mouseleave","#word_dimension .tick text", mouseleave)
 
 $("body").on("click","#canvas_svg",function(e){ // click
-  // console.log(e.target.id, e.target.classList, $e.target.nodeName)
     if(!(e.target.nodeName == "text") && !pc.isBrushed()){
       console.log("evvngbg")
       inSearch = false
       afterHighlight = false
       cancelHighlight()  
     }
-
 })
 
-/*
-Search events
-*/
+//Search events
 $("body").on("mouseover",".result",function(){
   inSearch = false
   word = $(this).find(".title").html()
   highlightWords(word)
 })
-// $("body").on("mouseout",".result",function(){
-//   if(!inSearch)
-//     cancelHighlight()  
-// })
 
+// on hover list item events
 $("body").on("mouseenter",".list-group-item",function(e){
   $(this).css("color","orange")
   mouseenter($(this).html())
