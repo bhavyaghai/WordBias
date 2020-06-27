@@ -7,10 +7,10 @@
 
     <!-- Bootstrap CSS -->
     <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/semantic/semantic.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/d3.parcoords.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
 
     <title>WordBias</title>
 </head>
@@ -25,8 +25,7 @@
 	  	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 		    <div class="navbar-nav">
 		      <a class="nav-item nav-link active" href="#" >Home <span class="sr-only">(current)</span></a>
-		      <a class="nav-item nav-link" href="#">About</a>  
-                
+		      <a class="nav-item nav-link" href="#">About</a>    
 		    </div>
             
 	  	</div>
@@ -164,7 +163,8 @@
                 <!-- 
                 <h4>Neighbours in High Dimensions</h4>
                 -->
-                <ul id="neighbors_list" class="list-group list-group-flush" style="height: 800px;overflow: scroll;"></ul>
+                <div id="neighbors_list" class="list-group list-group-flush" style="height: 800px;overflow: scroll;">
+                </div>
             <!-- </div>   -->
         </div>
         
@@ -191,7 +191,7 @@
     <script src="{{ url_for('static', filename='js/d3.svg.multibrush.js') }}"></script>
     <script src="{{ url_for('static', filename='js/histogram.js') }}"></script>
     <script src="{{ url_for('static', filename='js/d3.parcoords.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/parallel_coord_canvas.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/central_pane.js') }}"></script>
     <script src="{{ url_for('static', filename='js/utility.js') }}"></script>
     <script src="{{ url_for('static', filename='js/controller.js') }}"></script>
     <script src="{{ url_for('static', filename='js/left_pane.js') }}"></script>

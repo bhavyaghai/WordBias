@@ -11,8 +11,8 @@ hideAxis=true, inSearch= false, afterHighlight=false;
 
 bias_words = {
   "gender": {
-      "Male": "man,boy,he,father,son,guy,male,his,himself,john",
-      "Female": "woman,girl,she,mother,daughter,gal,female,her,herself,mary"
+      "Female": "woman,girl,she,mother,daughter,gal,female,her,herself,mary",
+      "Male": "man,boy,he,father,son,guy,male,his,himself,john"
   },
   "race": {
       "White": "emily,anne,jill,allison,laurie,sarah,meredith,carrie,kristen,todd,neil,geoffrey,brett,brendan,greg,matthew,jay,brad",
@@ -106,21 +106,6 @@ function onChangeHistogram(ranges=[]) {
   });
 }
 
-function searchWords(word){
-  $.get("/search/"+word, {
-  }, res=>{
-    highlightWords(word,res)
-  })
-}
-
-function populate_neighbors(brushed_data) {
-  $("#neighbors_list").empty();
-  brushed_data.forEach(function(neighbor,i){
-      $("#neighbors_list").append('<li class="list-group-item">'+neighbor['word']+'</li>')
-  })
-}
-
-
 function populate_histogram_bias_type(row) {
 	bias_types = []
 	for(key in row) {
@@ -144,87 +129,33 @@ $('#histogram_type').change(function(event) {
     } 
 });
 
-/*
-Top pane events
-Parallel coordinates properties
-smoothness, alpha. etc.
-paracoord.js library events
-*/
-$("#alpha_input").on("change",function(){
-  alpha = parseFloat($(this).val())
-  pc.alpha(alpha).render()
-  $("#alpha_text").html(alpha)
-})
 
-$("#smoothness_input").on("change",function(){
-  smooth = parseFloat($(this).val())
-  pc.smoothness(smooth).render()
-  $("#smoothness_text").html(smooth)
-})
-
-$("#bundle_input").on("change",function(){
-  bundle =+ $(this).val()
-  pc.bundlingStrength(bundle).render()
-  $("#bundle_text").html(bundle)
-})
-
-$("#bundle_dimension").dropdown({
-  onChange: function(value){
-    console.log(value)
-    pc.bundleDimension(value)}
-})
-
-// Reset brush button -- removes all brushes
-$("#reset_brush").on("click",function(){
-  pc.brushReset()
-  $("#neighbors_list").empty() 
-  updateWordAxis(active_data)
-})
-
-
-// EXTRAS
-// on clicking ShowBias button
-$('#showBias').on('click', function(event) {
-    var tar = document.getElementById("target").value;
-    tar = tar.split(/[ ,]+/).filter(Boolean);
-    $.get("/groupDirectBias", {
-      target: JSON.stringify(tar)
-      //type: bias_identify_type
-    },res => {
-      console.log("Direct bias success fn called !!!");
-      $("#parallel_coord").empty();
-      createParallelCoord('/get_tar_csv/');
-    });
-    //highlight(tar);
-});
-
-function coeff_val_change(newVal){
-    thresh = newVal;
-    $('#coeff_slider_val').text(newVal);
-    change_threshold();
+function searchWords(word){
+  $.get("/search/"+word, {
+  }, res=>{
+    highlightWords(word,res)
+  })
 }
 
-/*
-function load_default_words() {
-    $.get("/get_tar_words/", res => {
-        console.log(res);
-        $('#target').val(res.join());
-      });
+function populate_neighbors(brushed_data) {
+  $("#neighbors_list").empty();
+  brushed_data.forEach(function(neighbor,i){
+      $("#neighbors_list").append('<li class="list-group-item">'+neighbor['word']+'</li>')
+  })
 }
-*/
 
 function populate_brushed_words() {
-	brushed_data = pc.brushed() //.map(function(d){return d.word});
-	$("#neighbors_list").empty();
-	//console.log("brushed words -- ",brushed_words);
-	tmp = ""
+  brushed_data = pc.brushed() //.map(function(d){return d.word});
+  $("#neighbors_list").empty();
+  //console.log("brushed words -- ",brushed_words);
+  tmp = ""
     brushed_data.forEach(function(neighbor,i){
-    	//console.log("neighbor  ",neighbor)
-    	tmp = tmp + '<li class="list-group-item">'+neighbor["word"]+'</li>';
+      //console.log("neighbor  ",neighbor)
+      tmp = tmp + '<li class="list-group-item">'+neighbor["word"]+'</li>';
         //$("#neighbors_list").append('<li class="list-group-item">'+neighbor+'</li>')
     }) 
     setTimeout(function() { 
-    	$("#neighbors_list").html(tmp);
+      $("#neighbors_list").html(tmp);
     }, 100);
     //$("#neighbors_list").html(tmp);
     //highlightWords(null,neighbors=brushed_words)

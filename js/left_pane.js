@@ -38,8 +38,16 @@ function plot_histogram() {
         max_val = res["max"]
         values = res["values"]
         $("#histogram").empty();
-        createHistogram(values)
-        onChangeHistogram(defaultBrushExtent);
+        hist_type = $("#histogram_type").val();
+        ranges = []
+        if(hist_type=="ALL") {
+            ranges = [[max_val-0.075, max_val]]
+        }
+        else {
+            ranges = [[min_val, min_val+0.1],[max_val-0.1, max_val]]
+        }
+        createHistogram(values, ranges)
+        onChangeHistogram(ranges);
   });
 }
 

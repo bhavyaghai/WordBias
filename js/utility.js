@@ -101,24 +101,52 @@ function mouseleave(){
     pc.unAfterHighlight()
   }
 }
+
 function onClick(word){
   inSearch = true
   searchWords(word)
   selected_word = word
 }
+
 function labelClick(d,i){
   if(!inSearch) onClick($(this).html()) 
 }
+
+
 $("body").on("mouseenter","#word_dimension .tick text", function(){ 
   if(!inSearch)
     $(this).attr("fill","steelblue") ;
   mouseenter($(this).html())
 })
+
 $("body").on("mouseleave","#word_dimension .tick text", mouseleave)
 
+
 $("body").on("click","#canvas_svg",function(e){ // click
-    if(!(e.target.nodeName == "text") && !pc.isBrushed()){
-      console.log("evvngbg")
+    ele = $(e.target);
+
+    // clicking on title of axis like "gender", "race", etc.
+    if($(".tick").has(ele).length==0 && e.target.nodeName == "text") {
+        axis_name = ele.html().toLowerCase();
+        last_selected_axis_name = axis_name;
+        console.log("clicking on the title of axis "+axis_name)
+        if(axis_name!="word") {
+          clear_bias_words_section()
+          // populate corresponding bias words in the textarea
+          group_words = bias_words[axis_name]
+          group_names = Object.keys(group_words);
+
+          $("#bias_type").val(axis_name)         
+
+          $("#gp1_label").val(group_names[0])
+          $("#gp2_label").val(group_names[1])
+
+          $("#gp1").val(group_words[group_names[0]])
+          $("#gp2").val(group_words[group_names[1]])
+        }
+    }
+    // clicking anywhere else -> cancelHighlight
+    else if(!(e.target.nodeName == "text") && !pc.isBrushed()){
       inSearch = false
       afterHighlight = false
       cancelHighlight()  
@@ -134,10 +162,18 @@ $("body").on("mouseover",".result",function(){
 
 // on hover list item events
 $("body").on("mouseenter",".list-group-item",function(e){
-  $(this).css("color","orange")
+  //$(this).css("color","orange")
+  $(this).css("font-weight","bold")
   mouseenter($(this).html())
 })
+
 $("body").on("mouseleave",".list-group-item",function(e){
-  $(this).css("color","black")
+  //$(this).css("color","black")
+  $(this).css("font-weight","normal")
   mouseleave()
 })
+
+// capitalize string; word => Word
+function capitalize(s)  {
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}

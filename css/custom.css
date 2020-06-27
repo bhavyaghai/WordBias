@@ -45,9 +45,16 @@ path{
   overflow-y: auto;
   overflow-x: auto;
 }
+
 .list-group-item{
-  background: #F8F8F8 !important;
+  background-color: #F8F8F8;
+  font-size: large;
 }
+
+.list-group-item:hover {
+  background-color: gainsboro;
+}
+
 .focused{
   color: "#43a2ca" !important;
   /*opacity: 1;*/
