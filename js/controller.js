@@ -41,7 +41,7 @@ called when the application is first loaded
 $( document ).ready(function() {
     // Spinner start
     // loading icon starts here
-    $('.container-fluid').hide();     // hide everything
+    //$('.container-fluid').hide();     // hide everything
     $('#spinner').addClass("lds-hourglass"); 
 
 

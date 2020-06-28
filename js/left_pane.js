@@ -209,26 +209,6 @@ $("#add_axis").click(function() {
     });
 });
 
-/*
-$("#update_axis").click(function() {
-    console.log("Update button clicked");
-    deleteAxis(last_selected_axis_name)
-    last_selected_axis_name = null;
-    axis_name = $("#bias_type").val()
-    gp1_name = $("#gp1_label").val()
-    gp2_name = $("#gp2_label").val()
-    if(axis_name=="" || gp1_name=="" || gp2_name=="" || $("#gp1").val()=="" || $("#gp2").val()=="") {
-      return
-    }
-    bias_words[axis_name] = {
-      gp1_name: $("#gp1").val(),
-      gp2_name: $("#gp2").val()
-    }
-    rerender(axis_name)
-    //pc.dimensions(dim).updateAxes().render()
-});
-*/
-
 function clear_bias_words_section() {
   $("#gp1_label").val("")
   $("#gp1").val("")
@@ -238,3 +218,20 @@ function clear_bias_words_section() {
 
   $("#bias_type").val("")
 }
+
+// On click Highlight button
+$("#highlight_words").click(function() {
+    console.log("Highlight button clicked");
+    filter_words = []
+    text = $("#target").val().toLowerCase()
+    // Regex expression to split by newline and comma
+    // https://stackoverflow.com/questions/34316090/split-string-on-newline-and-comma
+    // https://stackoverflow.com/questions/10346722/how-can-i-split-a-javascript-string-by-white-space-or-comma
+    text = text.split(/[\n, ]+/)
+    for(i=0;i<text.length;i++) {
+    	if(text[i].length>0) {
+    		filter_words.push(text[i])
+    	}
+    }
+    highlightWords(null,neighbors=filter_words)
+});

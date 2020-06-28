@@ -32,7 +32,7 @@
 	  	</div>
 	</nav>
     
-    <div class="container-fluid" style="padding-left: 10px; padding-right: 10px;">
+    <div class="container-fluid" style="padding-left: 10px; padding-right: 10px; display: none;">
         <div class="row">
         <div class="col-lg-2 greyed">
                 <div class="feature">
@@ -96,19 +96,21 @@
                     <textarea class="form-control" rows="2" id="gp2"></textarea>
 
                     <div style="padding-top: 5px;">
-                        <button type="submit" class="btn btn-primary btn-sm" id="add_axis" style="width: 30%">Add</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="add_axis" style="width: 48%">Add</button>
                         <!-- <button type="submit" class="btn btn-primary btn-sm" id="update_axis" style="width: 30%">Update</button> -->
-                        <button type="submit" class="btn btn-primary btn-sm" id="delete_axis" style="width: 30%">Delete</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="delete_axis" style="width: 48%">Delete</button>
                     </div>
                 </div>
                 <br>
 
                 <div class="feature">
-                        <label for="target"><h4>Highlight Words</h4></label>
+                        <label for="target"><h4>Neutral Words</h4></label>
                         <select style="float:right;" id="dropdown_target" onchange="changeTarget(this.value)">
                         </select>
-                        
                         <textarea class="form-control" rows="5" id="target"></textarea>
+                        
+                        <button type="submit" class="btn btn-primary btn-sm" id="highlight_words" style="width: 50%; margin-top: 5px;">Highlight</button>
+                        
                 </div>
             <!-- </div> -->
         </div>

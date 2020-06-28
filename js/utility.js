@@ -50,6 +50,7 @@ function cancelHighlight(updateNeighbor=true){
   $("#word_dimension .tick text").attr("opacity","1")
   if(updateNeighbor) $("#neighbors_list").empty()
   if(!pc.isBrushed()) updateWordAxis(active_data)  
+  clear_bias_words_section()
 }
 
 // manually draw word labels
