@@ -9,13 +9,14 @@
     <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/semantic/semantic.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/spinner.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/d3.parcoords.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
 
     <title>WordBias</title>
 </head>
 <body>
-
+    <div id="spinner"></div>
 	<!-- Nav bar start -->
 	<nav class="navbar navbar-expand-lg navbar-dark site-color" style="display: none;">
 		<a class="navbar-brand" href="#" >biasViz</a>

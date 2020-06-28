@@ -51,6 +51,26 @@ function plot_histogram() {
   });
 }
 
+// fetch and replot parallel coordiante
+function onChangeHistogram(ranges=[]) {
+  hist_type = $("#histogram_type").val();
+  $.ajax({
+      url: '/fetch_data',
+      data: JSON.stringify({hist_type : hist_type,slider_sel : ranges}),
+      type: 'POST',
+      success: function(res){
+          active_data = JSON.parse(res)
+          active_words = active_data.map(function(d){return d.word}) 
+          pc.brushReset()
+          pc.data(active_data).render()
+          updateWordAxis(active_data)        
+      },
+      error: function(error){
+          console.log("error !!!!");
+      }
+  });
+}
+
 
 // Given a list as input, populate drop down menu with each element as an option
 function populateDropDownList(data) {

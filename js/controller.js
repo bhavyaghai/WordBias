@@ -39,6 +39,12 @@ var current_embedding = null;
 called when the application is first loaded 
 */
 $( document ).ready(function() {
+    // Spinner start
+    // loading icon starts here
+    $('.container-fluid').hide();     // hide everything
+    $('#spinner').addClass("lds-hourglass"); 
+
+
     $.get( '/getFileNames/', function(res) {
     var group = res[0];     // List of file names for group
     console.log("groups dropdown has ", group);
@@ -78,36 +84,22 @@ $( document ).ready(function() {
             onClick(d.title)
           }
         });
+
+      // populate histogram bias types
+      populate_histogram_bias_type(data[0])
+
+      // loading icon stops once data is loaded  
+      $('#spinner').removeClass("lds-hourglass");
+      $('.container-fluid').show();     // show everything once loaded
+
       pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
       pc.on("brushend",function (d) { populate_neighbors(d)})
       plot_histogram()
-      // populate histogram bias types
-      populate_histogram_bias_type(data[0])
     });
 
     // set pointer type when hovering over any word on the word axis
     //$('#word_dimension .tick text').css('cursor', 'pointer');
 });
-
-// fetch and replot parallel coordiante
-function onChangeHistogram(ranges=[]) {
-  hist_type = $("#histogram_type").val();
-  $.ajax({
-      url: '/fetch_data',
-      data: JSON.stringify({hist_type : hist_type,slider_sel : ranges}),
-      type: 'POST',
-      success: function(res){
-          active_data = JSON.parse(res)
-          active_words = active_data.map(function(d){return d.word}) 
-          pc.brushReset()
-          pc.data(active_data).render()
-          updateWordAxis(active_data)        
-      },
-      error: function(error){
-          console.log("error !!!!");
-      }
-  });
-}
 
 function populate_histogram_bias_type(row) {
 	bias_types = []

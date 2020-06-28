@@ -12,7 +12,7 @@ function createParallelCoord(data){
 	    .color("steelblue")  // quantitative color scale
 	    .alpha(0.5)
 	    .mode("queue")
-	    .render()
+	    //.render()
 	    .brushMode("1D-axes-multi")  // enable brushing
 	    .interactive()  // command line mode
 	    .reorderable()
