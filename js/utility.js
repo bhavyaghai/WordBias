@@ -89,6 +89,7 @@ function mouseenter(word){
   if(inSearch) {
     afterHighlight = true
   } 
+  $(this).css('cursor', 'pointer');
   highlightWords(word)
 }
 
@@ -100,6 +101,7 @@ function mouseleave(){
     afterHighlight = false
     pc.unAfterHighlight()
   }
+  //$(this).css('cursor', 'inherit');
 }
 
 function onClick(word){

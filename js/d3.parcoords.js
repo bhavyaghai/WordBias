@@ -1051,7 +1051,7 @@ pc.applyAxisConfig = function(axis, dimension) {
 pc.reorderable = function() {
   if (!g) pc.createAxes();
 
-  g.style("cursor", "move")
+  g.style("cursor", "inherit")
     .call(d3.behavior.drag()
       .on("dragstart", function(d) {
         // console.log("dragstart")

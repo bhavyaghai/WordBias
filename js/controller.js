@@ -84,6 +84,9 @@ $( document ).ready(function() {
       // populate histogram bias types
       populate_histogram_bias_type(data[0])
     });
+
+    // set pointer type when hovering over any word on the word axis
+    //$('#word_dimension .tick text').css('cursor', 'pointer');
 });
 
 // fetch and replot parallel coordiante
