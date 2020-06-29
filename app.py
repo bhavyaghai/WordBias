@@ -62,7 +62,7 @@ def setModel():
         language = 'en'
         #model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/GoogleNews-vectors-negative300.bin', binary=True, limit=50000) 
         model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True, limit=50000) 
-        df = pd.read_csv("./data/all_biases_50k.csv",header=0, keep_default_na=False)
+        df = pd.read_csv("./data/word2vec_50k.csv",header=0, keep_default_na=False)
 
     elif name=="Glove (wiki 300d)":
         # print("Glove word embedding backend")

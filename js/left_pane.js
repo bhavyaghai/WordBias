@@ -41,10 +41,10 @@ function plot_histogram() {
         hist_type = $("#histogram_type").val();
         ranges = []
         if(hist_type=="ALL") {
-            ranges = [[max_val-0.075, max_val]]
+            ranges = [[max_val-0.05, max_val]]
         }
         else {
-            ranges = [[min_val, min_val+0.1],[max_val-0.1, max_val]]
+            ranges = [[min_val, min_val+0.02],[max_val-0.02, max_val]]
         }
         createHistogram(values, ranges)
         onChangeHistogram(ranges);
