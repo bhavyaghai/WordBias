@@ -140,6 +140,7 @@ var side_effects = d3.dispatch.apply(this,d3.keys(__))
     pc.dimensions(without(__.dimensions, d.value));
   })
   .on("flipAxes", function(d) {
+    // console.log(d)
     if (d.value && d.value.length) {
         d.value.forEach(function(axis) {
             flipAxisAndUpdatePCP(axis);
@@ -734,8 +735,15 @@ pc.clear = function(layer) {
 d3.rebind(pc, axis, "ticks", "orient", "tickValues", "tickSubdivide", "tickSize", "tickPadding", "tickFormat");
 
 function flipAxisAndUpdatePCP(dimension) {
-  console.log("Flip axes: ", dimension);
+  console.log("Flip axes:", dimension);
+  if(dimension == "word") return;
 
+  // console.log(Object.keys(bias_words[dimension]))
+  // var keys = Object.keys(bias_words[dimension])
+  // var temp = {"Male": bias_words[dimension][keys[1]],"Female": bias_words[dimension][keys[0]]};
+
+  // bias_words[dimension] = temp
+  // console.log(Object.keys(bias_words[dimension]))
   var g = pc.svg.selectAll(".dimension");
   pc.flip(dimension);
 
