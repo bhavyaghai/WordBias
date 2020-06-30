@@ -222,6 +222,8 @@ function clear_bias_words_section() {
 // On click Highlight button
 $("#highlight_words").click(function() {
     console.log("Highlight button clicked");
+    // afterHighlight =  true
+    inSearch = true
     filter_words = []
     text = $("#target").val().toLowerCase()
     // Regex expression to split by newline and comma

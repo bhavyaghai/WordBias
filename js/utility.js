@@ -49,7 +49,7 @@ function cancelHighlight(updateNeighbor=true){
   $(".dynamicLabel").remove()
   $("#word_dimension .tick text").attr("opacity","1")
   if(updateNeighbor) $("#neighbors_list").empty()
-  if(!pc.isBrushed()) updateWordAxis(active_data)  
+  // if(!pc.isBrushed()) updateWordAxis(active_data)  
   clear_bias_words_section()
 }
 
@@ -153,6 +153,7 @@ $("body").on("click","#canvas_svg",function(e){ // click
       inSearch = false
       afterHighlight = false
       cancelHighlight()  
+      updateWordAxis(active_data)
     }
 })
 
