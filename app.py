@@ -10,10 +10,10 @@ from numpy.linalg import inv
 import numpy as np
 from gensim.models import KeyedVectors
 from gensim.scripts.glove2word2vec import glove2word2vec
-from termcolor import colored
+#from termcolor import colored
 from scipy.spatial.distance import cosine
 import json
-from datetime import datetime
+#from datetime import datetime
 import os
 from flask import make_response
 from functools import wraps, update_wrapper
@@ -333,4 +333,5 @@ def getWords():
 
 
 if __name__ == '__main__':
+   #app.run(host= '0.0.0.0', port=6999, debug=True)
    app.run(port=6999, debug=True)
