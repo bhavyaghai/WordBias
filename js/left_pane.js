@@ -40,12 +40,12 @@ function plot_histogram() {
         $("#histogram").empty();
         hist_type = $("#histogram_type").val();
         ranges = []
-        if(hist_type=="ALL") {
+        // if(hist_type=="ALL") {
             ranges = [[max_val-0.05, max_val]]
-        }
-        else {
-            ranges = [[min_val, min_val+0.02],[max_val-0.02, max_val]]
-        }
+        // }
+        // else {
+        //     ranges = [[min_val, min_val+0.02],[max_val-0.02, max_val]]
+        // }
         createHistogram(values, ranges)
         onChangeHistogram(ranges);
   });
@@ -53,6 +53,7 @@ function plot_histogram() {
 
 // fetch and replot parallel coordiante
 function onChangeHistogram(ranges=[]) {
+  // console.log(ranges)
   hist_type = $("#histogram_type").val();
   $.ajax({
       url: '/fetch_data',
@@ -222,6 +223,8 @@ function clear_bias_words_section() {
 // On click Highlight button
 $("#highlight_words").click(function() {
     console.log("Highlight button clicked");
+    // afterHighlight =  true
+    inSearch = true
     filter_words = []
     text = $("#target").val().toLowerCase()
     // Regex expression to split by newline and comma

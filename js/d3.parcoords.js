@@ -47,7 +47,7 @@ var pc = function(selection) {
   selection = pc.selection = d3.select(selection);
 
   __.width = selection[0][0].clientWidth;
-  __.height = selection[0][0].clientHeight;
+  __.height = selection[0][0].clientHeight-20;
 
   // canvas data layers
   ["marks", "foreground", "brushed", "highlight","after_highlight"].forEach(function(layer) {
@@ -140,6 +140,7 @@ var side_effects = d3.dispatch.apply(this,d3.keys(__))
     pc.dimensions(without(__.dimensions, d.value));
   })
   .on("flipAxes", function(d) {
+    // console.log(d)
     if (d.value && d.value.length) {
         d.value.forEach(function(axis) {
             flipAxisAndUpdatePCP(axis);
@@ -298,8 +299,10 @@ pc.autoscale = function() {
   ctx.brushed.globalAlpha = __.alpha;
   ctx.brushed.scale(devicePixelRatio, devicePixelRatio);
   ctx.highlight.lineWidth = 1.4;
+  ctx.highlight.font = "14px Georgia";
   ctx.highlight.scale(devicePixelRatio, devicePixelRatio);
   ctx.after_highlight.lineWidth = 1.4;
+  ctx.after_highlight.font = "14px Georgia";
   ctx.after_highlight.scale(devicePixelRatio, devicePixelRatio);
 
   return this;
@@ -683,6 +686,9 @@ function single_path(d, ctx) {
 			ctx.moveTo(position(p.key), typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]));
 		} else {
 			ctx.lineTo(position(p.key), typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]));
+      // console.log($(ctx.canvas))
+      if(!global_neighbors.length && ($(ctx.canvas).hasClass("highlight") || $(ctx.canvas).hasClass("after_highlight")))
+        ctx.fillText(typeof d[p.key] =='undefined' ? "undefined" : d[p.key].toFixed(2),position(p.key)+5, typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]))
 		}
 	});
 };
@@ -734,8 +740,15 @@ pc.clear = function(layer) {
 d3.rebind(pc, axis, "ticks", "orient", "tickValues", "tickSubdivide", "tickSize", "tickPadding", "tickFormat");
 
 function flipAxisAndUpdatePCP(dimension) {
-  console.log("Flip axes: ", dimension);
+  console.log("Flip axes:", dimension);
+  if(dimension == "word") return;
 
+  // console.log(Object.keys(bias_words[dimension]))
+  // var keys = Object.keys(bias_words[dimension])
+  // var temp = {"Male": bias_words[dimension][keys[1]],"Female": bias_words[dimension][keys[0]]};
+
+  // bias_words[dimension] = temp
+  // console.log(Object.keys(bias_words[dimension]))
   var g = pc.svg.selectAll(".dimension");
   pc.flip(dimension);
 
