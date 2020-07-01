@@ -20,8 +20,9 @@ function updateWordAxis(data){
 
 //Highlight words using highlight or after_highlight canvas
 function highlightWords(word,neighbors=[]){
+  global_neighbors = neighbors
   $(".dynamicLabel").remove()
-  data_rows = this.data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
+  data_rows = data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
   
   if(!afterHighlight){
     selected_word = word

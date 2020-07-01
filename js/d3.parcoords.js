@@ -299,8 +299,10 @@ pc.autoscale = function() {
   ctx.brushed.globalAlpha = __.alpha;
   ctx.brushed.scale(devicePixelRatio, devicePixelRatio);
   ctx.highlight.lineWidth = 1.4;
+  ctx.highlight.font = "14px Georgia";
   ctx.highlight.scale(devicePixelRatio, devicePixelRatio);
   ctx.after_highlight.lineWidth = 1.4;
+  ctx.after_highlight.font = "14px Georgia";
   ctx.after_highlight.scale(devicePixelRatio, devicePixelRatio);
 
   return this;
@@ -684,6 +686,9 @@ function single_path(d, ctx) {
 			ctx.moveTo(position(p.key), typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]));
 		} else {
 			ctx.lineTo(position(p.key), typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]));
+      // console.log($(ctx.canvas))
+      if(!global_neighbors.length && ($(ctx.canvas).hasClass("highlight") || $(ctx.canvas).hasClass("after_highlight")))
+        ctx.fillText(typeof d[p.key] =='undefined' ? "undefined" : d[p.key].toFixed(2),position(p.key)+5, typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]))
 		}
 	});
 };

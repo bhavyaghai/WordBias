@@ -1,6 +1,6 @@
 var thresh,
 words,active_words,selected_word ="none",wordAxis,
-data,active_data, neighbors,
+data,active_data, global_neighbors = [],
 pc,
 //attrs = ["gender","race","economic_status"],
 //categories = [{"gender":"Female","race":"Caucasian","religion":"Islam", "sentiment":"Unpleasant"},
