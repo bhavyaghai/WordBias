@@ -54,7 +54,7 @@ function createHistogram(values, defaultBrushExtent) {
 
     var yMax = d3.max(data, function(d){return d.length});
     var y = d3.scale.log()
-        .domain([2, yMax])
+        .domain([1, yMax])
         .range([height, 0]);
     
     var xAxis = d3.svg.axis()
