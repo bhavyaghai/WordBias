@@ -18,6 +18,7 @@ import os
 from flask import make_response
 from functools import wraps, update_wrapper
 from py_thesaurus import Thesaurus
+import socket
 
 
 app = Flask(__name__, template_folder='templates', static_folder='', static_url_path="/static")
@@ -61,8 +62,8 @@ def setModel():
         # print("word2vec model being loaded !!!")
         language = 'en'
         #model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/GoogleNews-vectors-negative300.bin', binary=True, limit=50000) 
-        model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True, limit=150000) 
-        df = pd.read_csv("./data/word2vec_50k.csv",header=0, keep_default_na=False)
+        model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True, limit=50041) 
+        df = pd.read_csv("./data/word2vec_50k_percentile.csv",header=0, keep_default_na=False)
 
     elif name=="Glove (wiki 300d)":
         # print("Glove word embedding backend")
@@ -333,5 +334,9 @@ def getWords():
 
 
 if __name__ == '__main__':
-   #app.run(host= '0.0.0.0', port=6999, debug=True)
-   app.run(port=6999, debug=True)
+    hostname = socket.gethostname()
+    # If we are running this script on the remote server
+    if hostname=='ubuntuedge1':
+        app.run(host= '0.0.0.0', port=6999, debug=True)
+    else:
+        app.run(port=6999, debug=True)

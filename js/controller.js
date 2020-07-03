@@ -27,8 +27,12 @@ bias_words = {
     "Christanity": "baptism, messiah, catholicism, resurrection, christianity, salvation, protestant, gospel, trinity, jesus, christ, christian, cross, catholic, church"
   },
   "age": {
-  	"Young": "tiffany,michelle,cindy,kristy,brad,eric,joey,billy",
-  	"Old": "ethel,bernice,gertrude,agnes,cecil,wilbert,mortimer,edgar"
+  	"Old": "ethel,bernice,gertrude,agnes,cecil,wilbert,mortimer,edgar",
+    "Young": "tiffany,michelle,cindy,kristy,brad,eric,joey,billy"
+  },
+  "economic": {
+    "Poor": "poor,poorer,poorest,needy,impoverished,economical,inexpensive,cheap,bankrupt,worthless,basic,plain",
+    "Rich": "rich,richer,richest,affluence,affluent,wealthy,costly,lavish,luxury,plush,expensive,invaluable"
   }
 }
 

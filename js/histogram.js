@@ -53,9 +53,12 @@ function createHistogram(values, defaultBrushExtent) {
         .bins(num_bins)(values);
 
     var yMax = d3.max(data, function(d){return d.length});
-    var y = d3.scale.log()
-        .domain([1, yMax])
+    var y = d3.scale.linear()
+        .domain([0, yMax])
         .range([height, 0]);
+    //var y = d3.scale.log()
+    //    .domain([1, yMax])
+    //    .range([height, 0]);
     
     var xAxis = d3.svg.axis()
         .ticks(5)

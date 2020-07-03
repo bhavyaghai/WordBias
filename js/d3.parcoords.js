@@ -858,6 +858,9 @@ pc.createAxes = function() {
         if(d=="word") {
           return
         }
+        //console.log(d);
+        //console.log(bias_words);
+        //console.log(bias_words[d]);
         return Object.keys(bias_words[d])[0]
       })
 
