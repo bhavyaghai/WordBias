@@ -1,11 +1,7 @@
 var thresh,
 words,active_words,selected_word ="none",wordAxis,
-data,active_data, global_neighbors = [],
+data,active_data, highlighted_data, global_neighbors = [],
 pc,
-//attrs = ["gender","race","economic_status"],
-//categories = [{"gender":"Female","race":"Caucasian","religion":"Islam", "sentiment":"Unpleasant"},
-//              {"gender":"Male","race":"African American","religion":"Christanity", "sentiment":"Pleasant"}],
-
 hideAxis=true, inSearch= false, afterHighlight=false;
 //var defaultBrushExtent = [[0.4,0.45]];
 

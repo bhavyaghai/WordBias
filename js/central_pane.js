@@ -54,6 +54,7 @@ $("#bundle_dimension").dropdown({
 // Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){
   pc.brushReset()
-  $("#neighbors_list").empty() 
-  updateWordAxis(active_data)
+  if(inSearch) populate_neighbors(highlighted_data)
+  else $("#neighbors_list").empty() 
+  // updateWordAxis(active_data)
 })

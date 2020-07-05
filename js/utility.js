@@ -2,6 +2,7 @@
 // show, hide word axis
 function updateWordAxis(data){
   words = data.map(d => d.word )
+  pc.data(data)
   if(data.length <75){
     if(hideAxis){
       pc.hideAxis([])
@@ -10,7 +11,7 @@ function updateWordAxis(data){
     pc.dimensions()["word"].yscale.domain( words)
     pc.dimensions()['word'].tickValues = words
     pc.updateAxes()
-    setTimeout(function(){d3.selectAll("#word_dimension .tick text").on("click",labelClick) }, 500);
+    setTimeout(function(){d3.selectAll("#word_dimension .tick text").on("click",labelClick) }, 300);
     
   }
   else if(!hideAxis){
@@ -24,7 +25,6 @@ function highlightWords(word,neighbors=[]){
   global_neighbors = neighbors
   $(".dynamicLabel").remove()
   data_rows = data.filter(function(d,i){return d.word == word || neighbors.includes(d.word.toLowerCase())})
-  
   if(!afterHighlight){
     selected_word = word
     if(!neighbors.length){ // case of single data
@@ -35,6 +35,7 @@ function highlightWords(word,neighbors=[]){
     else{  // update word axis with the neighbors and populate neighbors list
       updateWordAxis(data_rows)
       populate_neighbors(data_rows)
+      highlighted_data = data_rows
     }
     pc.highlight(data_rows)  // highlight the selected words
   }
