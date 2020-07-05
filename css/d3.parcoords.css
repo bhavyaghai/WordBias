@@ -24,6 +24,9 @@
 .parcoords canvas.invisible {
   opacity: 0.0;
 }
+/*.parcoords canvas.full {
+  opacity: 1.0;
+}*/
 .parcoords {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

@@ -54,7 +54,13 @@ $("#bundle_dimension").dropdown({
 // Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){
   pc.brushReset()
-  if(inSearch) populate_neighbors(highlighted_data)
+  if(inSearch) {
+  	populate_neighbors(highlighted_data)
+
+    d3.selectAll([pc.canvas["highlight"]]).classed("faded", false);
+    d3.selectAll([pc.canvas["brushed"]]).classed("full", false);
+    d3.selectAll([pc.canvas["brushed"]]).classed("faded", true);  
+  }
   else $("#neighbors_list").empty() 
   // updateWordAxis(active_data)
 })

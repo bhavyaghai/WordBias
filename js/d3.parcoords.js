@@ -698,6 +698,10 @@ function path_brushed(d, i) {
     ctx.brushed.strokeStyle = d3.functor(__.brushedColor)(d, i);
   } else {
     ctx.brushed.strokeStyle = d3.functor(__.color)(d, i);
+    if(inSearch){
+      ctx.brushed.globalAlpha = 1;
+      if(d.word != selected_word) ctx.brushed.strokeStyle = "orange"
+    } 
   }
   return color_path(d, ctx.brushed)
 };

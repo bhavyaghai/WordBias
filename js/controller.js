@@ -93,7 +93,15 @@ $( document ).ready(function() {
       $('.container-fluid').show();     // show everything once loaded
 
       pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
-      pc.on("brushend",function (d) { populate_neighbors(d)})
+      pc.on("brushend",function (d) { 
+        populate_neighbors(d)
+        if(inSearch){
+          d3.selectAll([pc.canvas["highlight"]]).classed("faded", true);
+          d3.selectAll([pc.canvas["brushed"]]).classed("faded", false);
+          // d3.selectAll([pc.canvas["brushed"]]).classed("full", true);
+          pc.canvas["brushed"].globalAlpha = 1
+        }
+      })
       plot_histogram()
     });
 
