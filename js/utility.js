@@ -10,7 +10,8 @@ function updateWordAxis(data){
     pc.dimensions()["word"].yscale.domain( words)
     pc.dimensions()['word'].tickValues = words
     pc.updateAxes()
-    d3.selectAll("#word_dimension .tick text").on("click",labelClick)
+    setTimeout(function(){d3.selectAll("#word_dimension .tick text").on("click",labelClick) }, 500);
+    
   }
   else if(!hideAxis){
     pc.hideAxis(["word"])
