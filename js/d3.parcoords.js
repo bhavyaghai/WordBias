@@ -747,12 +747,18 @@ function flipAxisAndUpdatePCP(dimension) {
   console.log("Flip axes:", dimension);
   if(dimension == "word") return;
 
-  // console.log(Object.keys(bias_words[dimension]))
-  // var keys = Object.keys(bias_words[dimension])
-  // var temp = {"Male": bias_words[dimension][keys[1]],"Female": bias_words[dimension][keys[0]]};
+  // reverse axis polarity labels
+  p1 = d3.select(this.parentElement).select(".polarity1").text()
+  p2 = d3.select(this.parentElement).select(".polarity2").text()
+  d3.select(this.parentElement)
+    .select(".polarity1")
+          .transition()
+          .duration(__.animationTime).text(p2)
+  d3.select(this.parentElement)
+    .select(".polarity2")
+      .transition()
+      .duration(__.animationTime).text(p1)
 
-  // bias_words[dimension] = temp
-  // console.log(Object.keys(bias_words[dimension]))
   var g = pc.svg.selectAll(".dimension");
   pc.flip(dimension);
 
