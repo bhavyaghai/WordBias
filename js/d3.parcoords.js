@@ -651,6 +651,13 @@ function color_path(d, ctx) {
 	} else {
 		single_path(d, ctx);
 	}
+  if(!global_neighbors.length && ($(ctx.canvas).hasClass("highlight") || $(ctx.canvas).hasClass("after_highlight"))){
+    d3.entries(__.dimensions).forEach(function(p, i) { 
+      if(i > 0)
+        ctx.fillText(typeof d[p.key] =='undefined' ? "undefined" : d[p.key].toFixed(2),position(p.key)+5, typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]))
+    });
+  }
+    
 	ctx.stroke();
 };
 
@@ -686,9 +693,6 @@ function single_path(d, ctx) {
 			ctx.moveTo(position(p.key), typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]));
 		} else {
 			ctx.lineTo(position(p.key), typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]));
-      // console.log($(ctx.canvas))
-      if(!global_neighbors.length && ($(ctx.canvas).hasClass("highlight") || $(ctx.canvas).hasClass("after_highlight")))
-        ctx.fillText(typeof d[p.key] =='undefined' ? "undefined" : d[p.key].toFixed(2),position(p.key)+5, typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]))
 		}
 	});
 };
