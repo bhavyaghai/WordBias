@@ -49,13 +49,23 @@
                         <option disabled>Spanish fastText</option>
                     </select>  
                 </div>
+                <!--
                 <div class="feature">
                     <label><h4>Bias Measuring Method</h4></label>
                     <select class="ui dropdown" id="quantification">
                         <option>Subspace Projection</option>
                         <option>Group Difference</option>
                     </select>
-                </div>   
+                </div>  -->
+
+                <div class="feature">
+                    <label><h4>Feature Scaling</h4></label>
+                    <select id="scaling">
+                        <option selected>Ranking</option>
+                        <option>Magnitude</option>
+                    </select>
+                </div>
+
             <!-- <div style="border-bottom: 1px solid #DCDCDC;"> -->
                 <div class="feature">
                     <label><h4>Bias Distribution</h4></label>
@@ -132,11 +142,13 @@
                     <input id="bundle_input" type="range" name="smooth" min="0" max="1" step="0.01" value="0">
                     <span id="bundle_text">0</span>  
                 </div>
+                <!--
                 <div class="control">
                     <p >Threshold</p>
                     <input type="range" min="0.0" max="0.50" step="0.01" value="0" id="threshold" onchange="coeff_val_change(this.value)">
                     <span id="coeff_slider_val">0.0</span>        
                 </div> 
+                -->
                 <div class="control">
                     <p>Bundle curves by:</p>
                     <select id="bundle_dimension" class="ui dropdown">
