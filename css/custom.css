@@ -22,6 +22,11 @@ html,body{
   padding-bottom: 10px;
   width: 100%;
 }
+.ui.fluid{
+  /*max-width: 8rem !important;*/
+  min-height: 4rem !important;
+  /*display: inline-block !important;*/
+}
 .controls{
   width:100%;
   margin: 0 auto;
@@ -30,7 +35,7 @@ html,body{
 .control{
   display: inline-block;
   text-align: center;
-  padding: 0px 20px 20px 20px;
+  padding: 5px 20px 20px 20px;
 
 }
 input[type="range"]{
