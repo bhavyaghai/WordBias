@@ -51,11 +51,19 @@
                         </select> 
                         
                     </div>
+                    <!--
                     <div class="eight wide column">
                         <p> Bias Method</p>
                         <select class="ui fluid dropdown minimized" id="quantification">
                             <option>Subspace Projection</option>
                             <option>Group Difference</option>
+                        </select> 
+                    </div>  -->
+                    <div class="eight wide column">
+                        <p> Feature Scaling</p>
+                        <select class="ui fluid dropdown minimized" id="scaling">
+                            <option selected>Ranking</option>
+                            <option>Magnitude</option>
                         </select> 
                     </div>
                 </div> 
@@ -131,11 +139,13 @@
                     <input id="bundle_input" type="range" name="smooth" min="0" max="1" step="0.01" value="0">
                     <span id="bundle_text">0</span>  
                 </div>
+                <!--
                 <div class="control">
                     <p >Threshold</p>
                     <input type="range" min="0.0" max="0.50" step="0.01" value="0" id="threshold" onchange="coeff_val_change(this.value)">
                     <span id="coeff_slider_val">0.0</span>        
                 </div> 
+                -->
                 <div class="control">
                     <p>Bundle curves by:</p>
                     <div id="bundle_dimension" class="ui floating dropdown mini button">

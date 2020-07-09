@@ -192,6 +192,7 @@ $("#add_axis").click(function() {
     gp2_name = $("#gp2_label").val().toLowerCase()
     console.log(axis_name, gp1_name, gp2_name)
     if(axis_name=="" || gp1_name=="" || gp2_name=="" || $("#gp1").val()=="" || $("#gp2").val()=="") {
+      alert('Fill all required fields');
       return
     }
     bias_words[axis_name] = {
