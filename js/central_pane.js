@@ -45,11 +45,28 @@ $("#bundle_input").on("change",function(){
   $("#bundle_text").html(bundle)
 })
 
-$("#bundle_dimension").dropdown({
-  onChange: function(value){
-    console.log(value)
-    pc.bundleDimension(value)}
-})
+function initalize_bundle(attributes){
+  var vals = []
+  attributes.forEach(function(d){
+    a = {name:d,value:d}
+    if(d == "gender") a['selected'] = true
+    if(d != "word")
+      vals.push(a)
+
+  });
+  $("#bundle_dimension")
+  .dropdown({
+    values: vals
+  })
+  .dropdown({
+    onChange: function(value){
+      console.log(value)
+      pc.bundleDimension(value)
+    }
+  })
+
+}
+
 
 // Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){

@@ -74,7 +74,7 @@ $( document ).ready(function() {
     // create parallel plot
     d3.json("/get_csv/", function(data) {
       this.data = data
-      console.log(data.length)
+      // console.log(data.length)
       this.words = data.map(function(d){return {title:d.word}})
       $('.ui.search').search('refresh')
       $('.ui.search')
@@ -84,6 +84,8 @@ $( document ).ready(function() {
             onClick(d.title)
           }
         });
+
+      initalize_bundle(d3.keys(data[0]))
 
       // populate histogram bias types
       populate_histogram_bias_type(data[0])
