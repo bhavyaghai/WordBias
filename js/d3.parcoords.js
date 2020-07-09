@@ -651,6 +651,13 @@ function color_path(d, ctx) {
 	} else {
 		single_path(d, ctx);
 	}
+  if(!global_neighbors.length && ($(ctx.canvas).hasClass("highlight") || $(ctx.canvas).hasClass("after_highlight"))){
+    d3.entries(__.dimensions).forEach(function(p, i) { 
+      if(i > 0)
+        ctx.fillText(typeof d[p.key] =='undefined' ? "undefined" : d[p.key].toFixed(2),position(p.key)+5, typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]))
+    });
+  }
+    
 	ctx.stroke();
 };
 
@@ -686,9 +693,6 @@ function single_path(d, ctx) {
 			ctx.moveTo(position(p.key), typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]));
 		} else {
 			ctx.lineTo(position(p.key), typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]));
-      // console.log($(ctx.canvas))
-      if(!global_neighbors.length && ($(ctx.canvas).hasClass("highlight") || $(ctx.canvas).hasClass("after_highlight")))
-        ctx.fillText(typeof d[p.key] =='undefined' ? "undefined" : d[p.key].toFixed(2),position(p.key)+5, typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]))
 		}
 	});
 };
@@ -698,6 +702,10 @@ function path_brushed(d, i) {
     ctx.brushed.strokeStyle = d3.functor(__.brushedColor)(d, i);
   } else {
     ctx.brushed.strokeStyle = d3.functor(__.color)(d, i);
+    if(inSearch){
+      ctx.brushed.globalAlpha = 1;
+      if(d.word != selected_word) ctx.brushed.strokeStyle = "orange"
+    } 
   }
   return color_path(d, ctx.brushed)
 };
@@ -743,12 +751,18 @@ function flipAxisAndUpdatePCP(dimension) {
   console.log("Flip axes:", dimension);
   if(dimension == "word") return;
 
-  // console.log(Object.keys(bias_words[dimension]))
-  // var keys = Object.keys(bias_words[dimension])
-  // var temp = {"Male": bias_words[dimension][keys[1]],"Female": bias_words[dimension][keys[0]]};
+  // reverse axis polarity labels
+  p1 = d3.select(this.parentElement).select(".polarity1").text()
+  p2 = d3.select(this.parentElement).select(".polarity2").text()
+  d3.select(this.parentElement)
+    .select(".polarity1")
+          .transition()
+          .duration(__.animationTime).text(p2)
+  d3.select(this.parentElement)
+    .select(".polarity2")
+      .transition()
+      .duration(__.animationTime).text(p1)
 
-  // bias_words[dimension] = temp
-  // console.log(Object.keys(bias_words[dimension]))
   var g = pc.svg.selectAll(".dimension");
   pc.flip(dimension);
 

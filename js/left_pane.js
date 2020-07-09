@@ -53,7 +53,11 @@ function plot_histogram() {
 
 // fetch and replot parallel coordiante
 function onChangeHistogram(ranges=[]) {
-  // console.log(ranges)
+  if(!ranges.length){
+    alert("No data selected! please re-select")
+    return
+  }
+
   hist_type = $("#histogram_type").val();
   $.ajax({
       url: '/fetch_data',

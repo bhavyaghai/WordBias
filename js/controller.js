@@ -1,11 +1,7 @@
 var thresh,
 words,active_words,selected_word ="none",wordAxis,
-data,active_data, global_neighbors = [],
+data,active_data, highlighted_data, global_neighbors = [],
 pc,
-//attrs = ["gender","race","economic_status"],
-//categories = [{"gender":"Female","race":"Caucasian","religion":"Islam", "sentiment":"Unpleasant"},
-//              {"gender":"Male","race":"African American","religion":"Christanity", "sentiment":"Pleasant"}],
-
 hideAxis=true, inSearch= false, afterHighlight=false;
 //var defaultBrushExtent = [[0.4,0.45]];
 
@@ -78,7 +74,7 @@ $( document ).ready(function() {
     // create parallel plot
     d3.json("/get_csv/", function(data) {
       this.data = data
-      console.log(data.length)
+      // console.log(data.length)
       this.words = data.map(function(d){return {title:d.word}})
       $('.ui.search').search('refresh')
       $('.ui.search')
@@ -89,6 +85,8 @@ $( document ).ready(function() {
           }
         });
 
+      initalize_bundle(d3.keys(data[0]))
+
       // populate histogram bias types
       populate_histogram_bias_type(data[0])
 
@@ -97,7 +95,15 @@ $( document ).ready(function() {
       $('.container-fluid').show();     // show everything once loaded
 
       pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
-      pc.on("brushend",function (d) { populate_neighbors(d)})
+      pc.on("brushend",function (d) { 
+        populate_neighbors(d)
+        if(inSearch){
+          d3.selectAll([pc.canvas["highlight"]]).classed("faded", true);
+          d3.selectAll([pc.canvas["brushed"]]).classed("faded", false);
+          // d3.selectAll([pc.canvas["brushed"]]).classed("full", true);
+          pc.canvas["brushed"].globalAlpha = 1
+        }
+      })
       plot_histogram()
     });
 

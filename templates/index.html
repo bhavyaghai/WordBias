@@ -35,60 +35,68 @@
     <div class="container-fluid" style="padding-left: 10px; padding-right: 10px; display: none;">
         <div class="row">
         <div class="col-lg-2 greyed">
-                <div class="feature">
-                    <label><h4>Word Embedding</h4></label>
-                    <select id="dropdown_embedding">
-                        <option selected>Word2Vec</option>
-                        <option>Word2Vec debiased</option>
-                        <option>Glove (wiki 300d)</option>
-                        <option>Hindi fastText</option>
-                        <option>French fastText</option>
-                        <option>Temp</option>
-                        <option disabled>German fastText</option>
-                        <option disabled>Chinese fastText</option>
-                        <option disabled>Spanish fastText</option>
-                    </select>  
-                </div>
-                <!--
-                <div class="feature">
-                    <label><h4>Bias Measuring Method</h4></label>
-                    <select class="ui dropdown" id="quantification">
-                        <option>Subspace Projection</option>
-                        <option>Group Difference</option>
-                    </select>
-                </div>  -->
-
-                <div class="feature">
-                    <label><h4>Feature Scaling</h4></label>
-                    <select id="scaling">
-                        <option selected>Ranking</option>
-                        <option>Magnitude</option>
-                    </select>
-                </div>
-
+                <div class="ui grid separator">
+                    <div class="eight wide column">
+                        <p> Word Embedding</p>
+                        <select id="dropdown_embedding" class="ui fluid dropdown minimized">
+                            <option selected>Word2Vec</option>
+                            <option>Word2Vec debiased</option>
+                            <option>Glove (wiki 300d)</option>
+                            <option>Hindi fastText</option>
+                            <option>French fastText</option>
+                            <option>Temp</option>
+                            <option disabled>German fastText</option>
+                            <option disabled>Chinese fastText</option>
+                            <option disabled>Spanish fastText</option>
+                        </select> 
+                        
+                    </div>
+                    <!--
+                    <div class="eight wide column">
+                        <p> Bias Method</p>
+                        <select class="ui fluid dropdown minimized" id="quantification">
+                            <option>Subspace Projection</option>
+                            <option>Group Difference</option>
+                        </select> 
+                    </div>  -->
+                    <div class="eight wide column">
+                        <p> Feature Scaling</p>
+                        <select class="ui fluid dropdown minimized" id="scaling">
+                            <option selected>Ranking</option>
+                            <option>Magnitude</option>
+                        </select> 
+                    </div>
+                </div> 
+                <hr>
             <!-- <div style="border-bottom: 1px solid #DCDCDC;"> -->
                 <div class="feature">
-                    <label><h4>Bias Distribution</h4></label>
-                    <select id="histogram_type" style="float: right;">
-                        <option selected="">ALL</option>
-                        <!--
-                        <option>gender</option>
-                        <option>race</option>
-                        <option>religion</option>
-                        <option>sentiment</option>
-                        -->
-                    </select>
-                </div>   
-                <div id="histogram" class="feature" style="height: 20vh"></div>
-                <!--
-                <button id="reset_hist_brush" class="mini ui button">Reset Brush</button>
-                -->
-                <!-- <div class="feature">
-                    <div id="slider"></div>    
-                </div> -->
+                    <p style="text-align: center">Bias Distribution</p>  
+                    <div id="histogram" class="feature" style="height: 20vh;margin-bottom: 10px "></div> 
+                    <div style="text-align: center;">
+                        <p style="display: inline-block;">Select Attribute:</p>
+                        <select id="histogram_type">
+                            <option selected="">ALL</option>
+                        </select> 
+                        
+                    </div>   
+                </div> 
+                <hr>
+
+                <div class="feature">
+                        <p style="text-align: center">Highlight Group Words</p>
+                        <select style="float:left;margin-top: 5px;margin-right: 5px;" id="dropdown_target" onchange="changeTarget(this.value)">
+                        </select>
+                        
+                        <textarea class="form-control" rows="5" id="target"></textarea>
+                        
+                        
+                        <button type="submit" class="ui mini button primary" id="highlight_words" style="; margin-top: 5px;">Highlight</button>
+                        
+                </div>
+                <hr>
 
                 <div class="form-group">
-                    <label><h4>Bias Defining Words</h4></label><br>
+                    <p style="text-align: center;">Bias Defining Words</p>
                     <div style="padding-bottom: 5px;">
                         <!-- <label>Bias Type:</label>  -->
                         <input type="text" id="bias_type" placeholder="Bias Type" style="width: 100%;">
@@ -111,17 +119,6 @@
                         <!-- <button type="submit" class="btn btn-primary btn-sm" id="update_axis" style="width: 30%">Update</button> -->
                         <button type="submit" class="btn btn-primary btn-sm" id="delete_axis" style="width: 48%">Delete Axis</button>
                     </div>
-                </div>
-                <br>
-
-                <div class="feature">
-                        <label for="target"><h4>Neutral Words</h4></label>
-                        <select style="float:right;" id="dropdown_target" onchange="changeTarget(this.value)">
-                        </select>
-                        <textarea class="form-control" rows="5" id="target"></textarea>
-                        
-                        <button type="submit" class="btn btn-primary btn-sm" id="highlight_words" style="width: 50%; margin-top: 5px;">Highlight</button>
-                        
                 </div>
             <!-- </div> -->
         </div>
@@ -151,12 +148,15 @@
                 -->
                 <div class="control">
                     <p>Bundle curves by:</p>
-                    <select id="bundle_dimension" class="ui dropdown">
-                      <!-- <option value="">-----</option> -->
-                      <option value="gender">gender</option>
-                      <option value="race">race</option>
-                      <option value="economic_status">economic status</option>
-                    </select>  
+                    <div id="bundle_dimension" class="ui floating dropdown mini button">
+                        <div class="text"> 
+                          Gender
+                        </div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">  
+                        </div>
+                      
+                    </div>  
                 </div>
                 <div class="control">
                     <button id="reset_brush" class="ui mini button">Reset Brush</button>
