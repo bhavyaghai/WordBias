@@ -67,7 +67,6 @@ function initalize_bundle(attributes){
 
 }
 
-
 // Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){
   pc.brushReset()

@@ -24,7 +24,7 @@ html,body{
 }
 .minimized{
   /*max-width: 8rem !important;*/
-  min-height: 4rem !important;
+  min-height: 2rem !important;
 }
 .controls{
   width:100%;

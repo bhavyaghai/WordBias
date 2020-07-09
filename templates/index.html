@@ -35,7 +35,7 @@
     <div class="container-fluid" style="padding-left: 10px; padding-right: 10px; display: none;">
         <div class="row">
         <div class="col-lg-2 greyed">
-                <div class="ui grid separator">
+                <div class="ui grid">
                     <div class="eight wide column">
                         <p> Word Embedding</p>
                         <select id="dropdown_embedding" class="ui fluid dropdown minimized">
@@ -65,7 +65,7 @@
                     <p style="text-align: center">Bias Distribution</p>  
                     <div id="histogram" class="feature" style="height: 20vh;margin-bottom: 10px "></div> 
                     <div style="text-align: center;">
-                        <p style="display: inline-block;">Select Attribute:</p>
+                        <p style="display: inline-block; opacity:0.7">Select Attribute:</p>
                         <select id="histogram_type">
                             <option selected="">ALL</option>
                         </select> 
@@ -73,21 +73,19 @@
                     </div>   
                 </div> 
                 <hr>
-
-                <div class="feature">
-                        <p style="text-align: center">Highlight Group Words</p>
-                        <select style="float:left;margin-top: 5px;margin-right: 5px;" id="dropdown_target" onchange="changeTarget(this.value)">
-                        </select>
-                        
-                        <textarea class="form-control" rows="5" id="target"></textarea>
-                        
-                        
-                        <button type="submit" class="ui mini button primary" id="highlight_words" style="; margin-top: 5px;">Highlight</button>
-                        
+                <div style="margin-bottom: 50px;">
+                    <p style="text-align: center;">Bias Defining Words</p>
+                    <div class="ui grid separator">
+                        <div class="eight wide column">
+                            <button class="ui button">Add dimension</button>
+                        </div>
+                        <div class="eight wide column">
+                            <button class="ui button">Delete dimension</button>
+                        </div>
+                    </div>  
                 </div>
-                <hr>
 
-                <div class="form-group">
+                <div class="form-group" style="display: none;">
                     <p style="text-align: center;">Bias Defining Words</p>
                     <div style="padding-bottom: 5px;">
                         <!-- <label>Bias Type:</label>  -->
@@ -112,6 +110,23 @@
                         <button type="submit" class="btn btn-primary btn-sm" id="delete_axis" style="width: 48%">Delete Axis</button>
                     </div>
                 </div>
+                <hr>
+
+                <div class="feature">
+                    <p style="text-align: center">Highlight Group Words</p>
+                    <div style="text-align: center;">
+                        <p style="display: inline-block; opacity:0.7">Select Group:</p>
+                        <select id="dropdown_target" onchange="changeTarget(this.value)"></select>
+                    </div>
+                    <textarea class="form-control" rows="5" id="target"></textarea>
+                    
+                    
+                    <button type="submit" class="ui mini button primary" id="highlight_words" style="; margin-top: 5px;">Highlight</button>
+                        
+                </div>
+                <!-- <hr> -->
+
+
             <!-- </div> -->
         </div>
         <div class="col-lg-8"> 
