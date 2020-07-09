@@ -1,19 +1,4 @@
-/*
-Left pane events
-Bias options change events
-*/
-$("#dropdown_embedding").dropdown({
-  // onChange: function(value){
-  //   console.log(value)
-  //   pc.bundleDimension(value)}
-    // $("#bundle_text").html(bundle)
-})
-$("#quantification").dropdown({
-  // onChange: function(value){
-  //   console.log(value)
-  //   pc.bundleDimension(value)}
-    // $("#bundle_text").html(bundle)
-})
+
 /* 
 on dropdown menu for histogram type -- ALL, gender, etc.
 */

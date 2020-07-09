@@ -14,9 +14,24 @@ html,body{
   background-color: #40bad5 !important;
   border-color: #40bad5 !important;
 }
-/*.separator{
-  border-bottom: 0.1px solid rgba(0, 0, 0, 0.1);
-}*/
+.custom-select {
+  margin-bottom: 1em;
+  padding: .25em;
+  border: 0;
+  border-bottom: 2px solid black; 
+  font-weight: bold;
+  letter-spacing: .15em;
+  border-radius: 0;
+}
+.custom-select:focus, .custom-select:active{
+  outline: 0 !important;
+  box-shadow: none!important;
+  border-bottom-color: black;
+}
+label, .label{
+  opacity: 0.7
+}
+
 .feature{
   display: inline-block;
   /*margin-bottom: 5px;*/

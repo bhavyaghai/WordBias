@@ -37,8 +37,8 @@
         <div class="col-lg-2 greyed">
                 <div class="ui grid">
                     <div class="eight wide column">
-                        <p> Word Embedding</p>
-                        <select id="dropdown_embedding" class="ui fluid dropdown minimized">
+                        <label> Word Embedding</label>
+                        <select id="dropdown_embedding" class="custom-select greyed">
                             <option selected>Word2Vec</option>
                             <option>Word2Vec debiased</option>
                             <option>Glove (wiki 300d)</option>
@@ -51,17 +51,9 @@
                         </select> 
                         
                     </div>
-                    <!--
                     <div class="eight wide column">
-                        <p> Bias Method</p>
-                        <select class="ui fluid dropdown minimized" id="quantification">
-                            <option>Subspace Projection</option>
-                            <option>Group Difference</option>
-                        </select> 
-                    </div>  -->
-                    <div class="eight wide column">
-                        <p> Feature Scaling</p>
-                        <select class="ui fluid dropdown minimized" id="scaling">
+                        <label> Feature Scaling</label>
+                        <select class="custom-select greyed" id="scaling">
                             <option selected>Ranking</option>
                             <option>Magnitude</option>
                         </select> 
@@ -72,18 +64,19 @@
                 <div class="feature">
                     <p style="text-align: center">Bias Distribution</p>  
                     <div id="histogram" class="feature" style="height: 20vh;margin-bottom: 10px "></div> 
-                    <div style="text-align: center;">
-                        <p style="display: inline-block; opacity:0.7">Select Attribute:</p>
-                        <select id="histogram_type">
-                            <option selected="">ALL</option>
-                        </select> 
+                    <div style="text-align: center">
+                        
+                            <p style="display: inline-block; opacity:0.7">Select Attribute:</p>
+                            <select id="histogram_type" class="custom-select greyed" style="width: 40%">
+                                <option selected="">ALL</option>
+                            </select> 
                         
                     </div>   
                 </div> 
                 <hr>
                 <div style="margin-bottom: 50px;">
                     <p style="text-align: center;">Bias Defining Words</p>
-                    <div class="ui grid separator">
+                    <div class="ui grid">
                         <div class="eight wide column">
                             <button class="ui button">Add dimension</button>
                         </div>
@@ -140,17 +133,17 @@
         <div class="col-lg-8"> 
             <div class="controls">
                 <div class="control">
-                    <p>Alpha/opacity</p>
+                    <p class="label">Alpha/opacity</p>
                     <input id="alpha_input" type="range" name="alpha" min="0" max="1" step="0.01" value="0.5">
                     <span id="alpha_text">0.5</span>  
                 </div>
                 <div class="control">
-                    <p>Curve Smoothness</p>
+                    <p class="label">Curve Smoothness</p>
                     <input id="smoothness_input" type="range" name="smooth" min="0" max="1" step="0.01" value="0">
                     <span id="smoothness_text">0</span>  
                 </div>
                 <div class="control">
-                    <p>Bundle Strength</p>
+                    <p class="label">Bundle Strength</p>
                     <input id="bundle_input" type="range" name="smooth" min="0" max="1" step="0.01" value="0">
                     <span id="bundle_text">0</span>  
                 </div>
@@ -162,7 +155,7 @@
                 </div> 
                 -->
                 <div class="control">
-                    <p>Bundle curves by:</p>
+                    <p class="label">Bundle curves by:</p>
                     <div id="bundle_dimension" class="ui floating dropdown mini button">
                         <div class="text"> 
                           Gender
