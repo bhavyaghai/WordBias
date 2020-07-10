@@ -84,8 +84,9 @@ $( document ).ready(function() {
             onClick(d.title)
           }
         });
+      $("#bundle_dimension").append(populateDropDownList(d3.keys(data[0])))
 
-      initalize_bundle(d3.keys(data[0]))
+      // initalize_bundle(d3.keys(data[0]))
 
       // populate histogram bias types
       populate_histogram_bias_type(data[0])

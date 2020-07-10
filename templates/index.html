@@ -74,35 +74,51 @@
                     </div>   
                 </div> 
                 <hr>
-                <div style="margin-bottom: 50px;">
-                    <p style="text-align: center;">Bias Defining Words</p>
+                <div class="feature">
+                    <p style="text-align: center">Highlight Group Words</p>
+                    <div style="text-align: center;">
+                        <p style="display: inline-block; opacity:0.7">Select Group:</p>
+                        <select id="dropdown_target" onchange="changeTarget(this.value)" class="custom-select greyed" style="width: 50%"></select>
+                        <!-- <i class="play icon"></i> -->
+                    </div>
+                    <textarea class="form-control" rows="5" id="target" style="border-radius: 5px;margin-bottom: 5px;"></textarea>
+                    
+                    <div style="text-align: center;">
+                        <button><i class="pause icon"></i></button>
+                        <button id="highlight_words"><i class="play icon"></i></button>
+                    </div>
+                            
+                </div>
+                <hr>
+                <div>
+                    <p style="text-align: center; ">Bias Defining Words</p>
                     <div class="ui grid">
                         <div class="eight wide column">
                             <button class="ui button">Add dimension</button>
                         </div>
                         <div class="eight wide column">
-                            <button class="ui button">Delete dimension</button>
+                            <button class="ui button">Update dimension</button>
                         </div>
                     </div>  
                 </div>
 
                 <div class="form-group" style="display: none;">
-                    <p style="text-align: center;">Bias Defining Words</p>
+                    <p style="text-align: center; ">Bias Defining Words</p>
                     <div style="padding-bottom: 5px;">
                         <!-- <label>Bias Type:</label>  -->
                         <input type="text" id="bias_type" placeholder="Bias Type" style="width: 100%;">
                     </div>
                     <input type="text" id="gp1_label" placeholder="Group 1" style="width: 40%;">
-                    <select id="gp1_dropdown" style="float:right;" onchange="changeBiastype(this.id)">
+                    <!-- <select id="gp1_dropdown" style="float:right;" onchange="changeBiastype(this.id)">
                         <option selected>Custom</option>
-                    </select>
+                    </select> -->
                     <textarea class="form-control" rows="2" id="gp1" placeholder="List of words representing Group 1" 
                     style="margin-bottom: 7px;"></textarea>
                                 
                     <input type="text" id="gp2_label" placeholder="Group 2" style="width: 40%;">
-                    <select id="gp2_dropdown" style="float:right;" onchange="changeBiastype(this.id)">
+                    <!-- <select id="gp2_dropdown" style="float:right;" onchange="changeBiastype(this.id)">
                         <option selected>Custom</option>
-                    </select>
+                    </select> -->
                     <textarea class="form-control" rows="2" id="gp2" placeholder="List of words representing Group 2"></textarea>
 
                     <div style="padding-top: 5px;">
@@ -111,20 +127,9 @@
                         <button type="submit" class="btn btn-primary btn-sm" id="delete_axis" style="width: 48%">Delete Axis</button>
                     </div>
                 </div>
-                <hr>
+                <!-- <hr> -->
 
-                <div class="feature">
-                    <p style="text-align: center">Highlight Group Words</p>
-                    <div style="text-align: center;">
-                        <p style="display: inline-block; opacity:0.7">Select Group:</p>
-                        <select id="dropdown_target" onchange="changeTarget(this.value)"></select>
-                    </div>
-                    <textarea class="form-control" rows="5" id="target"></textarea>
-                    
-                    
-                    <button type="submit" class="ui mini button primary" id="highlight_words" style="; margin-top: 5px;">Highlight</button>
-                        
-                </div>
+                
                 <!-- <hr> -->
 
 
@@ -155,16 +160,11 @@
                 </div> 
                 -->
                 <div class="control">
-                    <p class="label">Bundle curves by:</p>
-                    <div id="bundle_dimension" class="ui floating dropdown mini button">
-                        <div class="text"> 
-                          Gender
-                        </div>
-                        <i class="dropdown icon"></i>
-                        <div class="menu">  
-                        </div>
+                    <label>Bundle curves by:</label>
+                    <select id="bundle_dimension" class="custom-select" style="width: 60%">
+                        <!-- <option selected>Gender</option> -->
                       
-                    </div>  
+                    </select>  
                 </div>
                 <div class="control">
                     <button id="reset_brush" class="ui mini button">Reset Brush</button>

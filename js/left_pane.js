@@ -66,7 +66,8 @@ function onChangeHistogram(ranges=[]) {
 function populateDropDownList(data) {
   var option = '';
   for (var i=0;i<data.length;i++){
-   option += '<option value="'+ data[i] + '">' + data[i] + '</option>';
+    if(data[i] != "word")
+      option += '<option value="'+ data[i] + '">' + data[i] + '</option>';
   }
   return option;
 }
