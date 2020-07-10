@@ -5,7 +5,7 @@ function createParallelCoord(data){
 	var pc = d3.parcoords()("#parallel_coord")
 	    .data(data)
 	    .bundlingStrength(0) // set bundling strength
-		.smoothness(0.1)
+		.smoothness(0)
 		.bundleDimension("gender")
 	    .hideAxis(["word"])
 	    .composite("darken")
