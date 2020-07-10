@@ -229,3 +229,10 @@ $("#highlight_words").click(function() {
     }
     highlightWords(null,neighbors=filter_words)
 });
+
+$("#cancel_highlight_words").click(function(){
+  inSearch = false
+  afterHighlight = false
+  cancelHighlight()  
+  updateWordAxis(active_data)
+})
