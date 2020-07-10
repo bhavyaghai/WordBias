@@ -90,41 +90,36 @@
                             
                 </div>
                 <hr>
-                <div>
-                    <p style="text-align: center; ">Bias Defining Words</p>
+                <p style="text-align: center; ">Bias Defining Words</p>
+                <div id="axisMaindiv">
+                    
                     <div class="ui grid">
                         <div class="eight wide column">
-                            <button class="ui button">Add dimension</button>
+                            <button id="add" class="ui button">Add dimension</button>
                         </div>
                         <div class="eight wide column">
-                            <button class="ui button">Update dimension</button>
+                            <button id="update" class="ui button">Update dimension</button>
                         </div>
                     </div>  
                 </div>
 
-                <div class="form-group" style="display: none;">
-                    <p style="text-align: center; ">Bias Defining Words</p>
+                <div id="axisSeconddiv" class="form-group" style="display: none;">
                     <div style="padding-bottom: 5px;">
-                        <!-- <label>Bias Type:</label>  -->
-                        <input type="text" id="bias_type" placeholder="Bias Type" style="width: 100%;">
+                        <input type="text" id="bias_type" placeholder="Bias Variable" style="width: 100%;">
                     </div>
+
                     <input type="text" id="gp1_label" placeholder="Group 1" style="width: 40%;">
-                    <!-- <select id="gp1_dropdown" style="float:right;" onchange="changeBiastype(this.id)">
-                        <option selected>Custom</option>
-                    </select> -->
                     <textarea class="form-control" rows="2" id="gp1" placeholder="List of words representing Group 1" 
                     style="margin-bottom: 7px;"></textarea>
                                 
                     <input type="text" id="gp2_label" placeholder="Group 2" style="width: 40%;">
-                    <!-- <select id="gp2_dropdown" style="float:right;" onchange="changeBiastype(this.id)">
-                        <option selected>Custom</option>
-                    </select> -->
                     <textarea class="form-control" rows="2" id="gp2" placeholder="List of words representing Group 2"></textarea>
 
-                    <div style="padding-top: 5px;">
-                        <button type="submit" class="btn btn-primary btn-sm" id="add_axis" style="width: 48%">Add Axis</button>
+                    <div style="padding-top: 5px; text-align: center">
+                        <button id="cancel_axis"><i class="cancel icon"></i></button>
+                        <button id="add_axis"><i class="check icon"></i></button>
                         <!-- <button type="submit" class="btn btn-primary btn-sm" id="update_axis" style="width: 30%">Update</button> -->
-                        <button type="submit" class="btn btn-primary btn-sm" id="delete_axis" style="width: 48%">Delete Axis</button>
+                        
                     </div>
                 </div>
                 <!-- <hr> -->

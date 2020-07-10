@@ -201,6 +201,18 @@ $("#add_axis").click(function() {
     });
 });
 
+$("#add").click(function(){
+  $("#axisMaindiv").hide()
+  $("#axisSeconddiv").show()
+
+})
+
+$("#cancel_axis").click(function(){
+  $("#axisMaindiv").show()
+  $("#axisSeconddiv").hide()
+
+})
+
 function clear_bias_words_section() {
   $("#gp1_label").val("")
   $("#gp1").val("")
