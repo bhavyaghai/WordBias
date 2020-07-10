@@ -39,6 +39,9 @@ function plot_histogram() {
 // fetch and replot parallel coordiante
 function onChangeHistogram(ranges=[]) {
   if(!ranges.length){
+    
+    pc.brushReset()
+    pc.data([]).render()
     alert("No data selected! please re-select")
     return
   }
