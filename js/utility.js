@@ -118,6 +118,32 @@ function labelClick(d,i){
   if(!inSearch) onClick($(this).html()) 
 }
 
+function axisLabelClick(axis_name){
+  $("#bias_type").hide()
+  $("#bias_type_div").show()
+  $("#delete_axis").show()
+  $("#axisMaindiv").hide()
+  $("#axisSeconddiv").show()
+    last_selected_axis_name = axis_name;
+    console.log("clicking on the title of axis "+axis_name)
+    if(axis_name!="word") {
+      clear_bias_words_section()
+      // populate corresponding bias words in the textarea
+      group_words = bias_words[axis_name]
+      group_names = Object.keys(group_words);
+
+      $("#bias_type").val(axis_name)   
+      $("#bias_type_dropdown").val(axis_name) 
+
+      $("#gp1_label").val(group_names[0])
+      $("#gp2_label").val(group_names[1])
+
+      $("#gp1").val(group_words[group_names[0]])
+      $("#gp2").val(group_words[group_names[1]])
+    }
+
+}
+
 
 $("body").on("mouseenter","#word_dimension .tick text", function(){ 
   if(!inSearch)
@@ -134,22 +160,8 @@ $("body").on("click","#canvas_svg",function(e){ // click
     // clicking on title of axis like "gender", "race", etc.
     if($(".tick").has(ele).length==0 && e.target.nodeName == "text") {
         axis_name = ele.html().toLowerCase();
-        last_selected_axis_name = axis_name;
-        console.log("clicking on the title of axis "+axis_name)
-        if(axis_name!="word") {
-          clear_bias_words_section()
-          // populate corresponding bias words in the textarea
-          group_words = bias_words[axis_name]
-          group_names = Object.keys(group_words);
-
-          $("#bias_type").val(axis_name)         
-
-          $("#gp1_label").val(group_names[0])
-          $("#gp2_label").val(group_names[1])
-
-          $("#gp1").val(group_words[group_names[0]])
-          $("#gp2").val(group_words[group_names[1]])
-        }
+        axisLabelClick(axis_name)
+        
     }
     // clicking anywhere else -> cancelHighlight
     else if(!(e.target.nodeName == "text") && !pc.isBrushed()){

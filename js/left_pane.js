@@ -202,15 +202,24 @@ $("#add_axis").click(function() {
 });
 
 $("#add").click(function(){
+  clear_bias_words_section()
+  $("#bias_type").show()
+  $("#bias_type_div").hide()
+  $("#delete_axis").hide()
   $("#axisMaindiv").hide()
   $("#axisSeconddiv").show()
-
+})
+$("#update").click(function(){
+  axisLabelClick($("#bias_type_dropdown").val())
 })
 
 $("#cancel_axis").click(function(){
   $("#axisMaindiv").show()
   $("#axisSeconddiv").hide()
 
+})
+$("#bias_type_dropdown").on("change",function(){
+  axisLabelClick($(this).val())
 })
 
 function clear_bias_words_section() {
