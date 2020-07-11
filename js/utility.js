@@ -1,4 +1,3 @@
-
 // show, hide word axis
 function updateWordAxis(data){
   words = data.map(d => d.word )

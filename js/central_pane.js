@@ -45,6 +45,7 @@ $("#bundle_input").on("change",function(){
   $("#bundle_text").html(bundle)
 })
 
+
 function initalize_bundle(attributes){
   var vals = []
   attributes.forEach(function(d){

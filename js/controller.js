@@ -46,67 +46,123 @@ $( document ).ready(function() {
 
 
     $.get( '/getFileNames/', function(res) {
-    var group = res[0];     // List of file names for group
-    console.log("groups dropdown has ", group);
-    var target = res[1];   // List of file names for target
-    //var sim_files = res[2]; // List of file names for word similarity benchmark
-    //var ana_files = res[3]; // List of file names for word analogy benchmark
-    // popoulating options for dropdown from file list drawn from backend
-    $('#gp1_dropdown').append(populateDropDownList(group));
-    $('#gp2_dropdown').append(populateDropDownList(group));
-    $('#dropdown_target').append(populateDropDownList(target));
-    //$('#word_sim_dropdown').append(populateDropDownList(sim_files));
-    //$('#word_ana_dropdown').append(populateDropDownList(ana_files));
+      //var group = res[0];     // List of file names for group
+      //console.log("groups dropdown has ", group);
+      var target = res[1];   // List of file names for target
+      //var sim_files = res[2]; // List of file names for word similarity benchmark
+      //var ana_files = res[3]; // List of file names for word analogy benchmark
+      // popoulating options for dropdown from file list drawn from backend
+      
+      //$('#gp1_dropdown').append(populateDropDownList(group));
+      //$('#gp2_dropdown').append(populateDropDownList(group));
+      $('#dropdown_target').append(populateDropDownList(target));
+      //$('#word_sim_dropdown').append(populateDropDownList(sim_files));
+      //$('#word_ana_dropdown').append(populateDropDownList(ana_files));
 
-    // set current embedding
-    current_embedding = $("#dropdown_embedding").val()
+      // set current embedding
+      current_embedding = $("#dropdown_embedding").val()
 
-    // Choose default target : Profession
-    $('#dropdown_target option[value="Profession"]').attr("selected",true);
-    changeTarget("Profession");
+      // Choose default target : Profession
+      $('#dropdown_target option[value="Profession"]').attr("selected",true);
+      changeTarget("Profession");
 
-    // Choose default groups
-    //$('#gp1_dropdown option[value="Gender - Female"]').attr("selected",true);
-    //changeBiastype("gp1_dropdown"); 
-    //$('#gp2_dropdown option[value="Gender - Male"]').attr("selected",true);
-    //changeBiastype("gp2_dropdown");
+      // Choose default groups
+      //$('#gp1_dropdown option[value="Gender - Female"]').attr("selected",true);
+      //changeBiastype("gp1_dropdown"); 
+      //$('#gp2_dropdown option[value="Gender - Male"]').attr("selected",true);
+      //changeBiastype("gp2_dropdown");
     });
     // create parallel plot
-    d3.json("/get_csv/", function(data) {
-      this.data = data
-      // console.log(data.length)
-      this.words = data.map(function(d){return {title:d.word}})
-      $('.ui.search').search('refresh')
-      $('.ui.search')
-        .search({
-          source: words,
-          onSelect: function(d){
-            onClick(d.title)
-          }
-        });
+    console.log("Document .ready")
+    console.log($('#scaling').val())
+    console.log($("#dropdown_embedding").val())
+    /*
+    $.ajax({
+      url: "/get_csv/",
+      data: JSON.stringify({scaling : $('#scaling').val(),embedding: $("#dropdown_embedding").val()}),
+      type: 'POST',
+      success: function(data){
+          data = JSON.parse(data);
+          window.data = data;
+          console.log("data: ", data);
+          //this.data = data
+          //this.words = data.map(function(d){return {title:d.word}})
+          words = window.data.map(function(d){return {title:d.word}})
+          $('.ui.search').search('refresh')
+          $('.ui.search')
+            .search({
+              source: words,
+              onSelect: function(d){
+                onClick(d.title)
+              }
+            });
 
-      initalize_bundle(d3.keys(data[0]))
+          initalize_bundle(d3.keys(data[0]))
 
-      // populate histogram bias types
-      populate_histogram_bias_type(data[0])
+          // populate histogram bias types
+          populate_histogram_bias_type(data[0])
 
-      // loading icon stops once data is loaded  
-      $('#spinner').removeClass("lds-hourglass");
-      $('.container-fluid').show();     // show everything once loaded
+          // loading icon stops once data is loaded  
+          $('#spinner').removeClass("lds-hourglass");
+          $('.container-fluid').show();     // show everything once loaded
 
-      pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
-      pc.on("brushend",function (d) { 
-        populate_neighbors(d)
-        if(inSearch){
-          d3.selectAll([pc.canvas["highlight"]]).classed("faded", true);
-          d3.selectAll([pc.canvas["brushed"]]).classed("faded", false);
-          // d3.selectAll([pc.canvas["brushed"]]).classed("full", true);
-          pc.canvas["brushed"].globalAlpha = 1
+          pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
+          pc.on("brushend",function (d) { 
+            populate_neighbors(d)
+            if(inSearch){
+              d3.selectAll([pc.canvas["highlight"]]).classed("faded", true);
+              d3.selectAll([pc.canvas["brushed"]]).classed("faded", false);
+              // d3.selectAll([pc.canvas["brushed"]]).classed("full", true);
+              pc.canvas["brushed"].globalAlpha = 1
+            }
+          })
+          plot_histogram()
+        },
+      error: function(error){
+          console.log("error !!!!");
+          console.log(error);
         }
-      })
-      plot_histogram()
-    });
+    }); */
 
+    $.get("/get_csv/", {
+        scaling : $('#scaling').val(),
+        embedding: $("#dropdown_embedding").val()
+      },
+      function(res) {
+        //console.log(res);
+        data = JSON.parse(res)
+        this.data = data
+        this.words = data.map(function(d){return {title:d.word}})
+        $('.ui.search').search('refresh')
+        $('.ui.search')
+          .search({
+            source: words,
+            onSelect: function(d){
+              onClick(d.title)
+            }
+          });
+
+        initalize_bundle(d3.keys(data[0]))
+
+        // populate histogram bias types
+        populate_histogram_bias_type(data[0])
+
+        // loading icon stops once data is loaded  
+        $('#spinner').removeClass("lds-hourglass");
+        $('.container-fluid').show();     // show everything once loaded
+
+        pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
+        pc.on("brushend",function (d) { 
+          populate_neighbors(d)
+          if(inSearch){
+            d3.selectAll([pc.canvas["highlight"]]).classed("faded", true);
+            d3.selectAll([pc.canvas["brushed"]]).classed("faded", false);
+            // d3.selectAll([pc.canvas["brushed"]]).classed("full", true);
+            pc.canvas["brushed"].globalAlpha = 1
+          }
+        })
+        plot_histogram()
+    });
     // set pointer type when hovering over any word on the word axis
     //$('#word_dimension .tick text').css('cursor', 'pointer');
 });
@@ -124,14 +180,11 @@ function populate_histogram_bias_type(row) {
 }
 
 /* 
-on dropdown menu for histogram type -- ALL, gender, etc.
+on dropdown menu change for Word Embedding
 */
-$('#histogram_type').change(function(event) {
-    console.log("Change dropdown menu - histogram_type")
-    if($('#slider').text().length != 0) { // If slider for histogram exist
-        console.log("slider exist");
-        plot_histogram(); 
-    } 
+$('#dropdown_embedding').change(function(event) {
+    console.log("Change dropdown menu - Word Embedding")
+    console.log($('#dropdown_embedding').val()) 
 });
 
 
