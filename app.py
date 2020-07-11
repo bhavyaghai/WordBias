@@ -190,6 +190,8 @@ def compute_new_bias():
     gp1_words = request.args.get("gp1_words").split(",")
     gp2_words = request.args.get("gp2_words").split(",")
     axis_name = request.args.get("axis_name")
+    scaling = request.args.get("scaling")
+    print("Scaling type: ", scaling)
     #active_words = request.args.getlist("active_words", type=str)
     active_words = json.loads(request.args.get("active_words"))
     
@@ -204,16 +206,28 @@ def compute_new_bias():
         # assuming group bias "Quantification algo"
         bias_score.append(round(cosine(g1,model[w])-cosine(g2,model[w]),4))
 
-    bias_score = np.array(bias_score)
-    bias_min, bias_max = np.min(bias_score), np.max(bias_score)
-    print("bias_min bias_max ", bias_min, bias_max)
     
     norm_bias_score = []
-    for b in bias_score:
-        if b<0:
-            norm_bias_score.append(-1*b/bias_min)
-        else:
-            norm_bias_score.append(b/bias_max)
+
+    if scaling=="Normalization":
+        print("Normalization")
+        bias_score = np.array(bias_score)
+        for b in bias_score:
+            if b<0:
+                norm_bias_score.append(-1*b/bias_min)
+            else:
+                norm_bias_score.append(b/bias_max)
+    elif scaling=="Percentile":
+        print("Percentile")
+        arr = pd.Series(bias_score, dtype='float')
+        values = arr[arr>0].sort_values(ascending=False, inplace=False)
+        res1 = percentile_rank(values, negative=False)
+
+        values = arr[arr<=0].sort_values(ascending=True, inplace=False)
+        res2 = percentile_rank(values, negative=True)
+        res = pd.concat([res1,res2])
+        res = res.reindex(arr.index)
+        norm_bias_score = res.tolist()
 
     df[axis_name] = norm_bias_score
     active_data = df[df['word'].isin(active_words)][axis_name]
@@ -243,39 +257,28 @@ def groupBiasDirection(gp1, gp2):
     return (g1,g2)
 
 
-# calculate Group bias for 'Group' bias identification type (National Academy of Sciences)
-'''
-@app.route('/groupBias/')
-def groupBias():
-    global df_tar
-    temp = request.args.get("target")
-    print("*******************")
-    target = None
-    target = json.loads(temp)
-    print("Target ",target)
-    print("Group direct bias function !!!!")
-
-    bias_direc = []
-    for p,q  in bias_words:
-        bias_direc.append(groupBiasDirection(p,q)) 
-    
-    df_tar = None
-    df_tar = df[0:0].copy()
-    tar_bias = {}
-    for t in target:
-        if not t or len(t)<=1:
-            continue
-        if t not in model:
-            continue
+# while calculating for negative values we want the range to be [-1, 0] instead of [0,1]
+# so, we have used 'negative' parameter to flip the sign if negative values are fed 
+# more modular percentile_rank function
+def percentile_rank(values, negative=False):
+    out = values.copy()
+    N = len(values)
+    last_ind = -1
+    for i,items in enumerate(values.iteritems()):
+        index, val = items[0], items[1]
+        if last_ind!=-1 and val==values.get(last_ind): 
+            out.at[index] = out.get(last_ind)
+            #print("last_ind: ",last_ind,"  index: ",index, " p: ",out.get(last_ind))
         else:
-            b = []  # list for storing individual biases
-            for (g1,g2) in bias_direc:
-                b.append(round(cosine(g1,model[t])-cosine(g2,model[t]),5))
-            tar_bias[t]= b
-        print("ROW ",[t],tar_bias[t])
-        df_tar.loc[len(df_tar)] = [t]+tar_bias[t]     # inserting row in df_tar
-    return "success"
-'''
+            p = (N-i)/N
+            out.at[index] = p
+            #print("index: ",index, " p: ",p)
+        if negative:
+            out.at[index] = out.get(index)*-1
+        last_ind = index
+    print(out)
+    return out
+
 
 # get list of filenames for group,target, word similarity & word analogy benchmark datasets folder
 @app.route('/getFileNames/')
@@ -303,21 +306,6 @@ def getFileNames():
     #ana_files = os.listdir(word_ana)
     #return jsonify([group,target,sim_files,ana_files])
     return jsonify([group,target])
-
-'''
-@app.route('/get_tar_words/<selVal>')
-def get_target_words(selVal):
-    #selVal = request.args.get("selVal")
-    path = './data/wordList/target/{0}/'.format(language) + selVal
-    print("path:  ", path)
-    words = []
-    f = open(path, "r", encoding="utf8")
-    for x in f:
-        if len(x)>0:
-            x = x.strip().lower()
-            words.append(x)
-    return jsonify(words)
-'''
 
 # populate default set of target words
 @app.route('/getWords/')

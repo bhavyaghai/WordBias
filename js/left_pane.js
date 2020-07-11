@@ -44,8 +44,6 @@ function load_and_plot_new_data() {
               onClick(d.title)
             }
           });
-		
-        initalize_bundle(d3.keys(data[0]))
 
         // loading icon stops once data is loaded  
         //$('#spinner').removeClass("lds-hourglass");
@@ -271,6 +269,7 @@ $("#add_axis").click(function() {
         axis_name: axis_name,
         gp1_words: $("#gp1").val().toLowerCase(),
         gp2_words: $("#gp2").val().toLowerCase(),
+        scaling: $('#scaling').val(),
         active_words: JSON.stringify(active_words)
     }, res => {
       console.log(res);

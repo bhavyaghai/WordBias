@@ -117,8 +117,11 @@ $( document ).ready(function() {
           pc.canvas["brushed"].globalAlpha = 1
         }
         // console.log(pc.brushExtents())
-        addExtentLabels(pc.brushExtents())
+        //addExtentLabels(pc.brushExtents())
       })
+      pc.on("brush",function (d) { 
+        addExtentLabels(pc.brushExtents())
+      });
       plot_histogram()
     });
     // set pointer type when hovering over any word on the word axis
