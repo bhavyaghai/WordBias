@@ -36,41 +36,30 @@
         <div class="row">
         <div class="col-lg-2 greyed">
                 <div>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td> <label> Word Embedding:</label> </td>
-                                <td> <select id="dropdown_embedding" class="custom-select greyed" style="width: 100%">
-                                        <option selected>Word2Vec</option>
-                                        <option>Glove (wiki 300d)</option>
-                                        <option>Word2Vec debiased</option>
-                                    </select>  
-                                </td>
-                            </tr>
-                            <tr>
-                                <td> <label> Feature Scaling:</label></td>
-                                <td> <select class="custom-select greyed" id="scaling" style="width: 100%">
-                                        <option selected>Percentile</option>
-                                        <option>Normalization</option>
-                                    </select>   
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div style="text-align: center;">
+                        <label style="padding-bottom: 0;margin-bottom: 0;"> Word Embedding</label>
+                        <select id="dropdown_embedding" class="custom-select greyed" style="width: 90%">
+                            <option selected>Word2Vec</option>
+                            <option>Glove (wiki 300d)</option>
+                            <option>Word2Vec debiased</option>
+                        </select>  
+                        
+                    </div>
                    
-                        
-                        
+                    <div style="text-align: center;">    
                     
-                    
-                    
-                        
-                        
+                        <label style="padding-bottom: 0;margin-bottom: 0;"> Feature Scaling</label>
+                        <select class="custom-select greyed" id="scaling" style="width: 90%">
+                            <option selected>Percentile</option>
+                            <option>Normalization</option>
+                        </select> 
+                    </div>
                     
                 </div> 
                 <hr>
             <!-- <div style="border-bottom: 1px solid #DCDCDC;"> -->
                 <div class="feature">
-                    <p style="text-align: center">Bias Distribution</p>  
+                    <p style="text-align: center;margin-bottom: 10px">Bias Distribution</p>  
                     <div id="histogram" class="feature" style="height: 20vh;margin-bottom: 10px "></div> 
                     <div style="text-align: center">
                         
@@ -83,7 +72,7 @@
                 </div> 
                 <hr>
                 <div class="feature">
-                    <p style="text-align: center">Highlight Neutral Words</p>
+                    <p style="text-align: center;margin-bottom: 10px">Highlight Neutral Words</p>
                     <div style="text-align: center;">
                         <!-- <p style="display: inline-block; opacity:0.7">Select Group:</p> -->
                         <select id="dropdown_target" onchange="changeTarget(this.value)" class="custom-select greyed" style="width: 50%"></select>

@@ -18,9 +18,9 @@ html,body{
   border-color: #40bad5 !important;
 }
 .custom-select {
-  margin-bottom: 1em;
+  margin-bottom: .5em;
   padding-bottom: .25em;
-  /*padding-left: 0;*/
+  padding-top: 0;
   border: 0;
   border-bottom: 1px solid black; 
   font-weight: bold;
