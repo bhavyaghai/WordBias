@@ -48,54 +48,52 @@ def setModelBackup(name="Word2Vec"):
 @app.route('/')
 def index():
 	#setModelBackup()
-	setModel()
+	set_model()
 	return render_template('index.html')
 
-@app.route('/setModel')
-def setModel():
-    global model, df, language
+@app.route('/set_model')
+def set_model():
+    global model, language
     name = request.args.get("embedding")
     if model is None:
-        name = "Word2Vec" 
+        name = "Word2Vec"
+        #name = "Glove (wiki 300d)" 
     print("Embedding name: ", name)
     if name=="Word2Vec":
-        # print("word2vec model being loaded !!!")
         language = 'en'
-        #model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/GoogleNews-vectors-negative300.bin', binary=True, limit=50000) 
         model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True, limit=50041) 
-        df = pd.read_csv("./data/word2vec_50k_percentile.csv",header=0, keep_default_na=False)
-        #df = pd.read_csv("./data/word2vec_50k.csv",header=0, keep_default_na=False)
-
     elif name=="Glove (wiki 300d)":
         # print("Glove word embedding backend")
         language = 'en'
-        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/glove.wikipedia.bin', binary=True, limit=50000) #   
+        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/glove_50k.bin', binary=True) #   
     elif name=="Word2Vec debiased":
         # print('./data/word_embeddings/GoogleNews-vectors-negative300-hard-debiased.bin')
         language = 'en'
         model = KeyedVectors.load_word2vec_format('./data/word_embeddings/GoogleNews-vectors-negative300-hard-debiased.bin', binary=True, limit=50000) 
-    elif name=="French fastText":
-        # print("French fastText embedding backend")
-        language = 'fr'
-        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/french.fastText.bin', binary=True, limit=50000)
-    elif name=="Hindi fastText":
-        # print("Hindi fastText embedding backend")
-        language = 'hi'
-        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/hindi.fastText.bin', binary=True, limit=50000)
-    elif name=="Temp":
-        language = 'en'
-        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/glove.debiased.gender.race.bin', binary=True, limit=50000)
-    #g,g1,g2 = None,None,None
-    #df = pd.read_csv("./data/all_biases_10k.csv",header=0, keep_default_na=False)
-    #df = df[["word", "race", "gender", "eco"]].head(n=100)
     return "success"
 
 
 @app.route('/get_csv/')
 def get_csv():
     global df
-    #df2 = df[["word", "race", "gender", "eco"]]
+    scaling = request.args.get("scaling")
+    embedding = request.args.get("embedding")
+    print("/get_csv/")
+    print("Scaling: ", scaling)
+    print("Embedding: ", embedding)
+    
+    if embedding=="Word2Vec":
+        if scaling=="Normalization":
+            df = pd.read_csv("./data/word2vec_50k.csv",header=0, keep_default_na=False)
+        elif scaling=="Percentile":
+            df = pd.read_csv("./data/word2vec_50k_percentile.csv",header=0, keep_default_na=False)
+    elif embedding=="Glove (wiki 300d)":
+        if scaling=="Normalization":
+            df = pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False)
+        elif scaling=="Percentile":
+            df = pd.read_csv("./data/glove_50k_percentile.csv",header=0, keep_default_na=False)
     out = df.to_json(orient='records')
+    #print("out", out)
     return out
 
 @app.route('/get_all_words')

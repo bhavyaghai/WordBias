@@ -45,7 +45,6 @@ $("#bundle_input").on("change",function(){
   $("#bundle_text").html(bundle)
 })
 
-
 $("#bundle_dimension").on("change",function(){
   value = $(this).val()
   console.log(value)
