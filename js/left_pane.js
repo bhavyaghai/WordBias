@@ -1,3 +1,70 @@
+/*
+Left pane events
+Bias options change events
+*/
+
+/* 
+on Word Embedding dropdown menu -- word2vec, glove
+*/
+$('#dropdown_embedding').change(function(event) {
+    console.log("Change dropdown menu - Word Embedding") 
+    // set current embedding
+    current_embedding = $("#dropdown_embedding").val()
+    $.get("/set_model", {
+    	embedding: current_embedding
+    }, function(res) {
+    	load_and_plot_new_data();
+    });
+});
+
+
+/* 
+on dropdown menu for feature scaling -- Percentile, Normalization 
+*/
+$('#scaling').change(function(event) {
+    console.log("Change dropdown menu - Feature scaling") 
+    console.log($('#scaling').val());
+	load_and_plot_new_data();    
+});
+
+function load_and_plot_new_data() {
+	$.get("/get_csv/", {
+        scaling : $('#scaling').val(),
+        embedding: $("#dropdown_embedding").val()
+      },
+      function(res) {
+        data = JSON.parse(res)
+        this.data = data
+        this.words = data.map(function(d){return {title:d.word}})
+        $('.ui.search').search('refresh')
+        $('.ui.search')
+          .search({
+            source: words,
+            onSelect: function(d){
+              onClick(d.title)
+            }
+          });
+		
+        initalize_bundle(d3.keys(data[0]))
+
+        // loading icon stops once data is loaded  
+        //$('#spinner').removeClass("lds-hourglass");
+        //$('.container-fluid').show();     // show everything once loaded
+
+        pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
+        pc.on("brushend",function (d) { 
+          populate_neighbors(d)
+          if(inSearch){
+            d3.selectAll([pc.canvas["highlight"]]).classed("faded", true);
+            d3.selectAll([pc.canvas["brushed"]]).classed("faded", false);
+            // d3.selectAll([pc.canvas["brushed"]]).classed("full", true);
+            pc.canvas["brushed"].globalAlpha = 1
+          }
+        })
+        plot_histogram()
+    });
+}
+
 
 /* 
 on dropdown menu for histogram type -- ALL, gender, etc.
@@ -26,7 +93,7 @@ function plot_histogram() {
         hist_type = $("#histogram_type").val();
         ranges = []
         if(hist_type=="ALL") {
-            ranges = [[max_val-0.1, max_val]]
+            ranges = [[max_val-0.05, max_val]]
         }
          else {
              ranges = [[min_val, min_val+0.1],[max_val-0.1, max_val]]
@@ -66,6 +133,7 @@ function onChangeHistogram(ranges=[]) {
   });
 }
 
+
 function updateProgressBar(selected){
   r = (selected.length/data.length)*100
   $('#progressbar').css('width', r+'%').attr('aria-valuenow', r);
@@ -74,7 +142,6 @@ function updateProgressBar(selected){
   else
     $("#progress_value").html("Selected Words: "+(selected.length).toFixed(0)+"/"+ (data.length/1000).toFixed(0)+"K")
 }
-
 
 // Given a list as input, populate drop down menu with each element as an option
 function populateDropDownList(data) {
