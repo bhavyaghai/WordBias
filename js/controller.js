@@ -100,6 +100,7 @@ $( document ).ready(function() {
       pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
       pc.on("brushend",function (d) { 
         populate_neighbors(d)
+        updateProgressBar(d)
         if(inSearch){
           d3.selectAll([pc.canvas["highlight"]]).classed("faded", true);
           d3.selectAll([pc.canvas["brushed"]]).classed("faded", false);
@@ -141,6 +142,7 @@ $('#histogram_type').change(function(event) {
 function searchWords(word){
   $.get("/search/"+word, {
   }, res=>{
+    updateProgressBar(res)
     highlightWords(word,res)
   })
 }

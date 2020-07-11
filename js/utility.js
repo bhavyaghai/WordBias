@@ -42,6 +42,7 @@ function highlightWords(word,neighbors=[]){
   else{ // highlight neighbors, using the extra canvas layer
     pc.afterHighlight(data_rows)
   }
+  // updateProgressBar(data_rows)
   
 }
 
@@ -53,6 +54,7 @@ function cancelHighlight(updateNeighbor=true){
   $("#word_dimension .tick text").attr("opacity","1")
   if(updateNeighbor) $("#neighbors_list").empty()
   // if(!pc.isBrushed()) updateWordAxis(active_data)  
+  // updateProgressBar(active_data)
   clear_bias_words_section()
 }
 
@@ -168,6 +170,7 @@ $("body").on("click","#canvas_svg",function(e){ // click
       inSearch = false
       afterHighlight = false
       cancelHighlight()  
+      updateProgressBar(active_data)
       updateWordAxis(active_data)
     }
 })

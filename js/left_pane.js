@@ -40,7 +40,7 @@ function plot_histogram() {
 function onChangeHistogram(ranges=[]) {
 
   if(!ranges.length){
-    
+    updateProgressBar([])
     pc.brushReset()
     pc.data([]).render()
     // alert("No data selected! please re-select")
@@ -55,13 +55,7 @@ function onChangeHistogram(ranges=[]) {
       success: function(res){
           active_data = JSON.parse(res)
           active_words = active_data.map(function(d){return d.word}) 
-          r = (active_data.length/data.length)*100
-          $('#progressbar').css('width', r+'%').attr('aria-valuenow', r);
-          if(active_data.length > 1000)
-            $("#progress_value").html("Selected Words: "+(active_data.length/1000).toFixed(0)+"K/"+ (data.length/1000).toFixed(0)+"K")
-          else
-            $("#progress_value").html("Selected Words: "+(active_data.length).toFixed(0)+"/"+ (data.length/1000).toFixed(0)+"K")
-
+          updateProgressBar(active_data)
           pc.brushReset()
           pc.data(active_data).render()
           updateWordAxis(active_data)        
@@ -70,6 +64,15 @@ function onChangeHistogram(ranges=[]) {
           console.log("error !!!!");
       }
   });
+}
+
+function updateProgressBar(selected){
+  r = (selected.length/data.length)*100
+  $('#progressbar').css('width', r+'%').attr('aria-valuenow', r);
+  if(selected.length > 1000)
+    $("#progress_value").html("Selected Words: "+(selected.length/1000).toFixed(0)+"K/"+ (data.length/1000).toFixed(0)+"K")
+  else
+    $("#progress_value").html("Selected Words: "+(selected.length).toFixed(0)+"/"+ (data.length/1000).toFixed(0)+"K")
 }
 
 
@@ -259,12 +262,14 @@ $("#highlight_words").click(function() {
     		filter_words.push(text[i])
     	}
     }
+    updateProgressBar(filter_words)
     highlightWords(null,neighbors=filter_words)
 });
 
 $("#cancel_highlight_words").click(function(){
   inSearch = false
   afterHighlight = false
+  updateProgressBar(active_data)
   cancelHighlight()  
   updateWordAxis(active_data)
 })
