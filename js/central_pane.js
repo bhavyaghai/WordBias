@@ -45,40 +45,29 @@ $("#bundle_input").on("change",function(){
   $("#bundle_text").html(bundle)
 })
 
+$("#bundle_dimension").on("change",function(){
+  value = $(this).val()
+  console.log(value)
+  pc.bundleDimension(value)
 
-function initalize_bundle(attributes){
-  var vals = []
-  attributes.forEach(function(d){
-    a = {name:d,value:d}
-    if(d == "gender") a['selected'] = true
-    if(d != "word")
-      vals.push(a)
-
-  });
-  $("#bundle_dimension")
-  .dropdown({
-    values: vals
-  })
-  .dropdown({
-    onChange: function(value){
-      console.log(value)
-      pc.bundleDimension(value)
-    }
-  })
-
-}
-
+})
 
 // Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){
   pc.brushReset()
+  d3.selectAll(".extentLabels").remove()
+
   if(inSearch) {
   	populate_neighbors(highlighted_data)
+    updateProgressBar(highlighted_data)
 
     d3.selectAll([pc.canvas["highlight"]]).classed("faded", false);
     d3.selectAll([pc.canvas["brushed"]]).classed("full", false);
     d3.selectAll([pc.canvas["brushed"]]).classed("faded", true);  
   }
-  else $("#neighbors_list").empty() 
+  else{
+    updateProgressBar(active_data)
+    $("#neighbors_list").empty() 
+  } 
   // updateWordAxis(active_data)
 })

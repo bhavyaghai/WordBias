@@ -73,56 +73,6 @@ $( document ).ready(function() {
       //changeBiastype("gp2_dropdown");
     });
     // create parallel plot
-    console.log("Document .ready")
-    console.log($('#scaling').val())
-    console.log($("#dropdown_embedding").val())
-    /*
-    $.ajax({
-      url: "/get_csv/",
-      data: JSON.stringify({scaling : $('#scaling').val(),embedding: $("#dropdown_embedding").val()}),
-      type: 'POST',
-      success: function(data){
-          data = JSON.parse(data);
-          window.data = data;
-          console.log("data: ", data);
-          //this.data = data
-          //this.words = data.map(function(d){return {title:d.word}})
-          words = window.data.map(function(d){return {title:d.word}})
-          $('.ui.search').search('refresh')
-          $('.ui.search')
-            .search({
-              source: words,
-              onSelect: function(d){
-                onClick(d.title)
-              }
-            });
-
-          initalize_bundle(d3.keys(data[0]))
-
-          // populate histogram bias types
-          populate_histogram_bias_type(data[0])
-
-          // loading icon stops once data is loaded  
-          $('#spinner').removeClass("lds-hourglass");
-          $('.container-fluid').show();     // show everything once loaded
-
-          pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
-          pc.on("brushend",function (d) { 
-            populate_neighbors(d)
-            if(inSearch){
-              d3.selectAll([pc.canvas["highlight"]]).classed("faded", true);
-              d3.selectAll([pc.canvas["brushed"]]).classed("faded", false);
-              // d3.selectAll([pc.canvas["brushed"]]).classed("full", true);
-              pc.canvas["brushed"].globalAlpha = 1
-            }
-          })
-          plot_histogram()
-        },
-      error: function(error){
-          console.log("error !!!!");
-          console.log(error);
-        }
-    }); */
 
     $.get("/get_csv/", {
         scaling : $('#scaling').val(),
@@ -131,37 +81,45 @@ $( document ).ready(function() {
       function(res) {
         //console.log(res);
         data = JSON.parse(res)
-        this.data = data
-        this.words = data.map(function(d){return {title:d.word}})
-        $('.ui.search').search('refresh')
-        $('.ui.search')
-          .search({
-            source: words,
-            onSelect: function(d){
-              onClick(d.title)
-            }
-          });
-
-        initalize_bundle(d3.keys(data[0]))
-
-        // populate histogram bias types
-        populate_histogram_bias_type(data[0])
-
-        // loading icon stops once data is loaded  
-        $('#spinner').removeClass("lds-hourglass");
-        $('.container-fluid').show();     // show everything once loaded
-
-        pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
-        pc.on("brushend",function (d) { 
-          populate_neighbors(d)
-          if(inSearch){
-            d3.selectAll([pc.canvas["highlight"]]).classed("faded", true);
-            d3.selectAll([pc.canvas["brushed"]]).classed("faded", false);
-            // d3.selectAll([pc.canvas["brushed"]]).classed("full", true);
-            pc.canvas["brushed"].globalAlpha = 1
+      this.data = data
+      // console.log(data.length)
+      this.words = data.map(function(d){return {title:d.word}})
+      $('.ui.search').search('refresh')
+      $('.ui.search')
+        .search({
+          source: words,
+          onSelect: function(d){
+            onClick(d.title)
           }
-        })
-        plot_histogram()
+        });
+      $("#bundle_dimension").append(populateDropDownList(d3.keys(data[0])))
+      $("#bias_type_dropdown").append(populateDropDownList(d3.keys(data[0])))
+      console.log(data.length)
+      // $("#prgressbar").progress({percent:85})
+      // initalize_bundle(d3.keys(data[0]))
+
+      // populate histogram bias types
+      populate_histogram_bias_type(data[0])
+
+      // loading icon stops once data is loaded  
+      $('#spinner').removeClass("lds-hourglass");
+      $('.container-fluid').show();     // show everything once loaded
+
+      pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
+      pc.on("brushend",function (d) { 
+
+        populate_neighbors(d)
+        updateProgressBar(d)
+        if(inSearch){
+          d3.selectAll([pc.canvas["highlight"]]).classed("faded", true);
+          d3.selectAll([pc.canvas["brushed"]]).classed("faded", false);
+          // d3.selectAll([pc.canvas["brushed"]]).classed("full", true);
+          pc.canvas["brushed"].globalAlpha = 1
+        }
+        // console.log(pc.brushExtents())
+        addExtentLabels(pc.brushExtents())
+      })
+      plot_histogram()
     });
     // set pointer type when hovering over any word on the word axis
     //$('#word_dimension .tick text').css('cursor', 'pointer');
@@ -179,6 +137,23 @@ function populate_histogram_bias_type(row) {
 	$('#histogram_type').append(populateDropDownList(bias_types));
 }
 
+function addExtentLabels(extents){
+  d3.selectAll(".extentLabels").remove()
+  ex = []
+  d3.keys(extents).forEach(function(k){
+    axis_extents = extents[k]
+    axis_extents.forEach(function(d){
+      y0 = pc.dimensions()[k].yscale(d[0]) 
+      y1 = pc.dimensions()[k].yscale(d[1])+5
+      x = pc.position(k)-18
+      ex.push({"x":x,"y":y0,"color":"black","word":d[0].toFixed(2)})
+      ex.push({"x":x,"y":y1,"color":"black","word":d[1].toFixed(2)})
+    })
+
+  }) 
+  addSVGLabels(ex,"extentLabels")
+}
+
 /* 
 on dropdown menu change for Word Embedding
 */
@@ -191,6 +166,7 @@ $('#dropdown_embedding').change(function(event) {
 function searchWords(word){
   $.get("/search/"+word, {
   }, res=>{
+    updateProgressBar(res)
     highlightWords(word,res)
   })
 }

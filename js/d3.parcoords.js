@@ -300,8 +300,10 @@ pc.autoscale = function() {
   ctx.brushed.scale(devicePixelRatio, devicePixelRatio);
   ctx.highlight.lineWidth = 1.4;
   ctx.highlight.font = "14px Georgia";
+  ctx.highlight.globalAlpha = 0.8;
   ctx.highlight.scale(devicePixelRatio, devicePixelRatio);
   ctx.after_highlight.lineWidth = 1.4;
+  ctx.after_highlight.globalAlpha = 0.8;
   ctx.after_highlight.font = "14px Georgia";
   ctx.after_highlight.scale(devicePixelRatio, devicePixelRatio);
 
@@ -703,7 +705,7 @@ function path_brushed(d, i) {
   } else {
     ctx.brushed.strokeStyle = d3.functor(__.color)(d, i);
     if(inSearch){
-      ctx.brushed.globalAlpha = 1;
+      ctx.brushed.globalAlpha = 0.8;
       if(d.word != selected_word) ctx.brushed.strokeStyle = "orange"
     } 
   }

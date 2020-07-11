@@ -35,13 +35,15 @@
     <div class="container-fluid" style="padding-left: 10px; padding-right: 10px; display: none;">
         <div class="row">
         <div class="col-lg-2 greyed">
-                <div class="ui grid separator">
+                <div class="ui grid">
                     <div class="eight wide column">
-                        <p> Word Embedding</p>
-                        <select id="dropdown_embedding" class="ui fluid dropdown minimized">
-                            <option>Word2Vec</option>
+                        <label> Word Embedding</label>
+                        <select id="dropdown_embedding" class="custom-select greyed">
+                            <option selected>Word2Vec</option>
                             <option>Glove (wiki 300d)</option>
                             <option>Word2Vec debiased</option>
+                            
+                       
                             <!--
                             <option>Hindi fastText</option>
                             <option>French fastText</option>
@@ -53,17 +55,9 @@
                         </select> 
                         
                     </div>
-                    <!--
                     <div class="eight wide column">
-                        <p> Bias Method</p>
-                        <select class="ui fluid dropdown minimized" id="quantification">
-                            <option>Subspace Projection</option>
-                            <option>Group Difference</option>
-                        </select> 
-                    </div>  -->
-                    <div class="eight wide column">
-                        <p> Feature Scaling</p>
-                        <select class="ui fluid dropdown minimized" id="scaling">
+                        <label> Feature Scaling</label>
+                        <select class="custom-select greyed" id="scaling">
                             <option selected>Percentile</option>
                             <option>Normalization</option>
                         </select> 
@@ -74,35 +68,56 @@
                 <div class="feature">
                     <p style="text-align: center">Bias Distribution</p>  
                     <div id="histogram" class="feature" style="height: 20vh;margin-bottom: 10px "></div> 
-                    <div style="text-align: center;">
-                        <p style="display: inline-block;">Select Attribute:</p>
-                        <select id="histogram_type">
-                            <option selected="">ALL</option>
-                        </select> 
+                    <div style="text-align: center">
+                        
+                            <p style="display: inline-block; opacity:0.7">Select Attribute:</p>
+                            <select id="histogram_type" class="custom-select greyed" style="width: 40%">
+                                <option selected="">ALL</option>
+                            </select> 
                         
                     </div>   
                 </div> 
                 <hr>
-
                 <div class="feature">
-                        <p style="text-align: center">Highlight Group Words</p>
-                        <select style="float:left;margin-top: 5px;margin-right: 5px;" id="dropdown_target" onchange="changeTarget(this.value)">
-                        </select>
-                        
-                        <textarea class="form-control" rows="5" id="target"></textarea>
-                        
-                        
-                        <button type="submit" class="ui mini button primary" id="highlight_words" style="; margin-top: 5px;">Highlight</button>
-                        
+                    <p style="text-align: center">Highlight Group Words</p>
+                    <div style="text-align: center;">
+                        <p style="display: inline-block; opacity:0.7">Select Group:</p>
+                        <select id="dropdown_target" onchange="changeTarget(this.value)" class="custom-select greyed" style="width: 50%"></select>
+                        <!-- <i class="play icon"></i> -->
+                    </div>
+                    <textarea class="form-control" rows="5" id="target" style="border-radius: 5px;margin-bottom: 5px;"></textarea>
+                    
+                    <div style="text-align: center;">
+                        <button id="cancel_highlight_words"><i class="pause icon"></i></button>
+                        <button id="highlight_words"><i class="play icon"></i></button>
+                    </div>
+                            
                 </div>
                 <hr>
+                <p style="text-align: center; ">Bias Defining Words</p>
+                <div id="axisMaindiv">
+                    
+                    <div class="ui grid">
+                        <div class="eight wide column">
+                            <button id="add" class="ui button">Add dimension</button>
+                        </div>
+                        <div class="eight wide column">
+                            <button id="update" class="ui button">Update dimension</button>
+                        </div>
+                    </div>  
+                </div>
 
-                <div class="form-group">
-                    <p style="text-align: center;">Bias Defining Words</p>
+                <div id="axisSeconddiv" class="form-group" style="display: none;">
                     <div style="padding-bottom: 5px;">
-                        <!-- <label>Bias Type:</label>  -->
-                        <input type="text" id="bias_type" placeholder="Bias Type" style="width: 100%;">
+                        <input type="text" id="bias_type" placeholder="Bias Variable" style="width: 100%;">
+                        <div id="bias_type_div">
+                            <label>Bias Variable:</label>
+                            <select id="bias_type_dropdown" class="custom-select greyed" style="width: 60%"></select>
+                            
+                        </div>
+                        
                     </div>
+
                     <input type="text" id="gp1_label" placeholder="Group 1" style="width: 40%;">
                     <!--
                     <select id="gp1_dropdown" style="float:right;" onchange="changeBiastype(this.id)">
@@ -120,53 +135,60 @@
                     -->
                     <textarea class="form-control" rows="2" id="gp2" placeholder="List of words representing Group 2"></textarea>
 
-                    <div style="padding-top: 5px;">
-                        <button type="submit" class="btn btn-primary btn-sm" id="add_axis" style="width: 48%">Add Axis</button>
-                        <!-- <button type="submit" class="btn btn-primary btn-sm" id="update_axis" style="width: 30%">Update</button> -->
-                        <button type="submit" class="btn btn-primary btn-sm" id="delete_axis" style="width: 48%">Delete Axis</button>
+                    <div style="padding-top: 5px; text-align: center">
+                        <button id="cancel_axis"><i class="cancel icon"></i></button>
+                        <button id="add_axis"><i class="check icon"></i></button>
+                        <button class="" id="delete_axis" style="width: 40%">Delete Axis</button>
+                        
                     </div>
                 </div>
-            <!-- </div> -->
+               
         </div>
         <div class="col-lg-8"> 
             <div class="controls">
                 <div class="control">
-                    <p>Alpha/opacity</p>
+                    <p class="label">Alpha/opacity</p>
                     <input id="alpha_input" type="range" name="alpha" min="0" max="1" step="0.01" value="0.5">
                     <span id="alpha_text">0.5</span>  
                 </div>
                 <div class="control">
-                    <p>Curve Smoothness</p>
+                    <p class="label">Curve Smoothness</p>
                     <input id="smoothness_input" type="range" name="smooth" min="0" max="1" step="0.01" value="0">
                     <span id="smoothness_text">0</span>  
                 </div>
                 <div class="control">
-                    <p>Bundle Strength</p>
+                    <p class="label">Bundle Strength</p>
                     <input id="bundle_input" type="range" name="smooth" min="0" max="1" step="0.01" value="0">
                     <span id="bundle_text">0</span>  
                 </div>
-                <!--
                 <div class="control">
-                    <p >Threshold</p>
-                    <input type="range" min="0.0" max="0.50" step="0.01" value="0" id="threshold" onchange="coeff_val_change(this.value)">
-                    <span id="coeff_slider_val">0.0</span>        
-                </div> 
-                -->
-                <div class="control">
-                    <p>Bundle curves by:</p>
-                    <div id="bundle_dimension" class="ui floating dropdown mini button">
-                        <div class="text"> 
-                          Gender
-                        </div>
-                        <i class="dropdown icon"></i>
-                        <div class="menu">  
-                        </div>
-                      
-                    </div>  
+                    <p class="label" style="margin-bottom: 4px;">Bundle curves by:</p>
+                    <!-- <div class="ui grid"> -->
+                        <select id="bundle_dimension" class="custom-select"> 
+                    </select>  
+                        
+                    <!-- </div> -->
+                    
                 </div>
                 <div class="control">
-                    <button id="reset_brush" class="ui mini button">Reset Brush</button>
-                </div>    
+                    <p class="label">Reset Brush</p>
+                    <button id="reset_brush"><i class="refresh icon"></i></button>
+                    <!-- <button id="reset_brush" class="ui mini button">Reset Brush</button> -->
+                </div>  
+                <div class="control">
+                    <p class="label" id="progress_value" style="margin-bottom: 18px;">Selected Words:</p>
+                    <div class="progress">
+                      <div id="progressbar" class="progress-bar" role="progressbar" aria-valuenow="70"
+                      aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                        <!-- 70% -->
+                      </div>
+                    </div>
+                    <!-- <div id="progressbar" class="ui blue progress control" style="height: 25px;margin:0px;">
+                        <div class="bar"></div>
+                    </div> --> 
+                    
+                </div>
+                
             </div>   
             <div id="parallel_coord" class="parcoords" style="height: 90vh"></div>     
         </div>

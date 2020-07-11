@@ -65,6 +65,7 @@ function load_and_plot_new_data() {
     });
 }
 
+
 /* 
 on dropdown menu for histogram type -- ALL, gender, etc.
 */
@@ -104,8 +105,12 @@ function plot_histogram() {
 
 // fetch and replot parallel coordiante
 function onChangeHistogram(ranges=[]) {
+
   if(!ranges.length){
-    alert("No data selected! please re-select")
+    updateProgressBar([])
+    pc.brushReset()
+    pc.data([]).render()
+    // alert("No data selected! please re-select")
     return
   }
 
@@ -117,6 +122,7 @@ function onChangeHistogram(ranges=[]) {
       success: function(res){
           active_data = JSON.parse(res)
           active_words = active_data.map(function(d){return d.word}) 
+          updateProgressBar(active_data)
           pc.brushReset()
           pc.data(active_data).render()
           updateWordAxis(active_data)        
@@ -127,11 +133,22 @@ function onChangeHistogram(ranges=[]) {
   });
 }
 
+
+function updateProgressBar(selected){
+  r = (selected.length/data.length)*100
+  $('#progressbar').css('width', r+'%').attr('aria-valuenow', r);
+  if(selected.length > 1000)
+    $("#progress_value").html("Selected Words: "+(selected.length/1000).toFixed(0)+"K/"+ (data.length/1000).toFixed(0)+"K")
+  else
+    $("#progress_value").html("Selected Words: "+(selected.length).toFixed(0)+"/"+ (data.length/1000).toFixed(0)+"K")
+}
+
 // Given a list as input, populate drop down menu with each element as an option
 function populateDropDownList(data) {
   var option = '';
   for (var i=0;i<data.length;i++){
-   option += '<option value="'+ data[i] + '">' + data[i] + '</option>';
+    if(data[i] != "word")
+      option += '<option value="'+ data[i] + '">' + data[i] + '</option>';
   }
   return option;
 }
@@ -265,6 +282,27 @@ $("#add_axis").click(function() {
     });
 });
 
+$("#add").click(function(){
+  clear_bias_words_section()
+  $("#bias_type").show()
+  $("#bias_type_div").hide()
+  $("#delete_axis").hide()
+  $("#axisMaindiv").hide()
+  $("#axisSeconddiv").show()
+})
+$("#update").click(function(){
+  axisLabelClick($("#bias_type_dropdown").val())
+})
+
+$("#cancel_axis").click(function(){
+  $("#axisMaindiv").show()
+  $("#axisSeconddiv").hide()
+
+})
+$("#bias_type_dropdown").on("change",function(){
+  axisLabelClick($(this).val())
+})
+
 function clear_bias_words_section() {
   $("#gp1_label").val("")
   $("#gp1").val("")
@@ -291,5 +329,14 @@ $("#highlight_words").click(function() {
     		filter_words.push(text[i])
     	}
     }
+    updateProgressBar(filter_words)
     highlightWords(null,neighbors=filter_words)
 });
+
+$("#cancel_highlight_words").click(function(){
+  inSearch = false
+  afterHighlight = false
+  updateProgressBar(active_data)
+  cancelHighlight()  
+  updateWordAxis(active_data)
+})
