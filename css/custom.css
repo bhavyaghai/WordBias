@@ -9,6 +9,9 @@ html,body{
   background-color: #F8F8F8;
   padding-top: 10px;
 }
+.greyed_border{
+  border:1px solid grey;
+}
 /*used for defining the custom color of the website*/
 .site-color { 
   background-color: #40bad5 !important;
