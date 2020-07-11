@@ -99,6 +99,7 @@ $( document ).ready(function() {
 
       pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
       pc.on("brushend",function (d) { 
+
         populate_neighbors(d)
         updateProgressBar(d)
         if(inSearch){
@@ -107,6 +108,8 @@ $( document ).ready(function() {
           // d3.selectAll([pc.canvas["brushed"]]).classed("full", true);
           pc.canvas["brushed"].globalAlpha = 1
         }
+        // console.log(pc.brushExtents())
+        addExtentLabels(pc.brushExtents())
       })
       plot_histogram()
     });
@@ -125,6 +128,23 @@ function populate_histogram_bias_type(row) {
 		//console.log(key);
 	}
 	$('#histogram_type').append(populateDropDownList(bias_types));
+}
+
+function addExtentLabels(extents){
+  d3.selectAll(".extentLabels").remove()
+  ex = []
+  d3.keys(extents).forEach(function(k){
+    axis_extents = extents[k]
+    axis_extents.forEach(function(d){
+      y0 = pc.dimensions()[k].yscale(d[0]) 
+      y1 = pc.dimensions()[k].yscale(d[1])+5
+      x = pc.position(k)-18
+      ex.push({"x":x,"y":y0,"color":"black","word":d[0].toFixed(2)})
+      ex.push({"x":x,"y":y1,"color":"black","word":d[1].toFixed(2)})
+    })
+
+  }) 
+  addSVGLabels(ex,"extentLabels")
 }
 
 /* 

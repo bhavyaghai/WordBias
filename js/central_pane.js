@@ -56,6 +56,7 @@ $("#bundle_dimension").on("change",function(){
 // Reset brush button -- removes all brushes
 $("#reset_brush").on("click",function(){
   pc.brushReset()
+  d3.selectAll(".extentLabels").remove()
 
   if(inSearch) {
   	populate_neighbors(highlighted_data)
