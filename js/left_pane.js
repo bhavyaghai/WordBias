@@ -38,7 +38,7 @@ function plot_histogram() {
 
 // fetch and replot parallel coordiante
 function onChangeHistogram(ranges=[]) {
-  
+
   if(!ranges.length){
     
     pc.brushReset()
@@ -55,6 +55,13 @@ function onChangeHistogram(ranges=[]) {
       success: function(res){
           active_data = JSON.parse(res)
           active_words = active_data.map(function(d){return d.word}) 
+          r = (active_data.length/data.length)*100
+          $('#progressbar').css('width', r+'%').attr('aria-valuenow', r);
+          if(active_data.length > 1000)
+            $("#progress_value").html("Selected Words: "+(active_data.length/1000).toFixed(0)+"K/"+ (data.length/1000).toFixed(0)+"K")
+          else
+            $("#progress_value").html("Selected Words: "+(active_data.length).toFixed(0)+"/"+ (data.length/1000).toFixed(0)+"K")
+
           pc.brushReset()
           pc.data(active_data).render()
           updateWordAxis(active_data)        

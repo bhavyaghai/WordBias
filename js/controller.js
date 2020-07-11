@@ -86,6 +86,8 @@ $( document ).ready(function() {
         });
       $("#bundle_dimension").append(populateDropDownList(d3.keys(data[0])))
       $("#bias_type_dropdown").append(populateDropDownList(d3.keys(data[0])))
+      console.log(data.length)
+      // $("#prgressbar").progress({percent:85})
       // initalize_bundle(d3.keys(data[0]))
 
       // populate histogram bias types
