@@ -19,7 +19,8 @@ html,body{
 }
 .custom-select {
   margin-bottom: 1em;
-  padding: .25em;
+  padding-bottom: .25em;
+  /*padding-left: 0;*/
   border: 0;
   border-bottom: 1px solid black; 
   font-weight: bold;
