@@ -85,6 +85,7 @@ $( document ).ready(function() {
     // set pointer type when hovering over any word on the word axis
     //$('#word_dimension .tick text').css('cursor', 'pointer');
 });
+
 function initialize(res){
     hideAxis=true, inSearch= false, afterHighlight=false;
     data = JSON.parse(res)
@@ -128,7 +129,7 @@ function initialize(res){
 }
 
 function populate_histogram_bias_type(row) {
-	bias_types = []
+	bias_types = ["ALL"]
 	for(key in row) {
 		if(key=="word") {
 			continue;
@@ -136,6 +137,7 @@ function populate_histogram_bias_type(row) {
 		bias_types.push(key)
 		//console.log(key);
 	}
+  $('#histogram_type').empty();
 	$('#histogram_type').append(populateDropDownList(bias_types));
 }
 

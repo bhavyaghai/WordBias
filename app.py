@@ -15,6 +15,7 @@ from scipy.spatial.distance import cosine
 import json
 #from datetime import datetime
 import os
+from os.path import isfile, join
 from flask import make_response
 from functools import wraps, update_wrapper
 from py_thesaurus import Thesaurus
@@ -300,12 +301,14 @@ def getFileNames():
         tar_path = './data/wordList/target/en/'
         #word_sim = './data/benchmark/word_similarity/en/'
         #word_ana = './data/benchmark/word_analogy/en/'
-    target = os.listdir(tar_path)
-    group = os.listdir(gp_path)
+    #target = os.listdir(tar_path)
+    target_files = [f for f in os.listdir(tar_path) if isfile(join(tar_path, f))]
+    #group = os.listdir(gp_path)
+    group_files = [f for f in os.listdir(gp_path) if isfile(join(gp_path, f))]
     #sim_files = os.listdir(word_sim)
     #ana_files = os.listdir(word_ana)
     #return jsonify([group,target,sim_files,ana_files])
-    return jsonify([group,target])
+    return jsonify([group_files,target_files])
 
 # populate default set of target words
 @app.route('/getWords/')
