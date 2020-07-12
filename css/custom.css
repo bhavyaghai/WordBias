@@ -9,14 +9,18 @@ html,body{
   background-color: #F8F8F8;
   padding-top: 10px;
 }
+.greyed_border{
+  border:1px solid grey;
+}
 /*used for defining the custom color of the website*/
 .site-color { 
   background-color: #40bad5 !important;
   border-color: #40bad5 !important;
 }
 .custom-select {
-  margin-bottom: 1em;
-  padding: .25em;
+  margin-bottom: .5em;
+  padding-bottom: .25em;
+  padding-top: 0;
   border: 0;
   border-bottom: 1px solid black; 
   font-weight: bold;

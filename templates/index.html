@@ -35,38 +35,31 @@
     <div class="container-fluid" style="padding-left: 10px; padding-right: 10px; display: none;">
         <div class="row">
         <div class="col-lg-2 greyed">
-                <div class="ui grid">
-                    <div class="eight wide column">
-                        <label> Word Embedding</label>
-                        <select id="dropdown_embedding" class="custom-select greyed">
+                <div>
+                    <div style="text-align: center;">
+                        <label style="padding-bottom: 0;margin-bottom: 0;"> Word Embedding</label>
+                        <select id="dropdown_embedding" class="custom-select greyed" style="width: 90%">
                             <option selected>Word2Vec</option>
                             <option>Glove (wiki 300d)</option>
                             <option>Word2Vec debiased</option>
-                            
-                       
-                            <!--
-                            <option>Hindi fastText</option>
-                            <option>French fastText</option>
-                            <option>Temp</option>
-                            <option disabled>German fastText</option>
-                            <option disabled>Chinese fastText</option>
-                            <option disabled>Spanish fastText</option>
-                            -->
                         </select>  
+                        
                     </div>
+                   
+                    <div style="text-align: center;">    
                     
-                    <div class="eight wide column">
-                        <label> Feature Scaling</label>
-                        <select class="custom-select greyed" id="scaling">
+                        <label style="padding-bottom: 0;margin-bottom: 0;"> Feature Scaling</label>
+                        <select class="custom-select greyed" id="scaling" style="width: 90%">
                             <option selected>Percentile</option>
                             <option>Normalization</option>
                         </select> 
                     </div>
+                    
                 </div> 
                 <hr>
             <!-- <div style="border-bottom: 1px solid #DCDCDC;"> -->
                 <div class="feature">
-                    <p style="text-align: center">Bias Distribution</p>  
+                    <p style="text-align: center;margin-bottom: 10px">Bias Distribution</p>  
                     <div id="histogram" class="feature" style="height: 20vh;margin-bottom: 10px "></div> 
                     <div style="text-align: center">
                         
@@ -79,11 +72,11 @@
                 </div> 
                 <hr>
                 <div class="feature">
-                    <p style="text-align: center">Highlight Neutral Words</p>
+                    <p style="text-align: center;margin-bottom: 10px">Highlight Neutral Words</p>
                     <div style="text-align: center;">
                         <!-- <p style="display: inline-block; opacity:0.7">Select Group:</p> -->
                         <select id="dropdown_target" onchange="changeTarget(this.value)" class="custom-select greyed" style="width: 50%"></select>
-                        <button id="highlight_words">
+                        <button id="highlight_words" class="greyed_border">
                             <i class="play icon"></i>
                         </button>
                         <!-- <i class="play icon"></i> -->
@@ -91,56 +84,30 @@
                     <textarea class="form-control" rows="5" id="target" style="border-radius: 5px;margin-bottom: 5px;"></textarea>
                     <!--
                     <div style="text-align: center;">
-                        <button id="cancel_highlight_words"><i class="pause icon"></i></button>
-                        <button id="highlight_words"><i class="play icon"></i></button>
+                        <button id="cancel_highlight_words" class="greyed_border"><i class="pause icon"></i></button>
+                        <button id="highlight_words" class="greyed_border"><i class="play icon"></i></button>
                     </div>
                     -->        
                 </div>
                 <hr>
-                <p style="text-align: center; ">Bias Defining Words</p>
-                <div id="axisMaindiv">
-                    
-                    <div class="ui grid">
-                        <div class="eight wide column">
-                            <button id="add" class="ui button">Add dimension</button>
-                        </div>
-                        <div class="eight wide column">
-                            <button id="update" class="ui button">Update dimension</button>
-                        </div>
-                    </div>  
-                </div>
-                <div id="axisSeconddiv" class="form-group" style="display: none;">
+
+                <div id="axisSeconddiv" class="form-group">
+                    <p style="text-align: center; ">Bias Defining Words</p>
                     <div style="padding-bottom: 5px;">
                         <input type="text" id="bias_type" placeholder="Bias Variable" style="width: 100%;">
-                        <div id="bias_type_div">
-                            <label>Bias Variable:</label>
-                            <select id="bias_type_dropdown" class="custom-select greyed" style="width: 60%"></select>
-                            
-                        </div>
                         
                     </div>
 
                     <input type="text" id="gp1_label" placeholder="Group 1" style="width: 40%;">
-                    <!--
-                    <select id="gp1_dropdown" style="float:right;" onchange="changeBiastype(this.id)">
-                        <option selected>Custom</option>
-                    </select>
-                    -->
                     <textarea class="form-control" rows="2" id="gp1" placeholder="List of words representing Group 1" 
                     style="margin-bottom: 7px;"></textarea>
                                 
                     <input type="text" id="gp2_label" placeholder="Group 2" style="width: 40%;">
-                    <!--
-                    <select id="gp2_dropdown" style="float:right;" onchange="changeBiastype(this.id)">
-                        <option selected>Custom</option>
-                    </select>
-                    -->
                     <textarea class="form-control" rows="2" id="gp2" placeholder="List of words representing Group 2"></textarea>
 
                     <div style="padding-top: 5px; text-align: center">
-                        <button id="cancel_axis"><i class="cancel icon"></i></button>
-                        <button id="add_axis"><i class="check icon"></i></button>
-                        <button class="" id="delete_axis" style="width: 40%">Delete Axis</button>
+                        <button class="greyed_border" id="add_axis" style="width: 40%">Add Axis</button>
+                        <button class="greyed_border" id="delete_axis" style="width: 40%">Delete Axis</button>
                         
                     </div>
                 </div>
@@ -164,7 +131,7 @@
                     <span id="bundle_text">0</span>  
                 </div>
                 <div class="control">
-                    <p class="label" style="margin-bottom: 4px;">Bundle curves by:</p>
+                    <p class="label" style="margin-bottom: 7px;">Bundle curves by:</p>
                     <!-- <div class="ui grid"> -->
                         <select id="bundle_dimension" class="custom-select"> 
                     </select>  
@@ -174,7 +141,7 @@
                 </div>
                 <div class="control">
                     <p class="label">Reset Brush</p>
-                    <button id="reset_brush"><i class="refresh icon"></i></button>
+                    <button id="reset_brush" class="greyed_border" ><i class="refresh icon"></i></button>
                     <!-- <button id="reset_brush" class="ui mini button">Reset Brush</button> -->
                 </div>  
                 <div class="control">

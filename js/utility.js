@@ -120,11 +120,7 @@ function labelClick(d,i){
 }
 
 function axisLabelClick(axis_name){
-  $("#bias_type").hide()
-  $("#bias_type_div").show()
-  $("#delete_axis").show()
-  $("#axisMaindiv").hide()
-  $("#axisSeconddiv").show()
+  
     last_selected_axis_name = axis_name;
     console.log("clicking on the title of axis "+axis_name)
     if(axis_name!="word") {
@@ -134,7 +130,6 @@ function axisLabelClick(axis_name){
       group_names = Object.keys(group_words);
 
       $("#bias_type").val(axis_name)   
-      $("#bias_type_dropdown").val(axis_name) 
 
       $("#gp1_label").val(group_names[0])
       $("#gp2_label").val(group_names[1])

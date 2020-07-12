@@ -33,33 +33,7 @@ function load_and_plot_new_data() {
         embedding: $("#dropdown_embedding").val()
       },
       function(res) {
-        data = JSON.parse(res)
-        this.data = data
-        this.words = data.map(function(d){return {title:d.word}})
-        $('.ui.search').search('refresh')
-        $('.ui.search')
-          .search({
-            source: words,
-            onSelect: function(d){
-              onClick(d.title)
-            }
-          });
-
-        // loading icon stops once data is loaded  
-        //$('#spinner').removeClass("lds-hourglass");
-        //$('.container-fluid').show();     // show everything once loaded
-
-        pc = createParallelCoord(this.data);  // important to load the PC with the whole dataset
-        pc.on("brushend",function (d) { 
-          populate_neighbors(d)
-          if(inSearch){
-            d3.selectAll([pc.canvas["highlight"]]).classed("faded", true);
-            d3.selectAll([pc.canvas["brushed"]]).classed("faded", false);
-            // d3.selectAll([pc.canvas["brushed"]]).classed("full", true);
-            pc.canvas["brushed"].globalAlpha = 1
-          }
-        })
-        plot_histogram()
+        initialize(res)
     });
 }
 
@@ -280,27 +254,6 @@ $("#add_axis").click(function() {
       $("#histogram_type").html(new_html)
     });
 });
-
-$("#add").click(function(){
-  clear_bias_words_section()
-  $("#bias_type").show()
-  $("#bias_type_div").hide()
-  $("#delete_axis").hide()
-  $("#axisMaindiv").hide()
-  $("#axisSeconddiv").show()
-})
-$("#update").click(function(){
-  axisLabelClick($("#bias_type_dropdown").val())
-})
-
-$("#cancel_axis").click(function(){
-  $("#axisMaindiv").show()
-  $("#axisSeconddiv").hide()
-
-})
-$("#bias_type_dropdown").on("change",function(){
-  axisLabelClick($(this).val())
-})
 
 function clear_bias_words_section() {
   $("#gp1_label").val("")
