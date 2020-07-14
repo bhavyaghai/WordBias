@@ -87,7 +87,7 @@ def get_csv():
         if scaling=="Normalization":
             df = pd.read_csv("./data/word2vec_50k.csv",header=0, keep_default_na=False)
         elif scaling=="Percentile":
-            df = pd.read_csv("./data/word2vec_50k_percentile.csv",header=0, keep_default_na=False)
+            df = pd.read_csv("./data/word2vec_50k_percentile_new.csv",header=0, keep_default_na=False)
     elif embedding=="Glove (wiki 300d)":
         if scaling=="Normalization":
             df = pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False)
@@ -204,6 +204,10 @@ def compute_new_bias():
     bias_score = []
     for index, row in df.iterrows():
         w = row["word"]
+        if w not in model:
+            bias_score.append(0)    
+            continue
+        #print("word: ", w)
         # assuming group bias "Quantification algo"
         bias_score.append(round(cosine(g1,model[w])-cosine(g2,model[w]),4))
 

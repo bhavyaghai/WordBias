@@ -6,6 +6,7 @@
 
 ![teaser figure](teaser.PNG)
 
+
 ## Intended Use
 Our tool is designed to be used by experts and non-experts alike. It can be used by researchers and data scientists to audit a pre-trained word embedding model for different kinds of biases and intersectional biases before deploying it for any downstream application. Compared to purely algorithmic means, our tool can provide a quick fix to test a variety of hypothesis (biases). Our tool can also be used as a learning/educational tool by students and non-experts to understand how AI (word embedding model) might be plaqued with multiple kinds of biases. Here, we are dealing with an an interdisciplinary problem with relevance to domains like linguists, sociology, digital humanties, etc. Our tool will enhance accessibility for such domain experts who mightn't be all programmers. It will act as a catalyst for broader community engagement and research.
 
