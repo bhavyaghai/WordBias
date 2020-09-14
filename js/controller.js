@@ -7,8 +7,8 @@ hideAxis=true, inSearch= false, afterHighlight=false;
 
 bias_words = {
   "gender": {
-      "Female": "woman,girl,she,mother,daughter,gal,female,her,herself,mary",
-      "Male": "man,boy,he,father,son,guy,male,his,himself,john"
+      "Female": "she, daughter, hers, her, mother, woman, girl, herself, female, sister, daughters, mothers, women, girls, femen, sisters, aunt, aunts, niece, nieces",
+      "Male": "he, son, his, him, father, man, boy, himself, male, brother, sons, fathers, men, boys, males, brothers, uncle, uncles, nephew, nephews"
   },
   "race": {
       "White": "emily,anne,jill,allison,laurie,sarah,meredith,carrie,kristen,todd,neil,geoffrey,brett,brendan,greg,matthew,jay,brad",

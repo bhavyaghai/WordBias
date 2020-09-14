@@ -54,7 +54,7 @@ function cancelHighlight(updateNeighbor=true){
   if(updateNeighbor) $("#neighbors_list").empty()
   // if(!pc.isBrushed()) updateWordAxis(active_data)  
   // updateProgressBar(active_data)
-  clear_bias_words_section()
+  //clear_bias_words_section()
 }
 
 // manually draw word labels
@@ -166,6 +166,7 @@ $("body").on("click","#canvas_svg",function(e){ // click
       cancelHighlight()  
       updateProgressBar(active_data)
       updateWordAxis(active_data)
+      clear_bias_words_section()
     }
 })
 
