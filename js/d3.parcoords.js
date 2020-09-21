@@ -709,7 +709,7 @@ function path_brushed(d, i) {
     ctx.brushed.strokeStyle = d3.functor(__.color)(d, i);
     if(inSearch){
       ctx.brushed.globalAlpha = 0.8;
-      if(d.word != selected_word) ctx.brushed.strokeStyle = "orange"
+      if(d.word != selected_word) ctx.brushed.strokeStyle = "#4682B4" //"orange"
     } 
   }
   return color_path(d, ctx.brushed)
@@ -727,8 +727,8 @@ function path_highlight(d, i) {
     ctx.after_highlight.strokeStyle = d3.functor(__.color)(d, i);
   }
   else{
-    ctx.highlight.strokeStyle = "orange"
-    ctx.after_highlight.strokeStyle = "orange"
+    ctx.highlight.strokeStyle = "#4682B4"//"orange"
+    ctx.after_highlight.strokeStyle = "#4682B4" //"orange"
   }
 	if(!afterHighlight) return color_path(d, ctx.highlight);
   return color_path(d, ctx.after_highlight);
@@ -2082,7 +2082,7 @@ pc.brushMode = function(mode) {
       .append("path")
       .attr("id", "arc-" + id)
       .attr("class", "arc")
-      .style("fill", "orange")
+      .style("fill", "#4682B4") //"orange")
       .style("opacity", 0.5);
 
     path

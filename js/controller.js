@@ -7,12 +7,12 @@ hideAxis=true, inSearch= false, afterHighlight=false;
 
 bias_words = {
   "gender": {
-      "Female": "she, daughter, hers, her, mother, woman, girl, herself, female, sister, daughters, mothers, women, girls, femen, sisters, aunt, aunts, niece, nieces",
+      "Female": "she, daughter, hers, her, mother, woman, girl, herself, female, sister, daughters, mothers, women, girls, sisters, aunt, aunts, niece, nieces",
       "Male": "he, son, his, him, father, man, boy, himself, male, brother, sons, fathers, men, boys, males, brothers, uncle, uncles, nephew, nephews"
   },
   "race": {
-      "White": "emily,anne,jill,allison,laurie,sarah,meredith,carrie,kristen,todd,neil,geoffrey,brett,brendan,greg,matthew,jay,brad",
-      "Black": "aisha,keisha,tamika,lakisha,tanisha,latoya,kenya,latonya,ebony,rasheed,tremayne,kareem,darnell,tyrone,hakim,jamal,leroy,jermaine"
+      "White": "white, whites, White, Whites, Caucasian, caucasian, European, european, Anglo",
+      "Black": "black, blacks, Black, Blacks, African, african, Afro"
   },
   "sentiment": {
       "unpleasant": "abuse, crash, filth, murder, sickness, accident, death, grief, poison, stink, assault, disaster, hatred, pollute, tragedy, divorce, jail, poverty, ugly, cancer, kill, rotten, vomit, agony, prison",
@@ -27,8 +27,8 @@ bias_words = {
     "Young": "tiffany,michelle,cindy,kristy,brad,eric,joey,billy"
   },
   "economic": {
-    "Poor": "poor,poorer,poorest,needy,impoverished,economical,inexpensive,cheap,bankrupt,worthless,basic,plain",
-    "Rich": "rich,richer,richest,affluence,affluent,wealthy,costly,lavish,luxury,plush,expensive,invaluable"
+    "Poor": "poor, poorer, poorest, poverty, destitude, needy, impoverished, economical, inexpensive, ruined, cheap, penurious, underprivileged, penniless, valueless, penury, indigence, bankrupt, beggarly, moneyless, insolvent",
+    "Rich": "rich, richer, richest, affluence, advantaged, wealthy, costly, exorbitant, expensive, exquisite, extravagant, flush, invaluable, lavish, luxuriant, luxurious, luxury, moneyed, opulent, plush, precious, priceless, privileged, prosperous, classy"
   }
 }
 
