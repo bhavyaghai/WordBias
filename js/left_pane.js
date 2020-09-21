@@ -65,7 +65,7 @@ function plot_histogram() {
         hist_type = $("#histogram_type").val();
         ranges = []
         if(hist_type=="ALL") {
-            ranges = [[max_val-0.08, max_val]]
+            ranges = [[max_val-0.06, max_val]]
         }
          else {
              ranges = [[min_val, min_val+0.1],[max_val-0.1, max_val]]
@@ -241,8 +241,8 @@ $("#add_axis").click(function() {
 
     $.get("/compute_new_bias", {
         axis_name: axis_name,
-        gp1_words: $("#gp1").val().toLowerCase(),
-        gp2_words: $("#gp2").val().toLowerCase(),
+        gp1_words: $("#gp1").val(),  // .toLowerCase()
+        gp2_words: $("#gp2").val(),  // .toLowerCase()
         scaling: $('#scaling').val(),
         active_words: JSON.stringify(active_words)
     }, res => {

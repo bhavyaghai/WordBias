@@ -43,6 +43,7 @@ d3.parcoords = function(config) {
       }
     });
   }
+
 var pc = function(selection) {
   selection = pc.selection = d3.select(selection);
 
@@ -71,6 +72,7 @@ var pc = function(selection) {
 
   return pc;
 };
+
 var events = d3.dispatch.apply(this,["render", "resize", "highlight", "brush", "brushend", "brushstart", "axesreorder"].concat(d3.keys(__))),
     w = function() { return __.width - __.margin.right - __.margin.left; },
     h = function() { return __.height - __.margin.top - __.margin.bottom; },
@@ -231,8 +233,9 @@ pc.autoscale = function() {
           .rangePoints(getRange());
       }
 
+      console.log("extent: ", extent[0]," ",extent[1]);
       return d3.scale.linear()
-        .domain([-1,1])
+        .domain([extent[0],extent[1]])
         .range(getRange());
     },
     "string": function(k) {

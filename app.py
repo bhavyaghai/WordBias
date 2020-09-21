@@ -88,6 +88,8 @@ def get_csv():
             df = pd.read_csv("./data/word2vec_50k.csv",header=0, keep_default_na=False)
         elif scaling=="Percentile":
             df = pd.read_csv("./data/word2vec_50k_percentile.csv",header=0, keep_default_na=False)
+        else:
+            df = pd.read_csv("./data/word2vec_50k_raw.csv",header=0, keep_default_na=False)
     elif embedding=="Glove (wiki 300d)":
         if scaling=="Normalization":
             df = pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False)
