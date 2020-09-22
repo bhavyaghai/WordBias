@@ -2571,6 +2571,7 @@ pc.highlight = function(data) {
   }
 
   __.highlighted = data;
+  //highlight_axis_subgroups(__.highlighted[0])
   pc.clear("highlight");
   d3.selectAll([canvas.foreground, canvas.brushed]).classed("faded", true);
   data.forEach(path_highlight);
@@ -2578,8 +2579,29 @@ pc.highlight = function(data) {
   return this;
 };
 
+// Given a word, highlight corresponding subgroup names such as 'black' and 'male' for the word "gangs"
+function highlight_axis_subgroups(word_obj) {
+  console.log("2585  ", word_obj)
+  for (var key in word_obj) {
+    if(key=="word") continue;  
+    b = word_obj[key]
+    axis_name = "#" + key + "_dimension"
+    console.log(key, "   ",b,"    ",axis_name);
+    if(b>0) { 
+      $(axis_name+" .polarity1").css("font-weight", "bold");
+    }
+    else {
+      $(axis_name+" .polarity2").css("font-weight", "bold");
+    }
+  }
+}
+
 // clear highlighting
 pc.unhighlight = function() {
+  // Reset subgroup name like "Black", "Rich", etc. back to normal font weight
+  $(".polarity1").css("font-weight","normal");
+  $(".polarity2").css("font-weight","normal");
+
   __.highlighted = [];
   pc.clear("highlight");
   d3.selectAll([canvas.foreground, canvas.brushed]).classed("faded", false);

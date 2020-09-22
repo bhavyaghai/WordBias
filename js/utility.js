@@ -32,6 +32,7 @@ function highlightWords(word,neighbors=[]){
       if(hideAxis) drawWords(data_rows,"highlight")  // if word axis is hidden, draw the word label
     }
     else{  // update word axis with the neighbors and populate neighbors list
+      $(".prompt").val(word)
       updateWordAxis(data_rows)
       populate_neighbors(data_rows)
       highlighted_data = data_rows
@@ -42,7 +43,6 @@ function highlightWords(word,neighbors=[]){
     pc.afterHighlight(data_rows)
   }
   // updateProgressBar(data_rows)
-  
 }
 
 // cancel highlight 
@@ -56,6 +56,7 @@ function cancelHighlight(updateNeighbor=true){
   // if(!pc.isBrushed()) updateWordAxis(active_data)  
   // updateProgressBar(active_data)
   //clear_bias_words_section()
+  $(".prompt").val('')
 }
 
 // manually draw word labels
@@ -95,7 +96,6 @@ function mouseenter(word){
   if(inSearch) {
     afterHighlight = true
   } 
-  $(this).css('cursor', 'pointer');
   highlightWords(word)
 }
 
@@ -147,10 +147,15 @@ function axisLabelClick(axis_name){
 
 
 $("body").on("mouseenter","#word_dimension .tick text", function(){ 
+  $(this).parent().css('cursor', 'pointer');
+  $(this).attr("font-weight","bold");
   mouseenter($(this).html())
 })
 
-$("body").on("mouseleave","#word_dimension .tick text", mouseleave)
+$("body").on("mouseleave","#word_dimension .tick text", function() {
+    $(this).attr("font-weight","normal");
+    mouseleave()
+})
 
 
 $("body").on("click","#canvas_svg",function(e){ // click

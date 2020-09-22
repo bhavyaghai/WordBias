@@ -183,6 +183,7 @@ def search(name):
             if x[0] not in neigh:
                 neigh.append(x[0])  
     #print(neigh)
+    #neigh = [name] + neigh
     return jsonify(neigh)
 
 

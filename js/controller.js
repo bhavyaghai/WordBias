@@ -106,8 +106,8 @@ function initialize(res){
           },500);
         }
       });
-    $("#bundle_dimension").append(populateDropDownList(d3.keys(data[0])))
-    $("#bias_type_dropdown").append(populateDropDownList(d3.keys(data[0])))
+    //$("#bundle_dimension").append(populateDropDownList(d3.keys(data[0])))
+    //$("#bias_type_dropdown").append(populateDropDownList(d3.keys(data[0])))
 
     // populate histogram bias types
     populate_histogram_bias_type(data[0])
