@@ -49,6 +49,7 @@ function highlightWords(word,neighbors=[]){
 function cancelHighlight(updateNeighbor=true){
   pc.unhighlight()
   $("text").removeAttr("fill")
+  $("text").attr("font-weight","normal")
   $(".dynamicLabel").remove()
   $("#word_dimension .tick text").attr("opacity","1")
   if(updateNeighbor) $("#neighbors_list").empty()
@@ -116,7 +117,11 @@ function onClick(word){
 }
 
 function labelClick(d,i){
-  if(!inSearch) onClick($(this).html()) 
+    
+  if(!inSearch){
+    $(this).attr("font-weight","bold") ;
+    onClick($(this).html()) 
+  } 
 }
 
 function axisLabelClick(axis_name){
@@ -142,8 +147,6 @@ function axisLabelClick(axis_name){
 
 
 $("body").on("mouseenter","#word_dimension .tick text", function(){ 
-  if(!inSearch)
-    $(this).attr("fill","steelblue") ;
   mouseenter($(this).html())
 })
 
