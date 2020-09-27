@@ -24,7 +24,8 @@ svg {
 }
 
 .brush .extent {
-  fill-opacity: .3;
+  fill-opacity: .3; 
+  /*fill: rgb(128, 128, 128);*/
   stroke: #fff;
   shape-rendering: crispEdges;
 }

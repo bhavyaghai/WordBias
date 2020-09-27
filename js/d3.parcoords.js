@@ -1485,9 +1485,11 @@ pc.brushMode = function(mode) {
 
 		brush.selectAll("rect.extent")
 				.style("fill", "rgba(255,255,255,0.25)")
+        //.style("fill", "rgba(128,128,128,0.3)")
 				.style("stroke", "rgba(0,0,0,0.6)");
 
 		brush.selectAll(".resize rect")
+        //.style("fill", "rgba(128,128,128,0.3)")
 				.style("fill", "rgba(0,0,0,0.1)");
 
 		pc.brushExtents = brushExtents;
@@ -1991,6 +1993,7 @@ pc.brushMode = function(mode) {
           .attr("x", -15)
           .attr("width", 30)
           .style("fill", "rgba(255,255,255,0.25)")
+          //.style("fill", "rgba(128,255,128,0.5)")
           .style("stroke", "rgba(0,0,0,0.6)");
       })
       .resizeAdaption(function(selection) {
@@ -1999,6 +2002,7 @@ pc.brushMode = function(mode) {
     	   .attr("x", -15)
     	   .attr("width", 30)
          .style("visibility", null)
+         //.style("fill", "rgba(128,255,128,0.5)")
          .style("fill", "rgba(0,0,0,0.1)");
       });
 
@@ -2039,8 +2043,10 @@ pc.brushMode = function(mode) {
         .style("fill", "transparent");
 
     brush.selectAll("rect.extent")
-        .style("fill", "rgba(255,255,255,0.25)")
-        .style("stroke", "rgba(0,0,0,0.6)");
+        //.style("fill", "rgba(255,255,255,0.25)")
+        .style("fill", "rgba(128,128,128,0.3)")
+        .style("stroke", "rgba(0,0,0,0.6)")
+        .style("stroke-width", "1.3");
 
     brush.selectAll(".resize rect")
         .style("fill", "rgba(0,0,0,0.1)");
