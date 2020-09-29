@@ -51,8 +51,8 @@
                         <label style="padding-bottom: 0;margin-bottom: 0;"> Feature Scaling</label>
                         <select class="custom-select greyed" id="scaling" style="width: 90%">
                             <option>Raw Scores</option>
-                            <option selected>Percentile</option>
-                            <option>Normalization</option>
+                            <option value="Percentile" selected>Percentile Ranking</option>
+                            <option value="Normalization">Min-Max Normalization</option>
                         </select> 
                     </div>
                     
@@ -93,18 +93,18 @@
                 <hr>
 
                 <div id="axisSeconddiv" class="form-group">
-                    <p style="text-align: center; ">Bias Defining Words</p>
+                    <p style="text-align: center; ">Group Words</p>
                     <div style="padding-bottom: 5px;">
-                        <input type="text" id="bias_type" placeholder="Bias Variable" style="width: 100%;">
+                        <input type="text" id="bias_type" placeholder="Bias type" style="width: 100%;">
                         
                     </div>
 
-                    <input type="text" id="gp1_label" placeholder="Group 1" style="width: 40%;">
-                    <textarea class="form-control" rows="2" id="gp1" placeholder="List of words representing Group 1" 
+                    <input type="text" id="gp1_label" placeholder="Subgroup 1" style="width: 40%;">
+                    <textarea class="form-control" rows="2" id="gp1" placeholder="List of words representing subgroup 1" 
                     style="margin-bottom: 7px;"></textarea>
                                 
-                    <input type="text" id="gp2_label" placeholder="Group 2" style="width: 40%;">
-                    <textarea class="form-control" rows="2" id="gp2" placeholder="List of words representing Group 2"></textarea>
+                    <input type="text" id="gp2_label" placeholder="Subgroup 2" style="width: 40%;">
+                    <textarea class="form-control" rows="2" id="gp2" placeholder="List of words representing subgroup 2"></textarea>
 
                     <div style="padding-top: 5px; text-align: center">
                         <button class="greyed_border" id="add_axis" style="width: 40%">Add Axis</button>
