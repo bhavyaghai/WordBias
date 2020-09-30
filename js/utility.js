@@ -53,7 +53,7 @@ function cancelHighlight(updateNeighbor=true){
   $(".dynamicLabel").remove()
   $("#word_dimension .tick text").attr("opacity","1")
   if(updateNeighbor) $("#neighbors_list").empty()
-  // if(!pc.isBrushed()) updateWordAxis(active_data)  
+  // 
   // updateProgressBar(active_data)
   //clear_bias_words_section()
   
@@ -161,7 +161,7 @@ $("body").on("mouseleave","#word_dimension .tick text", function() {
 
 $("body").on("click","#canvas_svg",function(e){ // click
     ele = $(e.target);
-
+    // console.log(e)
     // clicking on title of axis like "gender", "race", etc.
     if($(".tick").has(ele).length==0 && e.target.nodeName == "text") {
         axis_name = ele.html().toLowerCase();
@@ -170,6 +170,11 @@ $("body").on("click","#canvas_svg",function(e){ // click
     }
     // clicking anywhere else -> cancelHighlight
     else if(!(e.target.nodeName == "text") && !pc.isBrushed()){
+      if(inSearch){
+        d3.selectAll([pc.canvas["highlight"]]).classed("faded", false);
+        d3.selectAll([pc.canvas["brushed"]]).classed("full", false);
+        d3.selectAll([pc.canvas["brushed"]]).classed("faded", true); 
+      } 
       inSearch = false
       afterHighlight = false
       cancelHighlight()  
