@@ -396,6 +396,7 @@
         // If the current extent is empty, clear everything.
         if(x && xExtent[i][0] == xExtent[i][1] ||
            y && yExtent[i][0] == yExtent[i][1]) {
+          // console.log("cleared")
           brush.clear();
         }
 

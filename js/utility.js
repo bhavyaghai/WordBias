@@ -56,6 +56,7 @@ function cancelHighlight(updateNeighbor=true){
   // if(!pc.isBrushed()) updateWordAxis(active_data)  
   // updateProgressBar(active_data)
   //clear_bias_words_section()
+  
   $(".prompt").val('')
 }
 
