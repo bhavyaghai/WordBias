@@ -100,10 +100,10 @@ function initialize(res){
           // console.log(wordaxisLabel)
                 // 
           onClick(d.title)
-          setTimeout(function(){
-            wordaxisLabel = $("#word_dimension .tick text").filter(function(){return d.title == $(this).html()})
-            wordaxisLabel.attr("font-weight","bold")
-          },500);
+          // setTimeout(function(){
+          //   wordaxisLabel = $("#word_dimension .tick text").filter(function(){return d.title == $(this).html()})
+          //   wordaxisLabel.attr("font-weight","bold")
+          // },500);
         }
       });
     //$("#bundle_dimension").append(populateDropDownList(d3.keys(data[0])))

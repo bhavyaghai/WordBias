@@ -10,7 +10,7 @@ function updateWordAxis(data){
     pc.dimensions()["word"].yscale.domain( words)
     pc.dimensions()['word'].tickValues = words
     pc.updateAxes()
-    setTimeout(function(){d3.selectAll("#word_dimension .tick text").on("click",labelClick) }, 300);
+    // setTimeout(function(){d3.selectAll("#word_dimension .tick text").on("click",labelClick) }, 300);
     
   }
   else if(!hideAxis){
@@ -115,6 +115,10 @@ function onClick(word){
   inSearch = true
   searchWords(word)
   selected_word = word
+  setTimeout(function(){
+    wordaxisLabel = $("#word_dimension .tick text").filter(function(){return $(this).html() == word})
+    wordaxisLabel.attr("font-weight","bold")
+  },500);
 }
 
 function labelClick(d,i){
@@ -122,6 +126,10 @@ function labelClick(d,i){
   if(!inSearch){
     $(this).attr("font-weight","bold") ;
     onClick($(this).html()) 
+    // setTimeout(function(){
+    //   wordaxisLabel = $("#word_dimension .tick text").filter(function(d){return d.html() == $(this).html()})
+    //   wordaxisLabel.attr("font-weight","bold")
+    // },500);
   } 
 }
 
@@ -159,14 +167,17 @@ $("body").on("mouseleave","#word_dimension .tick text", function() {
 })
 
 $("body").on("click","#canvas_svg",function(e){ // click
-    // d3.event.preventDefault();
     ele = $(e.target);
-    // console.log(e.)
     // clicking on title of axis like "gender", "race", etc.
     if($(".tick").has(ele).length==0 && e.target.nodeName == "text") {
         axis_name = ele.html().toLowerCase();
         axisLabelClick(axis_name)
         
+    }
+    // clicking on the words
+    else if(e.target.nodeName == "text" && ele.parents(".tick").length && ele.parents("#word_dimension").length){
+      // ele.attr("font-weight","bold");
+      if(!inSearch) onClick(ele.html())
     }
     // clicking anywhere else -> cancelHighlight
     else if(!(e.target.nodeName == "text") && !dragEndFlag){ 
