@@ -2,7 +2,7 @@ var thresh,
 words,active_words,selected_word ="none",wordAxis,
 data,active_data, highlighted_data, global_neighbors = [],
 pc,
-hideAxis=true, inSearch= false, afterHighlight=false;
+hideAxis=true, inSearch= false, afterHighlight=false, dragEndFlag = true; 
 //var defaultBrushExtent = [[0.4,0.45]];
 
 bias_words = {

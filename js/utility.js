@@ -158,10 +158,10 @@ $("body").on("mouseleave","#word_dimension .tick text", function() {
     mouseleave()
 })
 
-
 $("body").on("click","#canvas_svg",function(e){ // click
+    // d3.event.preventDefault();
     ele = $(e.target);
-    // console.log(e)
+    // console.log(e.)
     // clicking on title of axis like "gender", "race", etc.
     if($(".tick").has(ele).length==0 && e.target.nodeName == "text") {
         axis_name = ele.html().toLowerCase();
@@ -169,12 +169,7 @@ $("body").on("click","#canvas_svg",function(e){ // click
         
     }
     // clicking anywhere else -> cancelHighlight
-    else if(!(e.target.nodeName == "text") && !pc.isBrushed()){
-      if(inSearch){
-        d3.selectAll([pc.canvas["highlight"]]).classed("faded", false);
-        d3.selectAll([pc.canvas["brushed"]]).classed("full", false);
-        d3.selectAll([pc.canvas["brushed"]]).classed("faded", true); 
-      } 
+    else if(!(e.target.nodeName == "text") && !dragEndFlag){ 
       inSearch = false
       afterHighlight = false
       cancelHighlight()  
@@ -182,6 +177,10 @@ $("body").on("click","#canvas_svg",function(e){ // click
       updateWordAxis(active_data)
       clear_bias_words_section()
     }
+    else if(!pc.isBrushed()){
+      brush_reset()
+    }
+    dragEndFlag = false;
 })
 
 //Search events

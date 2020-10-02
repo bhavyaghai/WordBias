@@ -53,12 +53,14 @@ $("#bundle_dimension").on("change",function(){
 })
 
 // Reset brush button -- removes all brushes
-$("#reset_brush").on("click",function(){
+$("#reset_brush").on("click",brush_reset)
+
+function brush_reset(){
   pc.brushReset()
   d3.selectAll(".extentLabels").remove()
 
   if(inSearch) {
-  	populate_neighbors(highlighted_data)
+    populate_neighbors(highlighted_data)
     updateProgressBar(highlighted_data)
 
     d3.selectAll([pc.canvas["highlight"]]).classed("faded", false);
@@ -69,5 +71,4 @@ $("#reset_brush").on("click",function(){
     updateProgressBar(active_data)
     $("#neighbors_list").empty() 
   } 
-  // updateWordAxis(active_data)
-})
+}
