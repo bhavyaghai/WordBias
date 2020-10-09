@@ -1,11 +1,12 @@
+
 # WordBias: An Interactive Visual tool for exploring Intersectional Social biases encoded in Word Embeddings
 
 [//]: # (Live DEMO http://130.245.128.219:6999/)
 [//]: # (Documentation 
 https://docs.google.com/document/d/1uw5OCxsddj8QeOqrZqgJJVBUV7rdTE9AEX9ymNzDQO0/edit?usp=sharing)
+[//]: # (![teaser figure](teaser.jpeg)
 
-
-![teaser figure](teaser.PNG)
+** <u>This is an anonymized github repository meant for IUI reviewers. Upon acceptance, this repository will be de-anonymized and its link will be updated in the paper.</u>  **  
 
 
 ## Overview
@@ -34,4 +35,4 @@ WordBias is an interactive visual tool designed to explore biases against inters
 - Word2Vec embedding [Source link](https://code.google.com/archive/p/word2vec/)
 - Glove Embedding [Source link](https://nlp.stanford.edu/projects/glove/)
 
-[//] Glove embedding downloaded from this source can't be directly read by gensim. So, we will reformat it first. (see 'preprocessing word embedding' notebook)
+[//]: <> (Glove embedding downloaded from this source can't be directly read by gensim. So, we will reformat it first. (see 'preprocessing word embedding' notebook)
