@@ -4,7 +4,7 @@
 [//]: # (Live DEMO http://130.245.128.219:6999/)
 [//]: # (Documentation 
 https://docs.google.com/document/d/1uw5OCxsddj8QeOqrZqgJJVBUV7rdTE9AEX9ymNzDQO0/edit?usp=sharing)
-[//]: # (![teaser figure](teaser.jpeg)
+[//]: # (![teaser figure](teaser.jpeg))
 
 ** <u>This is an anonymized github repository meant for IUI reviewers. Upon acceptance, this repository will be de-anonymized and its link will be updated in the paper.</u>  **  
 
