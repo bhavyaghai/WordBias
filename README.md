@@ -1,5 +1,5 @@
 
-# WordBias: An Interactive Visual tool for exploring Intersectional Social biases encoded in Word Embeddings
+# WordBias: An Interactive Visual Tool for Discovering Intersectional Biases Encoded in Word Embeddings
 
 [//]: # (Live DEMO http://130.245.128.219:6999/)
 [//]: # (Documentation 
