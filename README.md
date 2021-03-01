@@ -1,9 +1,12 @@
 # WordBias: An Interactive Visual Tool for Discovering Intersectional Biases Encoded in Word Embeddings
 
+### Live DEMO http://130.245.128.219:6999/
+
+### Video Demonstration https://youtu.be/V3YM-mfpq24
+
+Paper accepted at ACM SIGCHI 2021 Late Breaking Work
+
 ![teaser figure](teaser.jpeg)
-[//]: # "Live DEMO http://130.245.128.219:6999/"
-[//]: # "Documentation
-https://docs.google.com/document/d/1uw5OCxsddj8QeOqrZqgJJVBUV7rdTE9AEX9ymNzDQO0/edit?usp=sharing"
 
 ## Overview
 
@@ -12,15 +15,25 @@ WordBias is an interactive visual tool designed to explore biases against inters
 ## Installation Instructions
 
 - Clone this repo
+
 - Install Dependencies
-  - flask
-  - gensim
-  - numpy
-  - pandas
-  - sklearn
-  - scipy
-  - py_thesaurus
+
+- flask
+
+- gensim
+
+- numpy
+
+- pandas
+
+- sklearn
+
+- scipy
+
+- py_thesaurus
+
 - Run python app.py
+
 - Browse localhost:6999
 
 ## References
@@ -34,4 +47,5 @@ WordBias is an interactive visual tool designed to explore biases against inters
 ### Word Embedding
 
 - Word2Vec embedding [Source link](https://code.google.com/archive/p/word2vec/)
+
 - Glove Embedding [Source link](https://nlp.stanford.edu/projects/glove/)
