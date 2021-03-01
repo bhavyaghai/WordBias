@@ -16,21 +16,7 @@ WordBias is an interactive visual tool designed to explore biases against inters
 
 - Clone this repo
 
-- Install Dependencies
-
-- flask
-
-- gensim
-
-- numpy
-
-- pandas
-
-- sklearn
-
-- scipy
-
-- py_thesaurus
+- Install Dependencies like flask, gensim, py_thesaurus, etc.
 
 - Run python app.py
 
