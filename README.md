@@ -31,16 +31,8 @@ WordBias is an interactive visual tool designed to explore biases against inters
 
 - Browse localhost:6999
 
-## References
+## Citation
 
-### Group Words List
-
-- [Word embeddings quantify 100 years of gender and ethnic stereotypes (Supplementary Material)](https://www.pnas.org/content/pnas/suppl/2018/03/30/1720347115.DCSupplemental/pnas.1720347115.sapp.pdf)
-
-- [The Geometry of Culture: Analyzing the Meanings of Class through Word Embeddings](https://journals.sagepub.com/doi/pdf/10.1177/0003122419877135)
-
-### Word Embedding
-
-- Word2Vec embedding [Source link](https://code.google.com/archive/p/word2vec/)
-
-- Glove Embedding [Source link](https://nlp.stanford.edu/projects/glove/)
+```
+To be updated ...
+```
