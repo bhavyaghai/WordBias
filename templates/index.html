@@ -1,132 +1,242 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
     <!-- Bootstrap CSS -->
     <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/semantic/semantic.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/spinner.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/d3.parcoords.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='vendor/semantic/semantic.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/spinner.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/d3.parcoords.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/custom.css') }}"
+    />
 
     <title>WordBias</title>
-</head>
-<body>
+  </head>
+  <body>
     <div id="spinner"></div>
-	<!-- Nav bar start -->
-	<nav class="navbar navbar-expand-lg navbar-dark site-color" style="display: none;">
-		<a class="navbar-brand" href="#" >biasViz</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-	  	</button>
-	  	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-		    <div class="navbar-nav">
-		      <a class="nav-item nav-link active" href="#" >Home <span class="sr-only">(current)</span></a>
-		      <a class="nav-item nav-link" href="#">About</a>    
-		    </div>
-            
-	  	</div>
-	</nav>
-    
-    <div class="container-fluid" style="padding-left: 10px; padding-right: 10px; display: none;">
-        <div class="row">
+    <!-- Nav bar start -->
+    <nav
+      class="navbar navbar-expand-lg navbar-dark site-color"
+      style="display: none"
+    >
+      <a class="navbar-brand" href="#">biasViz</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link active" href="#"
+            >Home <span class="sr-only">(current)</span></a
+          >
+          <a class="nav-item nav-link" href="#">About</a>
+        </div>
+      </div>
+    </nav>
+
+    <div
+      class="container-fluid"
+      style="padding-left: 10px; padding-right: 10px; display: none"
+    >
+      <div class="row">
         <div class="col-lg-2 greyed">
-                <div>
-                    <div style="text-align: center;">
-                        <label style="padding-bottom: 0;margin-bottom: 0;"> Word Embedding</label>
-                        <select id="dropdown_embedding" class="custom-select greyed" style="width: 90%">
-                            <option selected>Word2Vec</option>
-                            <option>Glove (wiki 300d)</option>
-                            <option>Word2Vec debiased</option>
-                        </select>  
-                        
-                    </div>
-                   
-                    <div style="text-align: center;">    
-                    
-                        <label style="padding-bottom: 0;margin-bottom: 0;"> Feature Scaling</label>
-                        <select class="custom-select greyed" id="scaling" style="width: 90%">
-                            <option>Raw Scores</option>
-                            <option value="Percentile" selected>Percentile Ranking</option>
-                            <option value="Normalization">Min-Max Normalization</option>
-                        </select> 
-                    </div>
-                    
-                </div> 
-                <hr>
-            <!-- <div style="border-bottom: 1px solid #DCDCDC;"> -->
-                <div class="feature">
-                    <p style="text-align: center;margin-bottom: 10px">Bias Distribution</p>  
-                    <div id="histogram" class="feature" style="height: 20vh;margin-bottom: 10px "></div> 
-                    <div style="text-align: center">
-                        
-                            <p style="display: inline-block; opacity:0.7">Select Attribute:</p>
-                            <select id="histogram_type" class="custom-select greyed" style="width: 40%">
-                                <option selected="">ALL</option>
-                            </select> 
-                        
-                    </div>   
-                </div> 
-                <hr>
-                <div class="feature">
-                    <p style="text-align: center;margin-bottom: 10px">Highlight Neutral Words</p>
-                    <div style="text-align: center;">
-                        <!-- <p style="display: inline-block; opacity:0.7">Select Group:</p> -->
-                        <select id="dropdown_target" onchange="changeTarget(this.value)" class="custom-select greyed" style="width: 50%"></select>
-                        <button id="highlight_words" class="greyed_border">
-                            <i class="play icon"></i>
-                        </button>
-                        <!-- <i class="play icon"></i> -->
-                    </div>
-                    <textarea class="form-control" rows="5" id="target" style="border-radius: 5px;margin-bottom: 5px;"></textarea>
-                    <!--
+          <div>
+            <div style="text-align: center">
+              <label style="padding-bottom: 0; margin-bottom: 0">
+                Word Embedding</label
+              >
+              <select
+                id="dropdown_embedding"
+                class="custom-select greyed"
+                style="width: 90%"
+              >
+                <option selected>Word2Vec</option>
+                <option>Glove (wiki 300d)</option>
+                <!-- <option>Word2Vec debiased</option> -->
+              </select>
+            </div>
+
+            <div style="text-align: center">
+              <label style="padding-bottom: 0; margin-bottom: 0">
+                Feature Scaling</label
+              >
+              <select
+                class="custom-select greyed"
+                id="scaling"
+                style="width: 90%"
+              >
+                <option>Raw Scores</option>
+                <option value="Percentile" selected>Percentile Ranking</option>
+                <option value="Normalization">Min-Max Normalization</option>
+              </select>
+            </div>
+          </div>
+          <hr />
+          <!-- <div style="border-bottom: 1px solid #DCDCDC;"> -->
+          <div class="feature">
+            <p style="text-align: center; margin-bottom: 10px">
+              Bias Distribution
+            </p>
+            <div
+              id="histogram"
+              class="feature"
+              style="height: 20vh; margin-bottom: 10px"
+            ></div>
+            <div style="text-align: center">
+              <p style="display: inline-block; opacity: 0.7">
+                Select Attribute:
+              </p>
+              <select
+                id="histogram_type"
+                class="custom-select greyed"
+                style="width: 40%"
+              >
+                <option selected="">ALL</option>
+              </select>
+            </div>
+          </div>
+          <hr />
+          <div class="feature">
+            <p style="text-align: center; margin-bottom: 10px">
+              Highlight Neutral Words
+            </p>
+            <div style="text-align: center">
+              <!-- <p style="display: inline-block; opacity:0.7">Select Group:</p> -->
+              <select
+                id="dropdown_target"
+                onchange="changeTarget(this.value)"
+                class="custom-select greyed"
+                style="width: 50%"
+              ></select>
+              <button id="highlight_words" class="greyed_border">
+                <i class="play icon"></i>
+              </button>
+              <!-- <i class="play icon"></i> -->
+            </div>
+            <textarea
+              class="form-control"
+              rows="5"
+              id="target"
+              style="border-radius: 5px; margin-bottom: 5px"
+            ></textarea>
+            <!--
                     <div style="text-align: center;">
                         <button id="cancel_highlight_words" class="greyed_border"><i class="pause icon"></i></button>
                         <button id="highlight_words" class="greyed_border"><i class="play icon"></i></button>
                     </div>
-                    -->        
-                </div>
-                <hr>
+                    -->
+          </div>
+          <hr />
 
-                <div id="axisSeconddiv" class="form-group">
-                    <p style="text-align: center; ">Group Words</p>
-                    <div style="padding-bottom: 5px;">
-                        <input type="text" id="bias_type" placeholder="Bias type" style="width: 100%;">
-                        
-                    </div>
+          <div id="axisSeconddiv" class="form-group">
+            <p style="text-align: center">Group Words</p>
+            <div style="padding-bottom: 5px">
+              <input
+                type="text"
+                id="bias_type"
+                placeholder="Bias type"
+                style="width: 100%"
+              />
+            </div>
 
-                    <input type="text" id="gp1_label" placeholder="Subgroup 1" style="width: 40%;">
-                    <textarea class="form-control" rows="2" id="gp1" placeholder="List of words representing subgroup 1" 
-                    style="margin-bottom: 7px;"></textarea>
-                                
-                    <input type="text" id="gp2_label" placeholder="Subgroup 2" style="width: 40%;">
-                    <textarea class="form-control" rows="2" id="gp2" placeholder="List of words representing subgroup 2"></textarea>
+            <input
+              type="text"
+              id="gp1_label"
+              placeholder="Subgroup 1"
+              style="width: 40%"
+            />
+            <textarea
+              class="form-control"
+              rows="2"
+              id="gp1"
+              placeholder="List of words representing subgroup 1"
+              style="margin-bottom: 7px"
+            ></textarea>
 
-                    <div style="padding-top: 5px; text-align: center">
-                        <button class="greyed_border" id="add_axis" style="width: 40%">Add Axis</button>
-                        <button class="greyed_border" id="delete_axis" style="width: 40%">Delete Axis</button>
-                        
-                    </div>
-                </div>
-               
+            <input
+              type="text"
+              id="gp2_label"
+              placeholder="Subgroup 2"
+              style="width: 40%"
+            />
+            <textarea
+              class="form-control"
+              rows="2"
+              id="gp2"
+              placeholder="List of words representing subgroup 2"
+            ></textarea>
+
+            <div style="padding-top: 5px; text-align: center">
+              <button class="greyed_border" id="add_axis" style="width: 40%">
+                Add Axis
+              </button>
+              <button class="greyed_border" id="delete_axis" style="width: 40%">
+                Delete Axis
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="col-lg-8"> 
-            <div class="controls">
-                <div class="control">
-                    <p class="label">Alpha/opacity</p>
-                    <input id="alpha_input" type="range" name="alpha" min="0" max="1" step="0.01" value="0.5">
-                    <span id="alpha_text">0.5</span>  
-                </div>
-                <div class="control">
-                    <p class="label">Curve Smoothness</p>
-                    <input id="smoothness_input" type="range" name="smooth" min="0" max="1" step="0.01" value="0">
-                    <span id="smoothness_text">0</span>  
-                </div>
-                <!--
+        <div class="col-lg-8">
+          <div class="controls">
+            <div class="control">
+              <p class="label">Alpha/opacity</p>
+              <input
+                id="alpha_input"
+                type="range"
+                name="alpha"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.5"
+              />
+              <span id="alpha_text">0.5</span>
+            </div>
+            <div class="control">
+              <p class="label">Curve Smoothness</p>
+              <input
+                id="smoothness_input"
+                type="range"
+                name="smooth"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0"
+              />
+              <span id="smoothness_text">0</span>
+            </div>
+            <!--
                 <div class="control">
                     <p class="label">Bundle Strength</p>
                     <input id="bundle_input" type="range" name="smooth" min="0" max="1" step="0.01" value="0">
@@ -138,56 +248,71 @@
                     </select>       
                 </div>
             	-->
-                <div class="control">
-                    <p class="label">Reset Brush</p>
-                    <button id="reset_brush" class="greyed_border" ><i class="refresh icon"></i></button>
-                    <!-- <button id="reset_brush" class="ui mini button">Reset Brush</button> -->
-                </div>  
-                <div class="control">
-                    <p class="label" id="progress_value" style="margin-bottom: 18px;">Selected Words:</p>
-                    <div class="progress">
-                      <div id="progressbar" class="progress-bar" role="progressbar" aria-valuenow="70"
-                      aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                        <!-- 70% -->
-                      </div>
-                    </div>
-                    <!-- <div id="progressbar" class="ui blue progress control" style="height: 25px;margin:0px;">
-                        <div class="bar"></div>
-                    </div> --> 
-                    
+            <div class="control">
+              <p class="label">Reset Brush</p>
+              <button id="reset_brush" class="greyed_border">
+                <i class="refresh icon"></i>
+              </button>
+              <!-- <button id="reset_brush" class="ui mini button">Reset Brush</button> -->
+            </div>
+            <div class="control">
+              <p class="label" id="progress_value" style="margin-bottom: 18px">
+                Selected Words:
+              </p>
+              <div class="progress">
+                <div
+                  id="progressbar"
+                  class="progress-bar"
+                  role="progressbar"
+                  aria-valuenow="70"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  style="width: 70%"
+                >
+                  <!-- 70% -->
                 </div>
-                
-            </div>   
-            <div id="parallel_coord" class="parcoords" style="height: 90vh"></div>     
+              </div>
+              <!-- <div id="progressbar" class="ui blue progress control" style="height: 25px;margin:0px;">
+                        <div class="bar"></div>
+                    </div> -->
+            </div>
+          </div>
+          <div id="parallel_coord" class="parcoords" style="height: 90vh"></div>
         </div>
         <div class="col-lg-2 greyed">
-            <div class="ui search feature" style="padding-bottom: 5px !important; height: 5%">
-              <div class="ui icon input" style="width: 100%;">
-                <input class="prompt" type="text" placeholder="Search words...">
-                <i class="search icon"></i>
-              </div>
+          <div
+            class="ui search feature"
+            style="padding-bottom: 5px !important; height: 5%"
+          >
+            <div class="ui icon input" style="width: 100%">
+              <input class="prompt" type="text" placeholder="Search words..." />
+              <i class="search icon"></i>
             </div>
-            
-            <div id="neighbors_list" class="list-group list-group-flush" style="height:95vh;max-height: 95vh;overflow: scroll;">
-            </div>
-            
+          </div>
+
+          <div
+            id="neighbors_list"
+            class="list-group list-group-flush"
+            style="height: 95vh; max-height: 95vh; overflow: scroll"
+          ></div>
         </div>
-        
+      </div>
     </div>
-</div>
-<!--
+    <!--
 <script type="text/javascript"> var baseline= false</script>
 -->
     <!-- main container ends -->
 
-
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
+    <script
+      src="https://code.jquery.com/jquery-2.2.4.min.js"
+      crossorigin="anonymous"
+    ></script>
     <!-- <script type = "text/javascript" src="{{ url_for('static', filename='vendor/popper.min.js') }}"></script> -->
     <!-- <script type = "text/javascript" src="{{ url_for('static', filename='vendor/bootstrap.min.js') }}"></script> -->
     <script src="{{ url_for('static', filename='vendor/semantic/semantic.min.js') }}"></script>
-    
+
     <script src="https://d3js.org/d3.v3.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.js"></script>
 
@@ -200,7 +325,5 @@
     <script src="{{ url_for('static', filename='js/utility.js') }}"></script>
     <script src="{{ url_for('static', filename='js/left_pane.js') }}"></script>
     <script src="{{ url_for('static', filename='js/controller.js') }}"></script>
-
-</body>
+  </body>
 </html>
-
