@@ -15,7 +15,9 @@ The above picture shows the visual interface of WordBias. The image can be broke
 (B) The Main View shows the bias scores of selected words (blue lines) along different bias types (axes) <br />
 \(C\) The Search Panel enables users to search for a word and display the search/brushing results. <br />
 
-In the above figure, the user has brushed over 'Male' and 'Islam' subgroups. Words with strong association to both these subgroups are listed below the search box like bomb, terror, aggression, etc. This suggests that Word2vec embedding contains biases against Muslim males.
+In the above figure, the user has brushed over 'Male' and 'Islam' subgroups. Words with strong association to both these subgroups are listed below the search box like bomb, terror, aggression, etc. This suggests that Word2vec embedding contains biases against Muslim males. <br />
+
+For a quick starter on Parallel Coordinates, please refer to this [link](https://towardsdatascience.com/parallel-coordinates-plots-6fcfa066dcb3).
 
 ## Overview
 

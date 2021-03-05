@@ -1,0 +1,28 @@
+﻿1
+00:00:02,000 --> 00:00:04,800
+This is the visual interface of WordBias
+
+2
+00:00:04,800 --> 00:00:09,833
+Here, each axis represents a sensitive attribute like gender, race, etc.
+
+3
+00:00:09,833 --> 00:00:12,466
+and each blue line represents a word.
+
+4
+00:00:12,466 --> 00:00:16,399
+On hovering over a word like 'nuns', we can see how it associates with
+
+5
+00:00:16,400 --> 00:00:21,366
+different subgroups like 'Females', 'Christianity', 'White' (race), 'Old' and 'Poor' subgroups.
+
+6
+00:00:21,366 --> 00:00:25,866
+Similarly, we can brush over multiple subgroups like 'Males' and 'Islam' 
+
+7
+00:00:25,866 --> 00:00:30,399
+to obtain words which associate with the intersectional group 'Muslim Males' (as per Word Embedding).
+
