@@ -1,11 +1,8 @@
 # WordBias: An Interactive Visual Tool for Discovering Intersectional Biases Encoded in Word Embeddings
 
-## Video Preview
-
-[![WordBias Preview](https://img.youtube.com/vi/3lpsP542Knk/0.jpg)](https://youtu.be/3lpsP542Knk)
-Click on the above picture to start the video
-
 - #### Read paper [PDF](https://api.deepai.org/publication-download-pdf/wordbias-an-interactive-visual-tool-for-discovering-intersectional-biases-encoded-in-word-embeddings)
+
+- #### Video Preview (30sec) https://youtu.be/3lpsP542Knk
 
 - #### Live DEMO http://130.245.128.219:6999/
 
