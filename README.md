@@ -38,5 +38,12 @@ WordBias is an interactive visual tool designed to explore biases against inters
 ## Citation
 
 ```
-To be updated ...
+@misc{ghai2021wordbias,      
+      title={WordBias: An Interactive Visual Tool for Discovering Intersectional Biases Encoded in Word Embeddings},       
+      author={Bhavya Ghai and Md Naimul Hoque and Klaus Mueller},      
+      year={2021},      
+      eprint={2103.03598},      
+      archivePrefix={arXiv},      
+      primaryClass={cs.CL}    
+    }
 ```
