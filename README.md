@@ -6,8 +6,6 @@
 
 - #### Live DEMO http://130.245.128.219:6999/
 
-- #### Detailed Video Demonstration https://youtu.be/V3YM-mfpq24
-
 Paper accepted at ACM SIGCHI 2021 Late Breaking Work
 
 ![teaser figure](teaser.png)
