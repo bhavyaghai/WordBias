@@ -45,3 +45,5 @@ WordBias is an interactive visual tool designed to explore biases against inters
       primaryClass={cs.CL}    
     }
 ```
+
+Feel free to email me for any questions, comments at bghai@cs.stonybrook.edu
