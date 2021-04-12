@@ -6,8 +6,6 @@
 
 - #### Live DEMO http://130.245.128.219:6999/
 
-- #### Detailed Video Demonstration https://youtu.be/V3YM-mfpq24
-
 Paper accepted at ACM SIGCHI 2021 Late Breaking Work
 
 ![teaser figure](teaser.png)
@@ -47,3 +45,5 @@ WordBias is an interactive visual tool designed to explore biases against inters
       primaryClass={cs.CL}    
     }
 ```
+
+Feel free to email me for any questions, comments at bghai@cs.stonybrook.edu
