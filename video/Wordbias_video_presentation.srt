@@ -1,0 +1,254 @@
+1
+00:00:00,880 --> 00:00:06,720
+Hello Everyone I am Bhavya Ghai from Stony Brook 
+University and today i'll talk about our project WordBias.
+
+2
+00:00:06,720 --> 00:00:12,160
+WordBias is an interactive visual 
+tool for discovering intersectional biases  
+
+3
+00:00:12,160 --> 00:00:17,920
+encoded in word embeddings. Word embedding models 
+like Word2Vec can be understood as a mapping  
+
+4
+00:00:17,920 --> 00:00:22,160
+between a word and its corresponding vector 
+representation. Studies have shown that word  
+
+5
+00:00:22,160 --> 00:00:29,360
+embedding models can learn and exhibit social 
+biases based on race, gender etc. that are encoded  
+
+6
+00:00:29,360 --> 00:00:36,320
+in the training dataset. In the context of word 
+embeddings, biases can be manifested as undesirable  
+
+7
+00:00:36,320 --> 00:00:41,920
+associations between words. For example, males might 
+be disproportionately linked with career and  
+
+8
+00:00:41,920 --> 00:00:48,080
+maths while females might be linked with family 
+and arts. Existing literature primarily focuses  
+
+9
+00:00:48,080 --> 00:00:55,360
+on biases based on gender, race, age, religion 
+etc. However, in the real world, an individual  
+
+10
+00:00:55,360 --> 00:01:00,880
+might face compound discrimination due to their 
+affiliation with multiple social categorizations  
+
+11
+00:01:00,880 --> 00:01:06,080
+For example, a black muslim lady might face 
+discrimination because of her race gender and  
+
+12
+00:01:06,080 --> 00:01:12,560
+religion all at the same time. So there's a need 
+to focus on biases against intersectional groups  
+
+13
+00:01:13,200 --> 00:01:18,880
+In this work, we are trying to create a visual 
+tool which will help discover biases against  
+
+14
+00:01:18,880 --> 00:01:24,880
+intersectional groups and hence deter their 
+propagation. So let's see what does our tool  
+
+15
+00:01:25,520 --> 00:01:33,360
+plans to achieve. First, given a word say priest, our 
+tool should help identify the different subgroups  
+
+16
+00:01:33,360 --> 00:01:38,960
+a word is associated with along with the degree 
+of association. For example, the word 'priest' might  
+
+17
+00:01:38,960 --> 00:01:46,240
+be linked with males, christianity or old 
+subgroups. Second, given an intersectional group  
+
+18
+00:01:46,240 --> 00:01:52,960
+say black muslim females, our tools should help 
+explore a set of words which are associated with  
+
+19
+00:01:52,960 --> 00:01:59,040
+this particular intersectional group. Third, 
+our tool should support the exploration of  
+
+20
+00:01:59,040 --> 00:02:04,880
+well-known biases as well as under reported biases 
+based on physical appearance, political leavings 
+
+21
+00:02:04,880 --> 00:02:10,400
+or any user defined bias type and lastly our tool
+should be able to deal with large volume of data  
+
+22
+00:02:11,200 --> 00:02:17,200
+Now, let's have a look at the tool itself and its 
+different features. This is the visual interface of  
+
+23
+00:02:17,200 --> 00:02:23,840
+WordBias. Here, each axis represents a particular 
+sensitive attribute like gender, religion, race  
+
+24
+00:02:23,840 --> 00:02:30,240
+age, etc. and either side of each axis encodes a 
+particular subgroup for example the gender axis  
+
+25
+00:02:30,240 --> 00:02:35,360
+has female subgroup at the top and male subgroup 
+at the bottom. Similarly, we have islam here at  
+
+26
+00:02:35,360 --> 00:02:41,040
+the top and christianity at the bottom and each of 
+these blue lines here represents a particular word.  
+
+27
+00:02:41,040 --> 00:02:46,400
+We can simply hover over any word to see how it 
+associates with different subgroups. For example,  
+
+28
+00:02:46,400 --> 00:02:52,160
+here the word 'nuns' have strong association with 
+female, christianity, white race, old age and poor  
+
+29
+00:02:52,160 --> 00:02:58,720
+economic subgroups. If a word is not present on the 
+word axis, we can simply go over here on the search  
+
+30
+00:02:58,720 --> 00:03:03,040
+box and we can search for a word that you want to 
+see so let's say we search for the word 'corrupt'  
+
+31
+00:03:03,680 --> 00:03:08,320
+and we can simply click on the word and 
+then the word appears on the word axis  
+
+32
+00:03:08,320 --> 00:03:13,760
+Here you can see that the word 'corrupt' has a 
+strong male, black and poor subgroup orientation.  
+
+33
+00:03:14,800 --> 00:03:19,200
+Now, let's say we want to visualize the different 
+sets of words so what we can do is we can go  
+
+34
+00:03:19,200 --> 00:03:25,440
+over here on this histogram and we can select 
+different words by brushing over the x-axis here  
+
+35
+00:03:27,360 --> 00:03:33,040
+we can even go on and we can select all the 
+words that are there in this tool and now  
+
+36
+00:03:33,040 --> 00:03:37,360
+let's say we want to figure out which words 
+are associated with the intersectional group  
+
+37
+00:03:37,360 --> 00:03:45,840
+black young poor. We can simply go over their 
+respective ends and brush over these subgroups  
+
+38
+00:03:47,760 --> 00:03:52,720
+The words that you are seeing here 'struggle', 'hunger', 
+'uprising' all of these words strongly associate  
+
+39
+00:03:52,720 --> 00:03:57,600
+with each of these different categories and hence 
+these words are linked with the intersectional  
+
+40
+00:03:57,600 --> 00:04:03,760
+group 'poor young black'. Now, we can we can pick and choose 
+different subgroups to see how different words  
+
+41
+00:04:03,760 --> 00:04:09,760
+associate with different subgroups so let's say 
+for the intersectional group 'white old rich' we  
+
+42
+00:04:09,760 --> 00:04:18,320
+see words like 'attractive', 'formal', 'desirable', 'castle', 
+'desserts', 'golfing', etc. Apart from the default set of  
+
+43
+00:04:18,320 --> 00:04:25,360
+axes, our tool provides the flexibility to add any 
+new user defined bias type. We can come over here  
+
+44
+00:04:25,360 --> 00:04:32,160
+and let's say we try to define a new axis titled 
+'Weight' and it has two subgroups let's say Thin  
+
+45
+00:04:32,160 --> 00:04:36,880
+and Heavy and then we write down a set of 
+words which define each of these subgroups
+
+46
+00:04:39,840 --> 00:04:41,840
+we click on 'Add Axis'
+
+47
+00:04:44,160 --> 00:04:49,920
+and here we go we have this new axis, right as 
+we intended. Coming back, we tried exploring  
+
+48
+00:04:49,920 --> 00:04:54,960
+different intersectional groups and these are 
+some of the striking associations that we found  
+
+49
+00:04:54,960 --> 00:04:58,960
+Overall, we believe that WordBias can 
+help as an effective auditing tool  
+
+50
+00:04:58,960 --> 00:05:03,840
+for different kinds of social biases. To 
+know more about this project and play with  
+
+51
+00:05:03,840 --> 00:05:09,440
+this tool, please check out this github page. 
+With that, I thank you all for your attention.
+

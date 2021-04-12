@@ -1,0 +1,18 @@
+title slide - 10 sec
+
+Word Embeddings
+Bias in Word Embeddings
+Design goals
+Fairness metric
+
+Demo => 3 min
+- visual interface explain - lines, bias types
+- how a single word is linked to different bias types
+- search for a new word (show examples from supplementary)
+- highlight neutral words 
+- exploration => with an example poor, young, females
+- add a new bias type
+
+Our Findings 
+Conclusion
+Thanks - please refer to github page for code, demo and paper.
