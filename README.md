@@ -48,6 +48,7 @@ WordBias is an interactive visual tool designed to explore biases against inters
   booktitle={Extended Abstracts of the 2021 CHI Conference on Human Factors in Computing Systems},
   pages={1--7},
   year={2021}
-}```
+}
+```
 
 Feel free to email me for any questions, comments at bghai@cs.stonybrook.edu
