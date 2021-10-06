@@ -79,6 +79,9 @@ def get_csv():
     global df
     scaling = request.args.get("scaling")
     embedding = request.args.get("embedding")
+    if embedding is None:
+        embedding = "Word2Vec"
+
     print("/get_csv/")
     print("Scaling: ", scaling)
     print("Embedding: ", embedding)
@@ -111,10 +114,11 @@ def fetch_data():
     json_data = request.get_json(force=True);       
     slider_sel = json_data['slider_sel']
     hist_type = json_data["hist_type"]
+    #print("fetch_data: ", json_data["data"])
+    df = pd.json_normalize(json_data['data'])
     #col_list = list(bias_words.keys())
     col_list = [c for c in df.columns if c!="word"]
     # histogram type - ALL, gender, race, eco
-    
     filter_column = None
     if hist_type=="ALL":
         filter_column = df[col_list].abs().mean(axis=1)
@@ -220,6 +224,8 @@ def compute_new_bias():
     if scaling=="Normalization":
         print("Normalization")
         bias_score = np.array(bias_score)
+        bias_min = np.min(bias_score)
+        bias_max = np.max(bias_score)
         for b in bias_score:
             if b<0:
                 norm_bias_score.append(-1*b/bias_min)
