@@ -60,12 +60,7 @@ $(document).ready(function () {
   $("#spinner").addClass("lds-hourglass");
 
   $.get("/getFileNames/", function (res) {
-    //var group = res[0];     // List of file names for group
-    //console.log("groups dropdown has ", group);
     var target = res[1]; // List of file names for target
-    //var sim_files = res[2]; // List of file names for word similarity benchmark
-    //var ana_files = res[3]; // List of file names for word analogy benchmark
-    // popoulating options for dropdown from file list drawn from backend
 
     //$('#gp1_dropdown').append(populateDropDownList(group));
     //$('#gp2_dropdown').append(populateDropDownList(group));
@@ -98,8 +93,6 @@ $(document).ready(function () {
       initialize(res);
     }
   );
-  // set pointer type when hovering over any word on the word axis
-  //$('#word_dimension .tick text').css('cursor', 'pointer');
 });
 
 function initialize(res) {

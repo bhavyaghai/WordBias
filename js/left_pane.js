@@ -31,6 +31,7 @@ $("#scaling").change(function (event) {
 });
 
 function load_and_plot_new_data() {
+  //$("#spinner").addClass("lds-hourglass");
   $.get(
     "/get_csv/",
     {
@@ -235,7 +236,7 @@ function rerender(axis_name, res_all, res_active) {
 }
 
 function deleteAxis(axis_name) {
-  delete bias_words[axis_name];
+  //delete bias_words[axis_name];
   dim = pc.dimensions();
   delete dim[axis_name];
   pc.dimensions(dim).updateAxes().render();
