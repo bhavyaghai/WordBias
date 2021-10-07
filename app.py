@@ -54,8 +54,13 @@ def index():
 
 @app.route('/set_model')
 def set_model():
-    global model, language
     name = request.args.get("embedding")
+    load_embedding(name)
+    return "success"
+
+
+def load_embedding(name):
+    global model, language
     if model is None:
         name = "Word2Vec"
         #name = "Glove (wiki 300d)" 
@@ -71,8 +76,7 @@ def set_model():
         # print('./data/word_embeddings/GoogleNews-vectors-negative300-hard-debiased.bin')
         language = 'en'
         model = KeyedVectors.load_word2vec_format('./data/word_embeddings/GoogleNews-vectors-negative300-hard-debiased.bin', binary=True, limit=50000) 
-    return "success"
-
+    return
 
 @app.route('/get_csv/')
 def get_csv():
@@ -169,7 +173,7 @@ def get_histogram(type_var):
 def search(name):
     num_results = 25
     if model is None:
-        setModel()
+        load_embedding()
     neigh = []
     try:
         w = Word(name)
